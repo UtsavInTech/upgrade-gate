@@ -74,6 +74,13 @@ The single biggest lever is **a real, validated surprising finding**. See [RESEA
 
 All five are unverified. They become findings only after the experiments in the guide.
 
+## Literature check (Oct 27)
+Details and sources in [findings/LOG.md](findings/LOG.md).
+- **Muse Spark 1.1 is marked deprecated** (successor 1.2, no retirement date). Check on the first API call. If it's going away, capture the 1.1 baseline first.
+- **H1:** general same-family judge bias is already published. What's left open is **judge-version bias in upgrade gates**.
+- **H5:** no recent peer-reviewed study of a pinned version over days. Added **H5b: answers change with server load / time of day**.
+- **H6:** no public Hindi results for Muse Spark, and no study of whether an upgrade widens the Hindi–English gap. Hindi IFEval/GSM8K give matched pairs.
+
 ## Open items / blockers
 - [ ] Meta Model API call works from India (decides everything)
 - [ ] $150 Meta credits claimed (needs card on Meta account)

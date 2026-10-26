@@ -4,24 +4,117 @@ Pre-register each hypothesis **before** running it. See [../RESEARCH_GUIDE.md](.
 
 Status values: `planned` · `scouting` · `promising` · `confirmed` · `dropped`
 
+> **Literature check done Oct 27, 2026.** Sources are listed under each hypothesis. Items marked _(secondary)_ came from blogs or summaries, not the paper itself. Read the primary source before quoting them.
+
 ---
 
-## H5: The same pinned model ID changes behaviour across days (canary)
-- Status: planned (start Oct 28)
-- Belief it challenges: a pinned model version gives stable behaviour.
+## ⚠️ Plan-level finding: Muse Spark 1.1 is deprecated
+
+Artificial Analysis marks **Muse Spark 1.1 as deprecated** ("This model is deprecated"), with 1.2 as the successor. No retirement date is given. 1.1 pricing: $1.25 in / $4.25 out per 1M tokens. ([source](https://artificialanalysis.ai/models/muse-spark-1-1))
+
+- **Risk:** 1.1 may disappear from the API mid-hackathon, which would break any 1.1-vs-1.3 comparison.
+- **Action on first API call:** check whether 1.1 is still callable and whether Meta's docs give a shutdown date. If it's going away, run the 1.1 baseline **first** and save every output.
+- **Opportunity:** "Your pinned model is being retired. Here's what changes when you move" is itself a strong, timely demo story.
+
+---
+
+## H1: Judge-version bias in upgrade gates
+
+- **Status:** planned (sharpened after literature check)
+- **Original idea:** a same-family judge forgives same-family errors. **This alone is not new.** It's well published (see below).
+- **Sharpened hypothesis:** in an upgrade gate, **which version you pick as the judge changes the go/no-go decision.** A Spark 1.3 judge rates 1.3 outputs higher relative to 1.2 than ground truth supports (and vice versa), so the gate is biased toward approving the upgrade.
+- **Belief it challenges:** "using the newest, strongest model as the judge is the safe default for upgrade testing."
+- **Prediction (confidence %):** _fill in before running_
+- **Surprising result:** the gate's decision flips depending on the judge version, or a cross-family / open-weights judge gives a measurably more correct verdict against ground-truth labels.
+- **Boring result:** judge-version effect smaller than the noise floor; all judges agree with ground truth.
+- **Design:**
+  1. Tasks with ground-truth labels (so judge accuracy is measurable, not just judge agreement).
+  2. Candidates: Spark 1.2 vs 1.3 outputs on the same inputs.
+  3. Judges: Spark 1.2, Spark 1.3, Muse Spark Open (open weights), and one non-Meta judge if budget allows.
+  4. Measure per judge: false-pass rate (wrong answer marked right), false-fail rate, and a **version-preference score** controlled for quality. Copy the "fix candidate family, compare judges" estimator from Awuni et al. so quality doesn't confound it.
+  5. Run both A/B orders. Position flips were 55% in one study, so they must be controlled.
+- **Sample size + cost:** _fill in after pilot_
+- **Literature:**
+  - Preference Leakage (Li et al., ICLR 2026): judges favour related student models, in three relationships: same model, inheritance, same family. [arXiv 2502.01534](https://arxiv.org/abs/2502.01534)
+  - Who Judges Matters (Awuni et al., Sep 2026): same-family lift of 3.4–8.4 points across Llama/Qwen/Gemma/Yi; 55.4% of AB/BA pairs reverse; panel makeup changes 18.5% of outcomes. **Families only, not versions.** [arXiv 2609.17857](https://arxiv.org/abs/2609.17857)
+  - Nine Judges, Two Effective Votes (May 2026): a 9-judge panel is worth about 2 independent votes; cross-family isn't much less correlated than same-family. [arXiv 2605.29800](https://arxiv.org/abs/2605.29800)
+  - Correlated Errors in LLMs (Kim et al.): judges mark wrong answers right when they share the same wrong answer, and underrate models stronger than themselves. [arXiv 2506.07962](https://arxiv.org/abs/2506.07962)
+  - Measuring Self-Preference (EMNLP 2025): the DBG metric separates bias from quality and is applied across judge versions and sizes. **Read this one closely — it's the closest prior work.** [ACL Anthology](https://aclanthology.org/2025.emnlp-main.86.pdf)
+  - Counterpoint: one 2026 study says self-preference mostly disappears once quality and judge severity are controlled. [arXiv 2604.22891](https://arxiv.org/html/2604.22891v4)
+- **Gap I could find:** no study of the **upgrade-gate setting** — old vs new version of one model, judged by either version, scored against ground truth. Also none on Muse Spark.
+- **Claim we can make if true:** "first measurement of judge-version bias in upgrade decisions, on Muse Spark." Don't claim we discovered self-preference.
+
+---
+
+## H5: Pinned model ID changes behaviour over days (canary)
+
+- **Status:** planned — **start Oct 28** (needs ~8 days of data)
+- **Belief it challenges:** "pinning a model version gives stable behaviour."
+- **Sub-hypothesis H5b (new):** output varies with **server load / time of day**. Reason: GPU batching makes even temperature-0 outputs depend on what else is in the batch, so busy hours may give different answers than quiet hours. IST night is US daytime peak.
+- **Prediction (confidence %):** _fill in before running_
+- **Surprising result:** a step change on a specific day (silent update) **or** a measurable time-of-day pattern in answers, format errors or length.
+- **Boring result:** day-to-day variation no larger than within-hour variation.
+- **Design:**
+  1. Fixed suite of ~50 prompts with deterministic checks (JSON parse OK, exact-match answer, output length, refusal yes/no). Include ~10 Hindi prompts so H6 gets free time-series data.
+  2. Run on a schedule: **4× a day** (e.g. 03:00, 09:00, 15:00, 21:00 IST), each prompt repeated 3× per run so within-run noise is measured.
+  3. Log model ID, every response header, timestamp, latency, token counts.
+  4. Analysis: compare between-day and between-hour variation against within-run noise. Run a change-point detector (ADWIN from the River library, fresh code) on daily pass rates.
+  5. Same suite on 1.2 and 1.3 (and 1.1 while it lasts).
+- **Cost:** 50 prompts × 3 repeats × 4 runs × 8 days × 2–3 models ≈ 10–14K calls. Keep prompts short. Use Contributor mode if allowed for public prompts.
+- **Literature:**
+  - Chen, Zaharia & Zou (2023): GPT-4 under the same name dropped from 84% to 51% on prime identification between March and June 2023. [arXiv 2307.09009](https://arxiv.org/abs/2307.09009)
+  - (Why) Is My Prompt Getting Worse? (2023): gpt-3.5-turbo snapshot change gave −9.6% on one prompt and +5.1% on another. [arXiv 2311.11123](https://arxiv.org/pdf/2311.11123)
+  - Longitudinal study of 63 commercial ML APIs: over 60% changed substantially over time (cited in [arXiv 2407.12220](https://arxiv.org/pdf/2407.12220)).
+  - Thinking Machines Lab, "Defeating Nondeterminism in LLM Inference": 1,000 temperature-0 samples on Qwen3-235B gave 80 different completions; the cause is batch-dependent numerics. _(secondary — read the primary post)_ [summary](https://www.spheron.network/blog/vllm-batch-invariance-why-temperature-0-isnt-deterministic/)
+  - Practitioner canary + change-point method, and a reported 2025 Anthropic infrastructure incident. _(secondary, unverified)_ [dev.to](https://dev.to/aiwithmohit/your-llm-is-lying-to-you-silently-4-statistical-signals-that-catch-drift-before-users-do-4cg2)
+- **Gap I could find:** no recent peer-reviewed longitudinal study of a **pinned** model version, none that separates day-to-day drift from time-of-day/load effects, and nothing on Muse Spark.
+
+---
+
+## H6: An upgrade improves English but quietly hurts Hindi / Hinglish
+
+- **Status:** planned
+- **Belief it challenges:** "if a new version scores better overall, it's better for every language."
+- **Prediction (confidence %):** _fill in before running_
+- **Surprising result:** 1.3 vs 1.2 change is positive on English but flat or negative on the matched Hindi items, beyond the noise floor.
+- **Boring result:** the change has the same sign and size in both languages.
+- **Design:**
+  1. **Matched pairs**: the same item in English and Hindi, so the only difference is language. Use parallel datasets (Hindi IFEval / GSM8K versions below).
+  2. Add a small Hinglish (code-mixed) set: write ~50 items yourself with known answers. That's your "Build for Your World" angle, and no benchmark covers it well.
+  3. Two prompt conditions: English instructions vs Hindi instructions. One study found instruction language alone shifts Hindi accuracy, so control it.
+  4. Deterministic scoring wherever possible (exact match for math, rule checks for IFEval). Use judges only where unavoidable, and remember H1.
+  5. Report the **interaction**: (Δ Hindi) − (Δ English) with a paired bootstrap CI.
+- **Candidate datasets (check licenses before use):**
+  - Hindi IFEval / MT-Bench / GSM8K / BFCL (NVIDIA-led, "Benchmarking Hindi LLMs", 2025). Parallel to the English originals, so good for matched pairs. [ACL Anthology](https://preview.aclanthology.org/setup/2025.bhasha-1.5)
+  - MILU (AI4Bharat): 150K+ multiple-choice questions from Indian exams, 11 languages. [arXiv 2411.02538](https://arxiv.org/abs/2411.02538)
+  - IndicGenBench (Google): 29 Indic languages, parallel generation tasks. [GitHub](https://github.com/google-research-datasets/indic-gen-bench/)
+- **Literature:**
+  - Indic VLMs: average drops of 8.3 points for Hindi and 5.5 for Telugu vs English. [ACL 2026](https://aclanthology.org/2026.alvr-main.26/)
+  - Hindi analogy study: models do better on Hindi questions when instructions are in English. [Pith summary](https://pith.science/paper/2507.13238)
+  - Reordering / voice changes in Hindi and Malayalam math problems cause significant accuracy drops. [Pith summary](https://pith.science/paper/2609.03511)
+- **Gap I could find:** studies show Hindi lags English **within one model**. I found no study measuring whether a **version upgrade** changes that gap, and **no public Hindi results for Muse Spark at all**. Meta's eval methodology PDF lists English-centric benchmarks (HLE, ARC-AGI-2, SWE-bench, etc.). I couldn't extract its full text, so check it by hand for any multilingual section.
+
+---
+
+## Priority after literature check
+
+| # | Novelty after search | Cost | Verdict |
+|---|---|---|---|
+| H5 canary (+ H5b load) | Gap is clear on Muse Spark and pinned versions | Low, but needs days | **Start Oct 28, no matter what** |
+| H6 Hindi upgrade gap | Gap is clear, and it's your own story | Low-medium | **Run first among one-off experiments** |
+| H1 judge-version bias | Narrow gap; general effect already known | Low | Run, but frame carefully |
+| — 1.1 deprecation | Not a hypothesis, a risk | — | Check on first API call |
+
+<!-- Template for new hypotheses:
+## H<n>: <one-line hypothesis>
+- Status:
+- Belief it challenges:
 - Prediction (confidence %):
 - Surprising result:
 - Boring result:
+- Design:
 - Sample size + cost:
+- Literature:
+- Gap:
 - Results:
-
-## H1: A same-family judge forgives same-family errors
-- Status: planned
-- Belief it challenges: an LLM judge is neutral about which model wrote the answer.
-- Prediction (confidence %):
-- Surprising result:
-- Boring result:
-- Sample size + cost:
-- Results:
-
-<!-- Copy the block above for each new hypothesis -->
+-->

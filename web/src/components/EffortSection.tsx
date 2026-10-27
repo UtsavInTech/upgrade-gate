@@ -111,8 +111,9 @@ export function EffortSection({ e4 }: { e4: E4 }) {
           <h3 className="font-semibold">How far it goes</h3>
           <p className="mt-3 text-muted">
             Text-to-speech clips, Contributor mode (the same model served more cheaply), one run on 28 October
-            2026. On text tasks every effort level scored 100%, so this is about listening, not reasoning in
-            general.
+            2026. We compared the lowest and highest levels after seeing the results, so read that p-value as a
+            strong trend rather than a tested prediction; no single step up is significant on its own. On text
+            tasks every level scored 100%, so this is about listening, not reasoning in general.
           </p>
         </div>
       </div>

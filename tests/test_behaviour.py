@@ -71,3 +71,30 @@ class Check(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PerInputType(unittest.TestCase):
+    def test_text_twins_do_not_dilute_audio(self):
+        tmp = tempfile.mkdtemp()
+        try:
+            rows, tasks = [], []
+            for i in range(40):
+                for mod in ("audio", "text"):
+                    tid = "%s-%d" % (mod, i)
+                    tasks.append({"id": tid, "modality": mod})
+                    for r in range(3):
+                        bad = mod == "audio" and i < 15
+                        rows.append((tid, "old", r, "ok" if not bad else "I can't hear the audio.", not bad))
+                        rows.append((tid, "new", r, "ok" if not bad else '{"order_number": "12"}', not bad))
+            _write_run(tmp, rows)
+            with open(os.path.join(tmp, "tasks.jsonl"), "w") as f:
+                for t in tasks:
+                    f.write(json.dumps(t) + "\n")
+            res = check(tmp, "old", "new")
+            self.assertEqual(res["population"], "audio input")
+            self.assertEqual(res["tasks"], 40)  # audio clips only, not 80
+            self.assertTrue(res["by_input"]["audio"]["flagged"])
+            self.assertFalse(res["by_input"]["text"]["flagged"])
+            self.assertIn("Audio input", res["reason"])
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)

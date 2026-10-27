@@ -68,8 +68,27 @@ def _mcnemar_exact(b: int, c: int) -> float:
     return min(1.0, p)
 
 
+def _paired(types, tasks, baseline, candidate, wanted):
+    def majority(ts: List[str]) -> bool:
+        return sum(t in wanted for t in ts) * 2 > len(ts)
+    a = [majority(types[(t, baseline)]) for t in tasks]
+    b = [majority(types[(t, candidate)]) for t in tasks]
+    only_base = sum(x and not y for x, y in zip(a, b))
+    only_cand = sum(y and not x for x, y in zip(a, b))
+    return {"baseline": sum(a), "candidate": sum(b), "only_baseline": only_base, "only_candidate": only_cand,
+            "p": _mcnemar_exact(only_base, only_cand), "rise": (sum(b) - sum(a)) / len(tasks) if tasks else 0.0}
+
+
+INPUT_LABEL = {"audio": "audio input", "text": "text input", "image": "image input", "pdf": "PDF input"}
+
+
 def check(run_dir: str, baseline: str, candidate: str, alpha: float = 0.05, max_rise: float = 0.02) -> Dict:
-    """Compare answer types between two versions in a scored run. Never makes API calls."""
+    """Compare answer types between two versions in a scored run, separately for each input type
+    (audio, text, image, PDF), with Holm correction across them. Never makes API calls."""
+    modality: Dict[str, str] = {}
+    tpath = os.path.join(run_dir, "tasks.jsonl")
+    if os.path.exists(tpath):
+        modality = {t["id"]: t.get("modality", "text") for t in read_jsonl(tpath)}
     resp = {(r["task_id"], r["candidate"], r["repeat"]): r
             for r in read_jsonl(os.path.join(run_dir, "responses.jsonl"))}
     types: Dict[Tuple[str, str], List[str]] = defaultdict(list)
@@ -79,36 +98,54 @@ def check(run_dir: str, baseline: str, candidate: str, alpha: float = 0.05, max_
         r = resp.get((s["task_id"], s["candidate"], s["repeat"]), {})
         types[(s["task_id"], s["candidate"])].append(answer_type(r.get("text"), r.get("error"), s.get("passed")))
 
-    counts = {c: {t: 0 for t in TYPES} for c in (baseline, candidate)}
-    for (_, c), ts in types.items():
-        for t in ts:
-            counts[c][t] += 1
+    paired = sorted({t for t, _ in types if types.get((t, baseline)) and types.get((t, candidate))})
+    groups: Dict[str, List[str]] = defaultdict(list)
+    for t in paired:
+        groups[modality.get(t, "text")].append(t)
 
-    def majority(ts: List[str], wanted) -> bool:
-        return sum(t in wanted for t in ts) * 2 > len(ts)
+    by_input = {}
+    for m, ids in sorted(groups.items()):
+        counts = {c: {k: 0 for k in TYPES} for c in (baseline, candidate)}
+        for t in ids:
+            for c in (baseline, candidate):
+                for x in types[(t, c)]:
+                    counts[c][x] += 1
+        by_input[m] = {"label": INPUT_LABEL.get(m, m), "tasks": len(ids), "answers": counts,
+                       "silent": _paired(types, ids, baseline, candidate, SILENT),
+                       "blank": _paired(types, ids, baseline, candidate, ("blank",)),
+                       "wrong_no_warning": _paired(types, ids, baseline, candidate, ("wrong",)),
+                       "abstain": _paired(types, ids, baseline, candidate, ("abstain",))}
+    # Holm across input types: a rise counts only if it survives the correction.
+    order = sorted(by_input, key=lambda m: by_input[m]["silent"]["p"])
+    k = len(order)
+    running = 0.0
+    for i, m in enumerate(order):
+        running = max(running, min(1.0, (k - i) * by_input[m]["silent"]["p"]))
+        g = by_input[m]
+        g["silent"]["p_adjusted"] = running
+        g["flagged"] = g["silent"]["rise"] > max_rise and running < alpha
+    flagged = [m for m in order if by_input[m]["flagged"]]
+    worst = flagged[0] if flagged else (order[0] if order else None)
 
-    tasks = sorted({tid for tid, _ in types})
-    paired = [t for t in tasks if types.get((t, baseline)) and types.get((t, candidate))]
-    out: Dict = {"tasks": len(paired), "answers": counts}
-    for name, wanted in (("silent", SILENT), ("abstain", ("abstain",))):
-        a = [majority(types[(t, baseline)], wanted) for t in paired]
-        b = [majority(types[(t, candidate)], wanted) for t in paired]
-        only_base = sum(x and not y for x, y in zip(a, b))
-        only_cand = sum(y and not x for x, y in zip(a, b))
-        out[name] = {"baseline": sum(a), "candidate": sum(b), "only_baseline": only_base,
-                     "only_candidate": only_cand, "p": _mcnemar_exact(only_base, only_cand),
-                     "rise": (sum(b) - sum(a)) / len(paired) if paired else 0.0}
-    s = out["silent"]
-    out["flagged"] = bool(paired) and s["rise"] > max_rise and s["p"] < alpha
-    out["alpha"], out["max_rise"] = alpha, max_rise
-    if out["flagged"]:
-        ab = out["abstain"]
-        out["reason"] = (
-            "Silent failures rose from %d to %d of %d tasks (p = %.1g): the new version answers wrong or blank "
-            "without saying so%s." % (
-                s["baseline"], s["candidate"], len(paired), s["p"],
-                "; tasks where it admits it can't answer fell from %d to %d" % (ab["baseline"], ab["candidate"])
-                if ab["baseline"] > ab["candidate"] else ""))
+    out: Dict = {"by_input": by_input, "alpha": alpha, "max_rise": max_rise, "flagged": bool(flagged),
+                 "population": by_input[worst]["label"] if worst else None}
+    if worst:  # top-level fields describe the most affected input type (kept for older readers)
+        g = by_input[worst]
+        out.update({"tasks": g["tasks"], "answers": g["answers"], "silent": g["silent"], "abstain": g["abstain"],
+                    "blank": g["blank"], "wrong_no_warning": g["wrong_no_warning"]})
+    if flagged:
+        parts = []
+        for m in flagged:
+            g = by_input[m]
+            sl, bl, ab = g["silent"], g["blank"], g["abstain"]
+            parts.append(
+                "%s: answers that are wrong or blank with no warning rose from %d to %d of %d tasks "
+                "(p = %.1g; blank %d \u2192 %d)%s" % (
+                    g["label"].capitalize(), sl["baseline"], sl["candidate"], g["tasks"], sl["p"],
+                    bl["baseline"], bl["candidate"],
+                    "; answers admitting it can't answer fell from %d to %d" % (ab["baseline"], ab["candidate"])
+                    if ab["baseline"] > ab["candidate"] else ""))
+        out["reason"] = "Silent failures rose. " + " | ".join(parts) + "."
     return out
 
 

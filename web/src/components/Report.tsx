@@ -231,9 +231,13 @@ export function Report({ run, task }: { run: string; task: string | null }) {
 
 function RunHeader({ data }: { data: RunData }) {
   const m = data.meta;
-  const o = m.overall;
-  const reg = m.counts.regression ?? 0;
-  const imp = m.counts.improvement ?? 0;
+  // Mixed runs (audio clips + always-correct text twins) headline the audio clips only, labelled.
+  const h = m.headline;
+  const o = h ?? m.overall;
+  const counts = h?.counts ?? m.counts;
+  const reg = counts.regression ?? 0;
+  const imp = counts.improvement ?? 0;
+  const unit = h ? "clips" : "tasks";
   return (
     <header className="pt-8">
       <div className="flex flex-wrap items-start justify-between gap-6">
@@ -269,7 +273,7 @@ function RunHeader({ data }: { data: RunData }) {
       )}
 
       <dl className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-4">
-        <Metric label="Pass rate">
+        <Metric label={h ? `Pass rate, ${h.label} (${h.population})` : "Pass rate"}>
           {pct(o.base_rate)} <span className="text-faint">→</span> {pct(o.cand_rate)}
         </Metric>
         <Metric label="Change (95% range)">
@@ -283,16 +287,22 @@ function RunHeader({ data }: { data: RunData }) {
             <ArrowDown aria-hidden className="mr-1 inline size-5 align-[-3px]" />
             {reg}
           </span>{" "}
-          <span className="text-sm font-normal text-muted">tasks</span>
+          <span className="text-sm font-normal text-muted">{unit}</span>
         </Metric>
         <Metric label="Got better">
           <span className={imp ? "text-go" : ""}>
             <ArrowUp aria-hidden className="mr-1 inline size-5 align-[-3px]" />
             {imp}
           </span>{" "}
-          <span className="text-sm font-normal text-muted">tasks</span>
+          <span className="text-sm font-normal text-muted">{unit}</span>
         </Metric>
       </dl>
+      {h && (
+        <p className="mt-2 text-xs text-faint">
+          The text twins of these clips are left out of the headline: both versions answered all of them
+          correctly. They stay in the slice table and task list below.
+        </p>
+      )}
     </header>
   );
 }

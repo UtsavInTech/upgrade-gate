@@ -1,0 +1,4 @@
+{
+  "model": "spark-1.2@low",
+  "note": "The Muse Spark model and reasoning effort this app ships. Changing it opens the upgrade gate."
+}

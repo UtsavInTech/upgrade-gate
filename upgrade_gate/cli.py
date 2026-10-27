@@ -220,10 +220,11 @@ def cmd_gate(args) -> int:
     if not getattr(args, "accuracy_only", False):
         from .behaviour import apply_to_gate
         res = apply_to_gate(args.run_dir, alpha=args.alpha, max_rise=args.max_drop)
-        b = res["behaviour"]
-        print("Failure types: silent %d -> %d, says it can't %d -> %d of %d tasks" % (
-            b["silent"]["baseline"], b["silent"]["candidate"], b["abstain"]["baseline"],
-            b["abstain"]["candidate"], b["tasks"]))
+        for m, g in sorted(res["behaviour"].get("by_input", {}).items()):
+            print("Failure types, %s (%d tasks): wrong or blank with no warning %d -> %d, "
+                  "says it can't answer %d -> %d%s" % (
+                      g["label"], g["tasks"], g["silent"]["baseline"], g["silent"]["candidate"],
+                      g["abstain"]["baseline"], g["abstain"]["candidate"], "  << flagged" if g["flagged"] else ""))
     print("%s  (%s -> %s)" % (res["decision"].upper(), res["baseline"], res["candidate"]))
     for r in res.get("reasons", []):
         print("  -", r)

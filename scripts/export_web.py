@@ -437,11 +437,21 @@ def run_detail(run: str, title: str, blurb: str):
         })
     order = {"regression": 0, "improvement": 1, "both fail": 2, "both pass": 3}
     rows.sort(key=lambda r: (order[r["status"]], r["id"]))
+    # Headline population: when a run mixes audio clips with text twins (always correct), the
+    # summary uses the audio clips only, labelled as such, so the twins don't dilute it.
+    modalities = {r["modality"] for r in rows}
+    headline = None
+    if "audio" in modalities and len(modalities) > 1:
+        sl = next((x for x in gate.get("slices") or [] if x["slice"] == "modality=audio"), None)
+        if sl:
+            headline = dict(sl, label="audio clips only", population=sum(1 for r in rows if r["modality"] == "audio"))
+            headline["counts"] = dict(collections.Counter(r["status"] for r in rows if r["modality"] == "audio"))
     info = _json(run, "run.json") or {}
     meta = {"run": run, "title": title, "blurb": blurb, "baseline": base, "candidate": cand,
             "decision": gate["decision"], "reasons": gate.get("reasons") or [], "created_utc": info.get("created_utc"),
             "overall": gate.get("overall"), "slices": gate.get("slices") or [], **_run_cost(run),
             "accuracy_decision": gate.get("accuracy_decision", gate["decision"]), "behaviour": gate.get("behaviour"),
+            "headline": headline,
             "counts": dict(collections.Counter(r["status"] for r in rows))}
     path = os.path.join(OUT_DIR, "data", "runs", run + ".json")
     os.makedirs(os.path.dirname(path), exist_ok=True)

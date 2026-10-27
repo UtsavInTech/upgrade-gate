@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-10-27T19:19:59Z",
+ "generated_utc": "2026-10-27T19:36:54Z",
  "spend": {
   "total_usd": 19.78,
   "limit_usd": 90.0
@@ -518,17 +518,131 @@
   "decision": "inconclusive",
   "gate_decision": "no-go",
   "behaviour": {
-   "tasks": 270,
+   "by_input": {
+    "audio": {
+     "label": "audio input",
+     "tasks": 135,
+     "answers": {
+      "spark-1.2@low": {
+       "correct": 278,
+       "abstain": 65,
+       "no answer": 2,
+       "blank": 0,
+       "wrong": 60
+      },
+      "spark-1.3@low": {
+       "correct": 274,
+       "abstain": 4,
+       "no answer": 7,
+       "blank": 30,
+       "wrong": 90
+      }
+     },
+     "silent": {
+      "baseline": 18,
+      "candidate": 42,
+      "only_baseline": 2,
+      "only_candidate": 26,
+      "p": 3.032386302947998e-06,
+      "rise": 0.17777777777777778,
+      "p_adjusted": 6.064772605895996e-06
+     },
+     "blank": {
+      "baseline": 0,
+      "candidate": 7,
+      "only_baseline": 0,
+      "only_candidate": 7,
+      "p": 0.015625,
+      "rise": 0.05185185185185185
+     },
+     "wrong_no_warning": {
+      "baseline": 18,
+      "candidate": 32,
+      "only_baseline": 4,
+      "only_candidate": 18,
+      "p": 0.004343509674072266,
+      "rise": 0.1037037037037037
+     },
+     "abstain": {
+      "baseline": 21,
+      "candidate": 0,
+      "only_baseline": 21,
+      "only_candidate": 0,
+      "p": 9.5367431640625e-07,
+      "rise": -0.15555555555555556
+     },
+     "flagged": true
+    },
+    "text": {
+     "label": "text input",
+     "tasks": 135,
+     "answers": {
+      "spark-1.2@low": {
+       "correct": 405,
+       "abstain": 0,
+       "no answer": 0,
+       "blank": 0,
+       "wrong": 0
+      },
+      "spark-1.3@low": {
+       "correct": 405,
+       "abstain": 0,
+       "no answer": 0,
+       "blank": 0,
+       "wrong": 0
+      }
+     },
+     "silent": {
+      "baseline": 0,
+      "candidate": 0,
+      "only_baseline": 0,
+      "only_candidate": 0,
+      "p": 1.0,
+      "rise": 0.0,
+      "p_adjusted": 1.0
+     },
+     "blank": {
+      "baseline": 0,
+      "candidate": 0,
+      "only_baseline": 0,
+      "only_candidate": 0,
+      "p": 1.0,
+      "rise": 0.0
+     },
+     "wrong_no_warning": {
+      "baseline": 0,
+      "candidate": 0,
+      "only_baseline": 0,
+      "only_candidate": 0,
+      "p": 1.0,
+      "rise": 0.0
+     },
+     "abstain": {
+      "baseline": 0,
+      "candidate": 0,
+      "only_baseline": 0,
+      "only_candidate": 0,
+      "p": 1.0,
+      "rise": 0.0
+     },
+     "flagged": false
+    }
+   },
+   "alpha": 0.05,
+   "max_rise": 0.02,
+   "flagged": true,
+   "population": "audio input",
+   "tasks": 135,
    "answers": {
     "spark-1.2@low": {
-     "correct": 683,
+     "correct": 278,
      "abstain": 65,
      "no answer": 2,
      "blank": 0,
      "wrong": 60
     },
     "spark-1.3@low": {
-     "correct": 679,
+     "correct": 274,
      "abstain": 4,
      "no answer": 7,
      "blank": 30,
@@ -541,7 +655,8 @@
     "only_baseline": 2,
     "only_candidate": 26,
     "p": 3.032386302947998e-06,
-    "rise": 0.08888888888888889
+    "rise": 0.17777777777777778,
+    "p_adjusted": 6.064772605895996e-06
    },
    "abstain": {
     "baseline": 21,
@@ -549,12 +664,25 @@
     "only_baseline": 21,
     "only_candidate": 0,
     "p": 9.5367431640625e-07,
-    "rise": -0.07777777777777778
+    "rise": -0.15555555555555556
    },
-   "flagged": true,
-   "alpha": 0.05,
-   "max_rise": 0.02,
-   "reason": "Silent failures rose from 18 to 42 of 270 tasks (p = 3e-06): the new version answers wrong or blank without saying so; tasks where it admits it can't answer fell from 21 to 0."
+   "blank": {
+    "baseline": 0,
+    "candidate": 7,
+    "only_baseline": 0,
+    "only_candidate": 7,
+    "p": 0.015625,
+    "rise": 0.05185185185185185
+   },
+   "wrong_no_warning": {
+    "baseline": 18,
+    "candidate": 32,
+    "only_baseline": 4,
+    "only_candidate": 18,
+    "p": 0.004343509674072266,
+    "rise": 0.1037037037037037
+   },
+   "reason": "Silent failures rose. Audio input: answers that are wrong or blank with no warning rose from 18 to 42 of 135 tasks (p = 3e-06; blank 0 → 7); answers admitting it can't answer fell from 21 to 0."
   },
   "gate_reason": "CI overlaps the drop limit. Approximately 9072 more independent tasks are needed (normal approximation, 80% power; not a guarantee).",
   "tasks_needed": 9072,

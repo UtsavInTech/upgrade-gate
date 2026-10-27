@@ -1,0 +1,30 @@
+{
+  "run_id": "e7-real-voices",
+  "created_utc": "2026-10-27T19:08:44Z",
+  "candidates": [
+    {
+      "name": "spark-1.2@low",
+      "model_id": "muse-spark-1.2",
+      "params": {
+        "max_completion_tokens": 4000,
+        "reasoning_effort": "low"
+      }
+    },
+    {
+      "name": "spark-1.3@low",
+      "model_id": "muse-spark-1.3",
+      "params": {
+        "max_completion_tokens": 4000,
+        "reasoning_effort": "low"
+      }
+    }
+  ],
+  "baseline": "spark-1.2@low",
+  "packs": [
+    "audio-real"
+  ],
+  "n_tasks": 45,
+  "repeats": 3,
+  "budget_usd": 4.0,
+  "notes": "experiment e7-real-voices; shuffle_seed=441483458"
+}

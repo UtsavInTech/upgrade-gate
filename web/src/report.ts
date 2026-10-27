@@ -59,6 +59,8 @@ export type RunMeta = {
   reused_answers: number;
   counts: Partial<Record<Status, number>>;
   accuracy_decision?: string;
+  headline?:
+    (GateSlice & { label: string; population: number; counts: Partial<Record<Status, number>> }) | null;
   behaviour?: import("./data").Behaviour | null;
 };
 

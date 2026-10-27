@@ -1,0 +1,58 @@
+name: upgrade-gate
+
+# Runs when a pull request changes the shipped model (release/model.json). Each suite replays the saved
+# answers in evidence/<suite>/ for the old and new model; no API key is needed. A NO-GO fails the check,
+# and the deploy job, which needs every check, is skipped. With branch protection requiring these checks,
+# GitHub also blocks the merge.
+on:
+  pull_request:
+    paths:
+      - "release/model.json"
+      - "evidence/**"
+      - "upgrade_gate/**"
+      - "scripts/ci_gate.py"
+      - ".github/workflows/upgrade-gate.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    name: upgrade-gate / ${{ matrix.suite }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [voice-notes, real-voices, text-and-documents]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install
+        run: pip install -e .
+      - name: Gate the model change
+        run: python scripts/ci_gate.py ${{ matrix.suite }}
+      - name: Keep the report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: upgrade-gate-${{ matrix.suite }}
+          path: ${{ runner.temp }}/upgrade-gate-${{ matrix.suite }}/
+          if-no-files-found: ignore
+
+  deploy:
+    name: deploy model
+    needs: gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ship the new model
+        run: |
+          echo "All upgrade checks passed. Shipping $(python3 -c 'import json; print(json.load(open("release/model.json"))["model"])')."
+          # replace with your real deployment step

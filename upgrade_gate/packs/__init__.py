@@ -9,6 +9,7 @@ Packs (category, langs):
     intent         classification  en + hinglish (hinglish paired to an English twin)
     ifeval         instruction     en + hi (hi paired to an English twin)
     docs-synth     doc-image       en + hi, modality image (PNG) and pdf; needs data/docs-synth/
+    audio-synth    math/extraction/classification  en / hi / hinglish, modality audio (WAV) + text twin
     canary         mixed           canary/prompts.json wrapped as Tasks
 
 Content of every pack is fixed (generated from a fixed internal seed), so ids and tasks are
@@ -77,7 +78,7 @@ import random
 from typing import Callable, Dict, List, Optional
 
 from ..schema import Task
-from . import canary_pack, docs_synth, extract_pairs, ifeval_pack, intent, math_pairs
+from . import audio_synth, canary_pack, docs_synth, extract_pairs, ifeval_pack, intent, math_pairs
 
 PACKS: Dict[str, Callable[..., List[Task]]] = {
     "math-pairs": math_pairs.build,
@@ -85,6 +86,7 @@ PACKS: Dict[str, Callable[..., List[Task]]] = {
     "intent": intent.build,
     "ifeval": ifeval_pack.build,
     "docs-synth": docs_synth.build,
+    "audio-synth": audio_synth.build,
     "canary": canary_pack.build,
 }
 

@@ -21,7 +21,7 @@ class Task:
     pack: str                    # pack name, e.g. "banking77", "docs-synth", "hindi-pairs"
     category: str                # slice used in per-category stats, e.g. "classification"
     lang: str                    # "en" | "hi" | "hinglish"
-    modality: str                # "text" | "image" | "pdf"
+    modality: str                # "text" | "image" | "pdf" | "audio"
     prompt: str                  # user message text
     reference: Any               # ground truth (str, number, dict, list)
     scorer: Dict[str, Any]       # deterministic scorer spec, see upgrade_gate/scorers.py

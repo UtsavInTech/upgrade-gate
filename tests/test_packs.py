@@ -41,7 +41,7 @@ class TestPacks(unittest.TestCase):
                 self.assertIsInstance(t, Task)
                 self.assertEqual(t.pack, name)
                 self.assertIn(t.lang, ("en", "hi", "hinglish"))
-                self.assertIn(t.modality, ("text", "image", "pdf"))
+                self.assertIn(t.modality, ("text", "image", "pdf", "audio"))
                 self.assertTrue(t.prompt.strip())
                 self.assertIn(t.scorer["type"], SPEC_TYPES, t.id)
                 json.dumps(t.reference, ensure_ascii=False)  # JSON-serialisable

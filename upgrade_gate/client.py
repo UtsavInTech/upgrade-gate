@@ -312,6 +312,10 @@ def attachment_part(path: str) -> dict:
     ext = os.path.splitext(path)[1].lower()
     if ext in _IMAGE_MIME:
         return {"type": "image_url", "image_url": {"url": _data_url(path, _IMAGE_MIME[ext])}}
+    if ext in (".wav", ".mp3"):  # Meta docs: inline input_audio, base64, format wav|mp3
+        with open(_resolve(path), "rb") as f:
+            data = base64.b64encode(f.read()).decode("ascii")
+        return {"type": "input_audio", "input_audio": {"data": data, "format": ext[1:]}}
     if ext == ".pdf":
         return {"type": "file", "file": {"filename": os.path.basename(path),
                                          "file_data": _data_url(path, "application/pdf")}}

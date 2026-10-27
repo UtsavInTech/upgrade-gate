@@ -170,7 +170,7 @@ def build_presentation(run_dir: str) -> dict:
                     changes.append(dict(task_id=row['task_id'], candidate=row['candidate'], repeat=row['repeat'],
                         before=prior.get('passed'), after=row.get('passed'), strict=row.get('strict_passed'),
                         detail=row.get('detail', ''), before_detail=prior.get('detail', ''), text=response.get('text')))
-            changes.sort(key=lambda r: (not bool(re.search(r'somw|budhw|raviv|सोम|बुध|रवि', r['text'] or '', re.I)), r['task_id'], r['candidate'], r['repeat']))
+            changes.sort(key=lambda r: (0 if re.search(r'somw', r['text'] or '', re.I) else 1 if re.search(r'budhw', r['text'] or '', re.I) else 2, r['task_id'], r['candidate'], r['repeat']))
             before_after = dict(before=before_view['overall'], after=after_view['overall'], changed_rows=len(changes),
                 common_tasks=len(common), examples=changes[:12], source_before='scores.before-rescore.jsonl', source_after='scores.jsonl')
         costs = []

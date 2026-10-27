@@ -36,6 +36,15 @@ Artificial Analysis marks **Muse Spark 1.1 as deprecated** ("This model is depre
 
 ---
 
+## E3 result: Contributor mode gives the same answers at ~1/18 the cost
+
+- **Run:** Oct 27. Spark 1.3 Standard vs Spark 1.3 Contributor, effort low, 1,325 tasks × 3 repeats. The Standard half reused E1's saved answers (same tasks, same settings), so the run cost **$0.40**.
+- **Result:** identical: 3,971 / 3,975 answers correct for both, Δ 0.0 pts on every slice. Gate: **GO**; equivalent within ±2 pts.
+- **Cost per 1,000 tasks** (billed tokens in this run): Standard **$1.80**, Contributor **$0.10**, about 18× cheaper.
+- **Caveat:** Contributor mode lets Meta use the traffic for training. Fine for synthetic or public data; for customer data it's a policy decision, not a quality one. The Standard answers were collected a few hours earlier than the Contributor ones.
+
+---
+
 ## E6 result: 1.3 hears about as well as 1.2, but fails silently instead of saying so
 
 - **Why we ran it:** Meta's docs say audio understanding in Muse Spark 1.3 "is currently not fully supported" and quality "may be degraded". We wanted to see whether an upgrade gate catches that on its own.

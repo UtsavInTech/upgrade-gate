@@ -56,11 +56,48 @@ def parse_candidate(spec: str) -> Candidate:
     return Candidate(name=spec, model_id=model_id, params=params)
 
 
+def load_task_file(path: str) -> list:
+    """Your own tasks: a .jsonl file, one task per line. Required: prompt and scorer (or reference,
+    which then becomes an exact match). Optional: id, category, lang, modality, attachments.
+    See docs/BRING_YOUR_OWN_TASKS.md."""
+    from .scorers import SCORERS
+    from .schema import Task
+    stem = os.path.splitext(os.path.basename(path))[0]
+    tasks = []
+    with open(path, encoding="utf-8") as f:
+        for i, line in enumerate(f, 1):
+            if not line.strip():
+                continue
+            try:
+                d = json.loads(line)
+            except ValueError as e:
+                raise SystemExit("%s line %d: not valid JSON (%s)" % (path, i, e))
+            if "prompt" not in d:
+                raise SystemExit("%s line %d: missing 'prompt'" % (path, i))
+            scorer = d.get("scorer") or ({"type": "exact"} if "reference" in d else None)
+            if not scorer or scorer.get("type") not in SCORERS:
+                raise SystemExit("%s line %d: needs a 'scorer' with a known type (%s), or a 'reference'"
+                                 % (path, i, ", ".join(sorted(SCORERS))))
+            atts = d.get("attachments") or []
+            tasks.append(Task(
+                id=str(d.get("id") or "%s-%04d" % (stem, i)), pack=stem, category=d.get("category", "custom"),
+                lang=d.get("lang", "en"), modality=d.get("modality") or ("text" if not atts else "image"),
+                prompt=d["prompt"], reference=d.get("reference"), scorer=scorer, attachments=atts,
+                meta=d.get("meta") or {}))
+    if not tasks:
+        raise SystemExit("%s has no tasks" % path)
+    return tasks
+
+
 def load_tasks(packs: List[str], n: Optional[int], seed: int):
     from .packs import load_pack
     tasks = []
     for name in packs:
-        tasks.extend(load_pack(name, n=n, seed=seed))
+        if name.endswith(".jsonl"):
+            own = load_task_file(name)
+            tasks.extend(own if n is None else own[:n])
+        else:
+            tasks.extend(load_pack(name, n=n, seed=seed))
     return tasks
 
 

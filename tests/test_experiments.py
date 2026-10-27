@@ -100,3 +100,28 @@ class TokenLimitSpec(unittest.TestCase):
         self.assertEqual(parse_candidate("spark-1.3@low").params["max_completion_tokens"], 4000)
         with self.assertRaises(SystemExit):
             parse_candidate("spark-1.3@low/abc")
+
+
+class OwnTaskFile(unittest.TestCase):
+    def test_example_file_loads_and_gold_answers_pass(self):
+        import os
+        from upgrade_gate.cli import load_tasks
+        from upgrade_gate.scorers import score_text
+        root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        tasks = load_tasks([os.path.join(root, "examples", "my_tasks.jsonl")], None, 0)
+        self.assertEqual(len(tasks), 5)
+        gold = {"refund-01": "refund", "refund-02": "delivery", "order-01": '{"order_number": "58213", "city": "Pune"}',
+                "math-01": "308", "exact-01": "Jaipur"}
+        for t in tasks:
+            self.assertTrue(score_text(t, gold[t.id])[0], t.id)
+
+    def test_bad_line_is_reported(self):
+        import tempfile, os
+        from upgrade_gate.cli import load_task_file
+        with tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False) as f:
+            f.write('{"id": "x"}\n')
+        try:
+            with self.assertRaises(SystemExit):
+                load_task_file(f.name)
+        finally:
+            os.remove(f.name)

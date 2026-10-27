@@ -104,9 +104,10 @@ class TestPacks(unittest.TestCase):
             a = load_pack(name, n=25, seed=1)
             b = load_pack(name, n=25, seed=1)
             c = load_pack(name, n=25, seed=2)
-            self.assertEqual(len(a), 25)
+            self.assertEqual(len(a), min(25, len(full)))
             self.assertEqual([t.id for t in a], [t.id for t in b])
-            self.assertNotEqual([t.id for t in a], [t.id for t in c], name)
+            if len(full) > 25:  # a small pack (e.g. a few real recordings) is returned whole by any seed
+                self.assertNotEqual([t.id for t in a], [t.id for t in c], name)
             ids = {t.id for t in a}
             for t in a:  # sampling never leaves a dangling pair
                 if t.pair_id:

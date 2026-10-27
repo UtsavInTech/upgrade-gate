@@ -1,0 +1,5 @@
+{"id": "refund-01", "category": "support", "prompt": "Classify this message as one of: refund, delivery, cancel. Reply with the label only.\n\nI sent the shoes back last week and still have no money.", "scorer": {"type": "label", "value": "refund", "labels": ["refund", "delivery", "cancel"]}}
+{"id": "refund-02", "category": "support", "lang": "hinglish", "prompt": "Classify this message as one of: refund, delivery, cancel. Reply with the label only.\n\nMera parcel kal aana tha, abhi tak nahi aaya.", "scorer": {"type": "label", "value": "delivery", "labels": ["refund", "delivery", "cancel"]}}
+{"id": "order-01", "category": "extraction", "prompt": "Reply with only a JSON object with keys order_number and city.\n\nHi, order 58213, I'm in Pune.", "scorer": {"type": "json_fields", "fields": {"order_number": ["58213", 58213], "city": ["Pune"]}}}
+{"id": "math-01", "category": "math", "prompt": "3 kg rice at 64 rupees per kg, paid with a 500 note. How much change? Reply with the number only.", "scorer": {"type": "number", "value": 308}}
+{"id": "exact-01", "prompt": "What is the capital of Rajasthan? One word.", "reference": "Jaipur"}

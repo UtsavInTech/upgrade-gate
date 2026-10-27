@@ -112,7 +112,7 @@ class _RateLimiter:
 class ModelClient:
     def __init__(self, base_url=None, api_key=None, cache_dir=None, max_concurrency=8,
                  rpm: Optional[Dict[str, float]] = None, timeout: float = 180.0, max_attempts: int = 5,
-                 backoff_base: float = 1.0, backoff_max: float = 60.0):
+                 backoff_base: float = 1.0, backoff_max: float = 60.0, run_budget_usd: Optional[float] = None):
         """rpm: optional {model_id: requests_per_minute}; key "*" sets the default for any
         model. Without it: 140 for *-contributor models, 2500 otherwise. 0 disables limiting."""
         self.base_url = (base_url or config.model_api_base()).rstrip("/")
@@ -130,6 +130,8 @@ class ModelClient:
         self._sems: Dict[str, threading.Semaphore] = {}
         self._limiters: Dict[str, _RateLimiter] = {}
         self._warned: set = set()
+        # strict per-run cap (reserved before each billable call); None = only the lifetime cap
+        self.run_budget = spend.RunBudget(run_budget_usd) if run_budget_usd is not None else None
 
     def __repr__(self) -> str:  # never show the key
         return "ModelClient(base_url=%r, key=%s)" % (self.base_url, "set" if self._api_key else "unset")
@@ -254,7 +256,14 @@ class ModelClient:
             log.warning("no price for model %s: cost will be recorded as 0", model_id)
 
         guard = spend.ledger() if spend.is_billable(self.base_url) else None
-        reserved = guard.reserve(spend.worst_case_usd(model_id, messages, params)) if guard else 0.0
+        worst = spend.worst_case_usd(model_id, messages, params) if guard or self.run_budget else 0.0
+        run_reserved = self.run_budget.reserve(worst) if self.run_budget else 0.0
+        try:
+            reserved = guard.reserve(worst) if guard else 0.0
+        except spend.SpendCapError:
+            if self.run_budget:
+                self.run_budget.settle(run_reserved, 0.0)
+            raise
 
         body = {"model": model_id, "messages": messages}
         body.update(params)
@@ -264,8 +273,11 @@ class ModelClient:
             with sem:
                 data, err, latency = self._post(body)
         finally:
+            billed_all = pricing.cost(model_id, map_usage(data.get("usage"))) if isinstance(data, dict) else 0.0
+            if self.run_budget:
+                self.run_budget.settle(run_reserved, billed_all)
             if guard:
-                billed = pricing.cost(model_id, map_usage(data.get("usage"))) if isinstance(data, dict) else 0.0
+                billed = billed_all
                 guard.settle(reserved, billed, model_id, source="client")
         if err is not None:
             return ChatResult(text=None, usage=_empty_usage(), cost_usd=0.0, latency_ms=latency,

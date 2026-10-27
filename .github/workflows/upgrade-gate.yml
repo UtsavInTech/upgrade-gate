@@ -8,6 +8,7 @@ on:
   pull_request:
     paths:
       - "release/model.json"
+      - "release/policy.json"
       - "evidence/**"
       - "upgrade_gate/**"
       - "scripts/ci_gate.py"

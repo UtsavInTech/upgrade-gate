@@ -155,7 +155,8 @@ def run(tasks, candidates, baseline, repeats=3, out_root="results", run_id=None,
             if (t["id"], c["name"], r) not in done]
     random.Random(seed).shuffle(jobs)
 
-    client = client or ModelClient(max_concurrency=workers)
+    # --budget is strict: the client reserves each call's worst case against it before sending
+    client = client or ModelClient(max_concurrency=workers, run_budget_usd=budget_usd)
     lock = threading.Lock()
     state = {"done": 0, "spent": 0.0, "cost": 0.0, "errors": 0, "cached": 0, "next_pct": 5}
     total = len(jobs)

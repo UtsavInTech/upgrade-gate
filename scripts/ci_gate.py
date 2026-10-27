@@ -86,8 +86,16 @@ def main() -> int:
     baseline = args.baseline or (model_at("origin/" + base_ref) if base_ref else model_at("HEAD~1"))
     candidate = model_at()
     name = "upgrade-gate / %s" % args.suite
+    policy_path = os.path.join(ROOT, "release", "policy.json")
+    try:  # a broken policy must fail the check, not silently fall back to defaults
+        from upgrade_gate.behaviour import load_policy
+        load_policy(policy_path if os.path.exists(policy_path) else None)
+    except (ValueError, json.JSONDecodeError) as e:
+        write_summary("### %s: policy error\n\n`release/policy.json` is invalid: %s" % (name, e))
+        return 1
     if baseline == candidate:
-        write_summary("### %s: nothing to gate\n\nThe model is unchanged (`%s`)." % (name, candidate))
+        write_summary("### %s: nothing to gate\n\nThe model is unchanged (`%s`). The release policy is valid."
+                      % (name, candidate))
         return 0
 
     evidence = os.path.join(ROOT, "evidence", args.suite)

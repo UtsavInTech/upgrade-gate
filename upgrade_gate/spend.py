@@ -223,3 +223,27 @@ class CanaryBudget:
         with self._lock:
             self.reserved = max(0.0, self.reserved - reserved)
             self.spent += max(0.0, actual_usd)
+
+
+class RunBudget:
+    """A strict per-run cap: every billable call reserves its worst case first, and is refused if
+    spent + in flight + this call could pass the budget. (The lifetime Ledger still applies too.)"""
+
+    def __init__(self, budget_usd: float):
+        self.budget = float(budget_usd)
+        self.spent = 0.0
+        self.reserved = 0.0
+        self._lock = threading.Lock()
+
+    def reserve(self, usd: float) -> float:
+        with self._lock:
+            if self.spent + self.reserved + usd > self.budget:
+                raise SpendCapError("run budget reached: $%.4f spent + $%.4f in flight + $%.4f for this call "
+                                    "> budget $%.2f" % (self.spent, self.reserved, usd, self.budget))
+            self.reserved += usd
+            return usd
+
+    def settle(self, reserved: float, actual_usd: float) -> None:
+        with self._lock:
+            self.reserved = max(0.0, self.reserved - reserved)
+            self.spent += max(0.0, actual_usd)

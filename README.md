@@ -35,6 +35,25 @@ The old scorer rejected correct Hindi spellings such as `Somwar` versus `Somvar`
 
 The models are near the ceiling here. This does not establish that 1.3 is safe on every company's workload. E1 shows why a statistically significant score difference still needs an audited scoring rule. See the [recorded E1 tables](experiments/out/e1_upgrade.md) and [experiment account](findings/LOG.md#e1-result-spark-12--13-and-a-scorer-that-invented-an-improvement). Raw run folders stay local under `results/` and are not committed.
 
+## Watch it block an upgrade
+
+[`release/model.json`](release/model.json) holds the model this app ships. The branch
+[`upgrade/spark-1.3`](https://github.com/UtsavInTech/upgrade-gate/compare/main...upgrade/spark-1.3) changes it from
+`spark-1.2@low` to `spark-1.3@low`. On that pull request, [the upgrade-gate workflow](.github/workflows/upgrade-gate.yml)
+replays the saved answers in [`evidence/`](evidence) for both models (no API key needed) and runs three checks:
+
+| Check | Result | Why |
+|---|---|---|
+| `upgrade-gate / voice-notes` | ❌ NO-GO | Audio input: wrong or blank with no warning 18 → 42 of 135 clips, p = 3 × 10⁻⁶. Accuracy alone: inconclusive |
+| `upgrade-gate / real-voices` | ❌ NO-GO | 6 → 13 of 45 clips read by a person, and accuracy down past the limit |
+| `upgrade-gate / text-and-documents` | ✅ GO | No change on 1,325 tasks |
+| `deploy model` | skipped | Runs only when every check passes |
+
+Each failed check's summary shows one filled-in wrong answer, e.g. a Hindi voice note where 1.3 returns pincode
+`380015` (a real Ahmedabad pincode) instead of `452089`: correctly shaped, so a required-fields check passes it. With
+branch protection requiring these checks, GitHub also blocks the merge. In a live setup the same step runs
+`upgrade-gate all` with `MODEL_API_KEY` instead of replaying saved answers.
+
 ## Try it without spending money
 
 ```sh

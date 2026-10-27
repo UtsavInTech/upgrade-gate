@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-10-27T16:15:20Z",
+ "generated_utc": "2026-10-27T16:44:53Z",
  "spend": {
   "total_usd": 18.31,
   "limit_usd": 90.0
@@ -680,7 +680,7 @@
       "अहमदाबाद"
      ]
     },
-    "audio": "audio/audio-extract-03-hi.wav",
+    "audio": "att/audio-extract-03-hi.m4a",
     "answers": {
      "spark-1.2@low": [
       {
@@ -727,7 +727,7 @@
     "transcript": "अर्जुन के पास 306 रुपये थे। 51 रुपये खाने पर और 44 रुपये बस टिकट पर ख़र्च हुए। अब कितने रुपये बचे हैं?",
     "prompt": "Listen to the attached audio. Answer the question. Reply with only the final number.",
     "expected": 211,
-    "audio": "audio/audio-math-07-hi.wav",
+    "audio": "att/audio-math-07-hi.m4a",
     "answers": {
      "spark-1.2@low": [
       {
@@ -781,7 +781,7 @@
       "जयपुर"
      ]
     },
-    "audio": "audio/audio-extract-02-hinglish.wav",
+    "audio": "att/audio-extract-02-hinglish.m4a",
     "answers": {
      "spark-1.2@low": [
       {
@@ -835,7 +835,7 @@
       "मुंबई"
      ]
     },
-    "audio": "audio/audio-extract-12-en.wav",
+    "audio": "att/audio-extract-12-en.m4a",
     "answers": {
      "spark-1.2@low": [
       {
@@ -882,7 +882,7 @@
     "transcript": "Arjun ke paas 306 rupaye the. 51 rupaye khaane par aur 44 rupaye bus ticket par kharch hue. Ab kitne rupaye bache hain?",
     "prompt": "Listen to the attached audio. Answer the question. Reply with only the final number.",
     "expected": 211,
-    "audio": "audio/audio-math-07-hinglish.wav",
+    "audio": "att/audio-math-07-hinglish.m4a",
     "answers": {
      "spark-1.2@low": [
       {
@@ -929,7 +929,7 @@
     "transcript": "नेहा ने 42 रुपये प्रति किलो के भाव से 3 किलो चावल ख़रीदे और 500 रुपये का नोट दिया। नेहा को कितने रुपये वापस मिलने चाहिए?",
     "prompt": "Listen to the attached audio. Answer the question. Reply with only the final number.",
     "expected": 374,
-    "audio": "audio/audio-math-00-hi.wav",
+    "audio": "att/audio-math-00-hi.m4a",
     "answers": {
      "spark-1.2@low": [
       {
@@ -976,7 +976,7 @@
     "transcript": "Please order 5 5 7 7 4 mere ghar ki jagah mere office ke address par bhejiye.",
     "prompt": "Listen to the attached audio. This is a customer's voice note. Classify it as exactly one of: address_change, cancel_order, delivery_status, payment_failed, refund_request. Reply with only the label.",
     "expected": "address_change",
-    "audio": "audio/audio-intent-02-hinglish.wav",
+    "audio": "att/audio-intent-02-hinglish.m4a",
     "answers": {
      "spark-1.2@low": [
       {
@@ -1013,6 +1013,953 @@
       }
      ]
     }
+   }
+  ],
+  "clips": [
+   {
+    "id": "audio-synth-extract-00-en",
+    "lang": "en",
+    "kind": "extract",
+    "spark-1.2@low": "says it can't hear",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-extract-01-en",
+    "lang": "en",
+    "kind": "extract",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-extract-02-en",
+    "lang": "en",
+    "kind": "extract",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-extract-03-en",
+    "lang": "en",
+    "kind": "extract",
+    "spark-1.2@low": "confident wrong",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-04-en",
+    "lang": "en",
+    "kind": "extract",
+    "spark-1.2@low": "confident wrong",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-05-en",
+    "lang": "en",
+    "kind": "extract",
+    "spark-1.2@low": "confident wrong",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-06-en",
+    "lang": "en",
+    "kind": "extract",
+    "spark-1.2@low": "says it can't hear",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-07-en",
+    "lang": "en",
+    "kind": "extract",
+    "spark-1.2@low": "says it can't hear",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-extract-08-en",
+    "lang": "en",
+    "kind": "extract",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-09-en",
+    "lang": "en",
+    "kind": "extract",
+    "spark-1.2@low": "says it can't hear",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-10-en",
+    "lang": "en",
+    "kind": "extract",
+    "spark-1.2@low": "confident wrong",
+    "spark-1.3@low": "silent blank"
+   },
+   {
+    "id": "audio-synth-extract-11-en",
+    "lang": "en",
+    "kind": "extract",
+    "spark-1.2@low": "confident wrong",
+    "spark-1.3@low": "silent blank"
+   },
+   {
+    "id": "audio-synth-extract-12-en",
+    "lang": "en",
+    "kind": "extract",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "silent blank"
+   },
+   {
+    "id": "audio-synth-extract-13-en",
+    "lang": "en",
+    "kind": "extract",
+    "spark-1.2@low": "confident wrong",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-14-en",
+    "lang": "en",
+    "kind": "extract",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "silent blank"
+   },
+   {
+    "id": "audio-synth-intent-00-en",
+    "lang": "en",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-01-en",
+    "lang": "en",
+    "kind": "intent",
+    "spark-1.2@low": "says it can't hear",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-intent-02-en",
+    "lang": "en",
+    "kind": "intent",
+    "spark-1.2@low": "says it can't hear",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-intent-03-en",
+    "lang": "en",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-04-en",
+    "lang": "en",
+    "kind": "intent",
+    "spark-1.2@low": "says it can't hear",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-05-en",
+    "lang": "en",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-06-en",
+    "lang": "en",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-07-en",
+    "lang": "en",
+    "kind": "intent",
+    "spark-1.2@low": "says it can't hear",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-08-en",
+    "lang": "en",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-09-en",
+    "lang": "en",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-10-en",
+    "lang": "en",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-11-en",
+    "lang": "en",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-12-en",
+    "lang": "en",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-13-en",
+    "lang": "en",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-14-en",
+    "lang": "en",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-00-en",
+    "lang": "en",
+    "kind": "math",
+    "spark-1.2@low": "says it can't hear",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-math-01-en",
+    "lang": "en",
+    "kind": "math",
+    "spark-1.2@low": "says it can't hear",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-math-02-en",
+    "lang": "en",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-03-en",
+    "lang": "en",
+    "kind": "math",
+    "spark-1.2@low": "says it can't hear",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-04-en",
+    "lang": "en",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-05-en",
+    "lang": "en",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-06-en",
+    "lang": "en",
+    "kind": "math",
+    "spark-1.2@low": "says it can't hear",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-07-en",
+    "lang": "en",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-08-en",
+    "lang": "en",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-09-en",
+    "lang": "en",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-10-en",
+    "lang": "en",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-11-en",
+    "lang": "en",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-12-en",
+    "lang": "en",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-13-en",
+    "lang": "en",
+    "kind": "math",
+    "spark-1.2@low": "says it can't hear",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-math-14-en",
+    "lang": "en",
+    "kind": "math",
+    "spark-1.2@low": "says it can't hear",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-00-hi",
+    "lang": "hi",
+    "kind": "extract",
+    "spark-1.2@low": "confident wrong",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-01-hi",
+    "lang": "hi",
+    "kind": "extract",
+    "spark-1.2@low": "confident wrong",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-02-hi",
+    "lang": "hi",
+    "kind": "extract",
+    "spark-1.2@low": "confident wrong",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-03-hi",
+    "lang": "hi",
+    "kind": "extract",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-04-hi",
+    "lang": "hi",
+    "kind": "extract",
+    "spark-1.2@low": "confident wrong",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-05-hi",
+    "lang": "hi",
+    "kind": "extract",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-extract-06-hi",
+    "lang": "hi",
+    "kind": "extract",
+    "spark-1.2@low": "confident wrong",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-extract-07-hi",
+    "lang": "hi",
+    "kind": "extract",
+    "spark-1.2@low": "confident wrong",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-08-hi",
+    "lang": "hi",
+    "kind": "extract",
+    "spark-1.2@low": "confident wrong",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-09-hi",
+    "lang": "hi",
+    "kind": "extract",
+    "spark-1.2@low": "confident wrong",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-10-hi",
+    "lang": "hi",
+    "kind": "extract",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-11-hi",
+    "lang": "hi",
+    "kind": "extract",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-extract-12-hi",
+    "lang": "hi",
+    "kind": "extract",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-13-hi",
+    "lang": "hi",
+    "kind": "extract",
+    "spark-1.2@low": "confident wrong",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-14-hi",
+    "lang": "hi",
+    "kind": "extract",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "silent blank"
+   },
+   {
+    "id": "audio-synth-intent-00-hi",
+    "lang": "hi",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-01-hi",
+    "lang": "hi",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-02-hi",
+    "lang": "hi",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-03-hi",
+    "lang": "hi",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-04-hi",
+    "lang": "hi",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-05-hi",
+    "lang": "hi",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-06-hi",
+    "lang": "hi",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-07-hi",
+    "lang": "hi",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-08-hi",
+    "lang": "hi",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-09-hi",
+    "lang": "hi",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-10-hi",
+    "lang": "hi",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-11-hi",
+    "lang": "hi",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-12-hi",
+    "lang": "hi",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-13-hi",
+    "lang": "hi",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-14-hi",
+    "lang": "hi",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-00-hi",
+    "lang": "hi",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-01-hi",
+    "lang": "hi",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-02-hi",
+    "lang": "hi",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-03-hi",
+    "lang": "hi",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-04-hi",
+    "lang": "hi",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-05-hi",
+    "lang": "hi",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-06-hi",
+    "lang": "hi",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-07-hi",
+    "lang": "hi",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-math-08-hi",
+    "lang": "hi",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-math-09-hi",
+    "lang": "hi",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-10-hi",
+    "lang": "hi",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-11-hi",
+    "lang": "hi",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-12-hi",
+    "lang": "hi",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-13-hi",
+    "lang": "hi",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-14-hi",
+    "lang": "hi",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-extract-00-hinglish",
+    "lang": "hinglish",
+    "kind": "extract",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-extract-01-hinglish",
+    "lang": "hinglish",
+    "kind": "extract",
+    "spark-1.2@low": "says it can't hear",
+    "spark-1.3@low": "mixed"
+   },
+   {
+    "id": "audio-synth-extract-02-hinglish",
+    "lang": "hinglish",
+    "kind": "extract",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "silent blank"
+   },
+   {
+    "id": "audio-synth-extract-03-hinglish",
+    "lang": "hinglish",
+    "kind": "extract",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-extract-04-hinglish",
+    "lang": "hinglish",
+    "kind": "extract",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-05-hinglish",
+    "lang": "hinglish",
+    "kind": "extract",
+    "spark-1.2@low": "confident wrong",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-06-hinglish",
+    "lang": "hinglish",
+    "kind": "extract",
+    "spark-1.2@low": "says it can't hear",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-07-hinglish",
+    "lang": "hinglish",
+    "kind": "extract",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-extract-08-hinglish",
+    "lang": "hinglish",
+    "kind": "extract",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-extract-09-hinglish",
+    "lang": "hinglish",
+    "kind": "extract",
+    "spark-1.2@low": "no answer (token limit)",
+    "spark-1.3@low": "no answer (token limit)"
+   },
+   {
+    "id": "audio-synth-extract-10-hinglish",
+    "lang": "hinglish",
+    "kind": "extract",
+    "spark-1.2@low": "mixed",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-11-hinglish",
+    "lang": "hinglish",
+    "kind": "extract",
+    "spark-1.2@low": "confident wrong",
+    "spark-1.3@low": "no answer (token limit)"
+   },
+   {
+    "id": "audio-synth-extract-12-hinglish",
+    "lang": "hinglish",
+    "kind": "extract",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-13-hinglish",
+    "lang": "hinglish",
+    "kind": "extract",
+    "spark-1.2@low": "says it can't hear",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-extract-14-hinglish",
+    "lang": "hinglish",
+    "kind": "extract",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "silent blank"
+   },
+   {
+    "id": "audio-synth-intent-00-hinglish",
+    "lang": "hinglish",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-01-hinglish",
+    "lang": "hinglish",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-02-hinglish",
+    "lang": "hinglish",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-03-hinglish",
+    "lang": "hinglish",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-04-hinglish",
+    "lang": "hinglish",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-05-hinglish",
+    "lang": "hinglish",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-06-hinglish",
+    "lang": "hinglish",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-07-hinglish",
+    "lang": "hinglish",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-08-hinglish",
+    "lang": "hinglish",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-09-hinglish",
+    "lang": "hinglish",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-10-hinglish",
+    "lang": "hinglish",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-11-hinglish",
+    "lang": "hinglish",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-12-hinglish",
+    "lang": "hinglish",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-13-hinglish",
+    "lang": "hinglish",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-intent-14-hinglish",
+    "lang": "hinglish",
+    "kind": "intent",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-00-hinglish",
+    "lang": "hinglish",
+    "kind": "math",
+    "spark-1.2@low": "says it can't hear",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-math-01-hinglish",
+    "lang": "hinglish",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-02-hinglish",
+    "lang": "hinglish",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-03-hinglish",
+    "lang": "hinglish",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-04-hinglish",
+    "lang": "hinglish",
+    "kind": "math",
+    "spark-1.2@low": "mixed",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-05-hinglish",
+    "lang": "hinglish",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-06-hinglish",
+    "lang": "hinglish",
+    "kind": "math",
+    "spark-1.2@low": "confident wrong",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-math-07-hinglish",
+    "lang": "hinglish",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "confident wrong"
+   },
+   {
+    "id": "audio-synth-math-08-hinglish",
+    "lang": "hinglish",
+    "kind": "math",
+    "spark-1.2@low": "says it can't hear",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-09-hinglish",
+    "lang": "hinglish",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-10-hinglish",
+    "lang": "hinglish",
+    "kind": "math",
+    "spark-1.2@low": "says it can't hear",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-11-hinglish",
+    "lang": "hinglish",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-12-hinglish",
+    "lang": "hinglish",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-13-hinglish",
+    "lang": "hinglish",
+    "kind": "math",
+    "spark-1.2@low": "says it can't hear",
+    "spark-1.3@low": "correct"
+   },
+   {
+    "id": "audio-synth-math-14-hinglish",
+    "lang": "hinglish",
+    "kind": "math",
+    "spark-1.2@low": "correct",
+    "spark-1.3@low": "correct"
    }
   ]
  },

@@ -32,7 +32,8 @@ def _num(s: str) -> float:
 class TestPacks(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.packs = {n: load_pack(n) for n in PACKS if n != "docs-synth" or DOCS_OK}
+        # audio-real stays empty until someone records with web/#/record
+        cls.packs = {n: load_pack(n) for n in PACKS if (n != "docs-synth" or DOCS_OK) and (n != "audio-real" or load_pack(n))}
 
     def test_all_load_and_fields(self):
         for name, tasks in self.packs.items():

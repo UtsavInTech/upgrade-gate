@@ -41,7 +41,7 @@ export type E1 = {
 };
 
 export type Mode =
-  "correct" | "says it can't hear" | "confident wrong" | "silent blank" | "no answer (token limit)";
+  "correct" | "says it can't hear" | "confident wrong" | "silent blank" | "no answer (token limit)" | "mixed";
 
 export type AudioAnswer = { text: string; mode: Mode; says_cant_hear: boolean };
 
@@ -78,6 +78,7 @@ export type E6 = {
   deny_with_answer: Record<string, number>;
   tests: FailureTest[];
   examples: AudioExample[];
+  clips: ({ id: string; lang: string; kind: string } & Record<string, string>)[];
 };
 
 export type E3 = {

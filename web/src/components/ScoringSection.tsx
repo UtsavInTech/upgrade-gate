@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { Check, X } from "lucide-react";
 import type { E1 } from "../data";
 import { LANG_LABEL, pts, pval } from "../data";
+import { ScorerExplainer } from "./ScorerExplainer";
 import { Reveal, Section, Verdict } from "./ui";
 
 export function ScoringSection({ e1 }: { e1: E1 }) {
@@ -55,6 +56,8 @@ export function ScoringSection({ e1 }: { e1: E1 }) {
           </p>
         </div>
       </Reveal>
+
+      <ScorerExplainer e1={e1} />
 
       <div className="mt-14 grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         <Reveal>

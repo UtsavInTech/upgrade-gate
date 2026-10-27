@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import type { AudioExample, E6 } from "../data";
 import { BASE, CAND, LANG_LABEL, formatExpected, pval, shortModel } from "../data";
-import { FailureChart } from "./FailureChart";
+import { ClipGrid } from "./ClipGrid";
 import { ModeChip, Reveal, Section, Stat, Verdict } from "./ui";
 
 const KIND: Record<string, string> = {
@@ -72,7 +72,7 @@ export function AudioSection({ e6 }: { e6: E6 }) {
       </Reveal>
 
       <Reveal delay={0.05} className="mt-14">
-        <FailureChart e6={e6} />
+        <ClipGrid e6={e6} />
       </Reveal>
 
       <Reveal delay={0.05} className="mt-10 grid gap-8 md:grid-cols-2">
@@ -107,10 +107,10 @@ export function AudioSection({ e6 }: { e6: E6 }) {
         <Examples examples={e6.examples} />
       </Reveal>
 
-      <p className="mt-8 text-sm text-faint">
-        Synthetic voices (macOS text-to-speech), reasoning effort low, one run on 27 Oct 2026. The
-        failure-type rules were written after reading the answers, so this is exploratory until it is repeated
-        on fresh clips.
+      <p className="mt-8 max-w-3xl text-sm text-faint">
+        These clips use text-to-speech voices, which are cleaner than real voice notes. A rerun with recorded
+        human voices is in progress. Reasoning effort low, one run on 27 October 2026. The answer-type rules
+        were written after reading the answers, so treat this as a strong lead until the rerun confirms it.
       </p>
     </Section>
   );

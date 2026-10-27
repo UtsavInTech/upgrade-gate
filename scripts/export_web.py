@@ -161,7 +161,40 @@ def e6() -> dict:
         "deny_with_answer": dict(deny_ans),
         "tests": tests,
         "examples": _audio_examples(d, tasks, ex),
+        "clips": _clip_outcomes(d, tasks, ex),
     }
+    return out
+
+
+def _clip_outcomes(d: str, tasks: dict, ex) -> list:
+    """One row per audio clip and version, using the same majority rule as the paired tests:
+    wrong-or-blank in 2 of 3 tries -> that failure; otherwise correct / can't hear / no answer
+    if 2 of 3; otherwise "mixed". So the grid's counts match the published test counts."""
+    resp = {(r["task_id"], r["candidate"], r["repeat"]): r for r in read_jsonl(os.path.join(d, "responses.jsonl"))}
+    modes = collections.defaultdict(list)
+    for s in read_jsonl(os.path.join(d, "scores.jsonl")):
+        t = tasks[s["task_id"]]
+        if t["modality"] != "audio":
+            continue
+        r = resp[(s["task_id"], s["candidate"], s["repeat"])]
+        modes[(s["task_id"], s["candidate"])].append(ex._mode(t, r, s["passed"] is True))
+
+    def outcome(ms):
+        c = collections.Counter(ms)
+        half = len(ms) / 2
+        if c["confident wrong"] + c["silent blank"] > half:
+            return "silent blank" if c["silent blank"] > c["confident wrong"] else "confident wrong"
+        for m in ("correct", "says it can't hear", "no answer (token limit)"):
+            if c[m] > half:
+                return m
+        return "mixed"
+
+    out = []
+    for tid, t in sorted(tasks.items(), key=lambda kv: (kv[1]["lang"], kv[1]["meta"]["kind"], kv[0])):
+        if t["modality"] != "audio" or not modes.get((tid, A)) or not modes.get((tid, B)):
+            continue
+        out.append({"id": tid, "lang": t["lang"], "kind": t["meta"]["kind"],
+                    A: outcome(modes[(tid, A)]), B: outcome(modes[(tid, B)])})
     return out
 
 
@@ -200,15 +233,12 @@ def _audio_examples(d: str, tasks: dict, ex) -> list:
             picks.append((tid, "denies-but-hears"))
             n += 1
     out = []
-    os.makedirs(os.path.join(OUT_DIR, "audio"), exist_ok=True)
     for tid, why in picks:
         t = tasks[tid]
         wav = t["attachments"][0]
-        name = os.path.basename(wav)
-        shutil.copyfile(os.path.join(ROOT, wav), os.path.join(OUT_DIR, "audio", name))
         out.append({"task_id": tid, "why": why, "kind": t["meta"]["kind"], "lang": t["lang"],
                     "voice": t["meta"]["voice"], "transcript": t["meta"]["transcript"], "prompt": t["prompt"],
-                    "expected": t["reference"], "audio": "audio/" + name,
+                    "expected": t["reference"], "audio": _attachment(wav, True),
                     "answers": {A: by_task[tid][A], B: by_task[tid][B]}})
     return out
 
@@ -247,8 +277,119 @@ def e3() -> dict:
     return res
 
 
+# ------------------------------------------------------------------ report view: one file per run
+
+RUNS = [
+    ("e6-audio", "Voice notes", "Spoken English, Hindi and Hinglish clips, each with a text twin"),
+    ("e1-upgrade", "Text, documents, Hindi", "Maths, extraction, intent, instructions, invoice images and PDFs"),
+    ("e3-contributor", "Contributor mode", "Same model, cheaper serving mode"),
+]
+
+
+def _attachment(path: str, keep: bool):
+    """Copy an attachment the report can show. Audio becomes small AAC (browser-playable);
+    images/PDFs are copied only for tasks worth opening, to keep the site light."""
+    if not path:
+        return None
+    src = os.path.join(ROOT, path)
+    if not os.path.exists(src):
+        return None
+    att = os.path.join(OUT_DIR, "att")
+    os.makedirs(att, exist_ok=True)
+    name, ext = os.path.splitext(os.path.basename(path))
+    if ext.lower() in (".wav", ".mp3"):
+        dst = os.path.join(att, name + ".m4a")
+        if not os.path.exists(dst):
+            import subprocess
+            subprocess.run(["afconvert", "-f", "m4af", "-d", "aac", "-b", "48000", src, dst],
+                           check=True, capture_output=True)
+        return "att/" + name + ".m4a"
+    if not keep:
+        return None
+    dst = os.path.join(att, os.path.basename(path))
+    if not os.path.exists(dst):
+        shutil.copyfile(src, dst)
+    return "att/" + os.path.basename(path)
+
+
+def _display(v) -> str:
+    if isinstance(v, dict):
+        return " · ".join("%s: %s" % (k, x[0] if isinstance(x, list) else x) for k, x in v.items())
+    if isinstance(v, list):
+        return " / ".join(str(x) for x in v)
+    return str(v)
+
+
+def run_detail(run: str, title: str, blurb: str):
+    d = os.path.join(RESULTS, run)
+    gate = _json(run, "gate.json")
+    if not gate or not os.path.exists(os.path.join(d, "scores.jsonl")):
+        return None
+    import e6_audio as ex
+    base, cand = gate["baseline"], gate["candidate"]
+    tasks = tasks_by_id(d)
+    resp = {(r["task_id"], r["candidate"], r["repeat"]): r for r in _load(run, "responses.jsonl")}
+    per = collections.defaultdict(list)
+    for s in _load(run, "scores.jsonl"):
+        if s["candidate"] not in (base, cand):
+            continue
+        t = tasks.get(s["task_id"])
+        r = resp.get((s["task_id"], s["candidate"], s["repeat"]), {})
+        if t and t["modality"] == "audio":
+            mode = ex._mode(t, r, s["passed"] is True)
+        elif r.get("error"):
+            mode = "no answer (token limit)" if "max_completion_tokens" in (r.get("error") or "") else "error"
+        else:
+            mode = "correct" if s["passed"] else "confident wrong"
+        per[(s["task_id"], s["candidate"])].append({
+            "repeat": s["repeat"], "passed": s["passed"], "strict": s.get("strict_passed"),
+            "detail": (s.get("detail") or "")[:160], "mode": mode,
+            "text": ((r.get("text") or r.get("error") or "").strip())[:600],
+        })
+
+    def side(tid, c):
+        ans = sorted(per.get((tid, c), []), key=lambda a: a["repeat"])
+        votes = [a["passed"] for a in ans if a["passed"] is not None]
+        maj = (sum(votes) * 2 > len(votes)) if votes else None
+        modes = collections.Counter(a["mode"] for a in ans)
+        return {"pass": maj, "mode": modes.most_common(1)[0][0] if modes else None, "answers": ans}
+
+    rows = []
+    for tid, t in tasks.items():
+        b, c = side(tid, base), side(tid, cand)
+        if b["pass"] is None and c["pass"] is None:
+            continue
+        status = ("regression" if b["pass"] and not c["pass"] else "improvement" if c["pass"] and not b["pass"]
+                  else "both pass" if b["pass"] else "both fail")
+        interesting = status != "both pass" or b["mode"] != c["mode"]
+        att = (t.get("attachments") or [None])[0]
+        rows.append({
+            "id": tid, "category": t["category"], "lang": t["lang"], "modality": t["modality"],
+            "prompt": t["prompt"][:900], "transcript": (t.get("meta") or {}).get("transcript"),
+            "expected": _display(_accepted(t) if _accepted(t) is not None else t.get("reference")),
+            "attachment": _attachment(att, interesting), "status": status, "base": b, "cand": c,
+        })
+    order = {"regression": 0, "improvement": 1, "both fail": 2, "both pass": 3}
+    rows.sort(key=lambda r: (order[r["status"]], r["id"]))
+    info = _json(run, "run.json") or {}
+    meta = {"run": run, "title": title, "blurb": blurb, "baseline": base, "candidate": cand,
+            "decision": gate["decision"], "reasons": gate.get("reasons") or [], "created_utc": info.get("created_utc"),
+            "overall": gate.get("overall"), "slices": gate.get("slices") or [], **_run_cost(run),
+            "counts": dict(collections.Counter(r["status"] for r in rows))}
+    path = os.path.join(OUT_DIR, "data", "runs", run + ".json")
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump({"meta": meta, "tasks": rows}, f, ensure_ascii=False, separators=(",", ":"), default=float)
+    print("wrote", os.path.relpath(path, ROOT), "(%d KB, %d tasks)" % (os.path.getsize(path) // 1024, len(rows)))
+    return {k: meta[k] for k in ("run", "title", "blurb", "baseline", "candidate", "decision", "calls",
+                                 "fresh_cost_usd", "created_utc", "counts")}
+
+
 def main() -> None:
     os.makedirs(os.path.join(OUT_DIR, "data"), exist_ok=True)
+    index = [x for x in (run_detail(*r) for r in RUNS) if x]
+    with open(os.path.join(OUT_DIR, "data", "runs.json"), "w", encoding="utf-8") as f:
+        json.dump(index, f, ensure_ascii=False, indent=1)
     s = spend.status()
     site = {
         "generated_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),

@@ -70,6 +70,7 @@ export const MODE_STYLE: Record<Mode, { color: string; label: string; short: str
     short: "No answer",
   },
   "confident wrong": { color: "var(--s-wrong)", label: "Confidently wrong", short: "Wrong" },
+  mixed: { color: "var(--s-muted)", label: "Mixed (no answer type in 2 of 3 tries)", short: "Mixed" },
   "silent blank": {
     color: "var(--s-blank)",
     label: "Blank fields, no warning",

@@ -64,6 +64,8 @@ Artificial Analysis marks **Muse Spark 1.1 as deprecated** ("This model is depre
   - Synthetic TTS voices are cleaner than real voice notes. One run on one day, effort low only.
   - Holm over the 8 failure-type tests leaves the two "all" results significant (3e-6 and 2e-7); the per-language ones are supporting detail.
 
+- **Confirmation planned (E7, pre-registered 27 Oct before any recording):** the same lines read by real people via `web/#/record`, same models and settings, the same failure-type rules unchanged. Prediction: more "confident wrong or blank" on 1.3, p < 0.05. If it fails, E6 is reported as a synthetic-voice result only. Script: `experiments/e7_real_voices.py`.
+
 ---
 
 ## H1: Judge-version bias in upgrade gates

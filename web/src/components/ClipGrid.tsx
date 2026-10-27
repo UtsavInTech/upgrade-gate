@@ -93,7 +93,7 @@ export function ClipGrid({ e6 }: { e6: E6 }) {
                 {LANGS.map((lang) => (
                   <div key={lang} className="grid grid-cols-[64px_minmax(0,1fr)] items-center gap-3">
                     <span className="text-xs text-muted">{LANG_LABEL[lang]}</span>
-                    <div className="grid grid-cols-[repeat(15,minmax(0,1fr))] gap-[3px]">
+                    <div className="grid max-w-[360px] grid-cols-[repeat(15,minmax(0,1fr))] gap-[3px]">
                       {clips
                         .filter((c) => c.lang === lang)
                         .map((c) => {
@@ -131,9 +131,11 @@ export function ClipGrid({ e6 }: { e6: E6 }) {
         {h ? (
           <p className="text-muted">
             <span className="font-mono text-xs text-faint">{h.id}</span> · {LANG_LABEL[h.lang]} {KIND[h.kind]}
-            . {shortModel(BASE)}: <span className="text-fg">{(MODE_STYLE[h[BASE] as Mode] ?? MODE_STYLE.mixed).label}</span>.{" "}
-            {shortModel(CAND)}: <span className="text-fg">{(MODE_STYLE[h[CAND] as Mode] ?? MODE_STYLE.mixed).label}</span>. Click to
-            open the answers.
+            . {shortModel(BASE)}:{" "}
+            <span className="text-fg">{(MODE_STYLE[h[BASE] as Mode] ?? MODE_STYLE.mixed).label}</span>.{" "}
+            {shortModel(CAND)}:{" "}
+            <span className="text-fg">{(MODE_STYLE[h[CAND] as Mode] ?? MODE_STYLE.mixed).label}</span>. Click
+            to open the answers.
           </p>
         ) : (
           <ul className="flex flex-wrap gap-x-5 gap-y-2" aria-label="Legend">

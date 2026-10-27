@@ -37,10 +37,16 @@ DEFAULT_PARAMS = {"max_completion_tokens": 4000}
 
 def parse_candidate(spec: str) -> Candidate:
     """'spark-1.3@high' -> Candidate(name='spark-1.3@high', model_id='muse-spark-1.3', params={...}).
-    A raw model id (e.g. 'muse-spark-1.3') is also accepted."""
-    base, _, effort = spec.partition("@")
+    An optional '/<tokens>' sets max_completion_tokens, e.g. 'spark-1.3-c@xhigh/16000' (reasoning
+    tokens count toward it, so high effort needs room). A raw model id is also accepted."""
+    spec_core, _, limit = spec.partition("/")
+    base, _, effort = spec_core.partition("@")
     model_id = PRESETS.get(base, base)
     params = dict(DEFAULT_PARAMS)
+    if limit:
+        if not limit.isdigit() or not 100 <= int(limit) <= 64000:
+            raise SystemExit("token limit must be a number between 100 and 64000, got %r" % limit)
+        params["max_completion_tokens"] = int(limit)
     if effort:
         if effort not in EFFORTS:
             raise SystemExit("unknown effort %r (use one of %s)" % (effort, ", ".join(EFFORTS)))

@@ -1,6 +1,6 @@
 # Upgrade Gate — Current Status
 
-_Last updated: Oct 27, 2026 (IST). Phase: **research before building**. No code written yet._
+_Last updated: Oct 27, 2026, late evening (IST). Phase: **built; three experiments done; polishing the demo**._
 
 ## The event
 
@@ -29,7 +29,7 @@ A cost-aware, statistically sound **go / no-go gate for model upgrades**. Its fi
 
 How it got here: Dubash → farm advisory → Verified Learning → Munim → self-healing solar vision → stale-model study → Ruko → regression radar → "find what your tests miss" → **Upgrade Gate**. Each earlier idea was dropped for being crowded, not lived, or not needing Meta's models.
 
-### Architecture (planned)
+### Architecture
 ```
 Task packs (public data, known answers) ──► Adaptive runner ──► Meta Model API
  structured · doc/PDF/image · tool args      repeats, risk        Spark 1.1/1.2/1.3
@@ -54,49 +54,48 @@ Task packs (public data, known answers) ──► Adaptive runner ──► Meta
 - Any "first tool" / "nobody has done this" wording.
 - What survives: **the first study of Muse Spark versions, serving modes and effort levels, with a gate whose own error rates are measured.**
 
-## Current honest score
-| Criterion | Weight | Now | Needed for 9+ |
+## Results so far (all from real API runs, $18.31 spent of a $90 cap)
+| Run | Question | Result | Cost |
 |---|---|---|---|
-| Impact | 30% | 7 | real hackers using it on their own agents |
-| Demo | 25% | 8 | live "gate blocks a bad upgrade" moment |
-| Meta tooling | 25% | 8 | a surprising finding about Meta's own models |
-| Technical depth | 20% | 8 | gate with measured false-pass / false-block rates |
-| **Weighted** | | **≈ 7.7** (skeptic agent: 5.9 on the original spec) | **9+** |
+| **E6 voice notes** | Does 1.3 listen worse than 1.2 (Meta's docs warn about 1.3 audio)? | Same accuracy (278 vs 274 of 405), but answers that are **wrong or blank with no warning rose 18 → 42 of 135 clips, p = 3e-6**. 1.2 often says "I can't hear the audio" (23 clips, sometimes while quoting the speech); 1.3 never does. Accuracy-only gate: INCONCLUSIVE (~9,000 more clips needed). | $3.34 |
+| **E1 text, docs, Hindi** | 1.2 → 1.3 on 1,325 tasks × 3 tries | First scorer said **+1.1 pts, p = 6e-5**. Reading answers: 1.2 was right in other spellings (Somwar/Somvar). Content scoring: **0.0 change**. GO. | $14.55 |
+| **E3 Contributor mode** | Same model at ~1/18 the price: same quality? | **Identical** (3,971 / 3,975 each). $0.10 vs $1.80 per 1,000 tasks. GO. | $0.40 |
 
-The single biggest lever is **a real, validated surprising finding**. See [RESEARCH_GUIDE.md](RESEARCH_GUIDE.md).
+Details and caveats: [findings/LOG.md](findings/LOG.md). Tables: `experiments/out/`.
 
-## Candidate surprises (hypotheses, not results)
-1. **Judge-lineage false passes** — a judge from the same model family passes that family's errors more often than an outside judge.
-2. **Image / PDF regressions in 1.3 vs 1.2** — Meta's own docs warn audio quality may degrade in 1.3; check if other modalities do too.
-3. **Contributor vs Standard mode equivalence** — Contributor is ~15× cheaper per call; are outputs actually the same quality?
-4. **Reasoning effort isn't monotonic** — higher effort sometimes worse on some task categories.
-5. **Silent drift under a pinned model ID** — the multi-day canary.
+## What's built
+- `upgrade_gate/`: runner (resume, budget stop, cache), Meta API client with a **lifetime spending cap**, 20 deterministic scorers with separate **content vs strict-format** scores, paired stats (McNemar, bootstrap, Holm), gate (exit 0/2/3), reports and exports. 168 tests.
+- Task packs: maths, extraction, intent, instructions, invoice images/PDFs, 135 spoken voice notes (+ text twins), real-voice pack.
+- `web/`: findings site, **report view** (`#/report/<run>`) and a voice **recorder** (`#/record`). Light and dark.
+- Canary suite (50 prompts) and GitHub workflow, ready to switch on.
 
-All five are unverified. They become findings only after the experiments in the guide.
+## Current honest score
+| Criterion | Weight | Now | What would raise it |
+|---|---|---|---|
+| Impact | 30% | 7.5 | a short note from 1–2 other developers who ran it; a crisp "who uses this" line |
+| Demo | 25% | 8 | record the video around the report: PR check → voice-note report → one clip |
+| Meta tooling | 25% | 8.5 | E6 (Meta's own 1.3 audio warning, measured) + Contributor mode + effort levels |
+| Technical depth | 20% | 8.5 | E7 real-voice confirmation; measured gate error rates |
+| **Weighted** | | **≈ 8.1** | **8.5+** with E7 confirmed and a sharp video |
 
-## Literature check (Oct 27)
-Details and sources in [findings/LOG.md](findings/LOG.md).
-- **Muse Spark 1.1 is marked deprecated** (successor 1.2, no retirement date). Check on the first API call. If it's going away, capture the 1.1 baseline first.
-- **H1:** general same-family judge bias is already published. What's left open is **judge-version bias in upgrade gates**.
-- **H5:** no recent peer-reviewed study of a pinned version over days. Added **H5b: answers change with server load / time of day**.
-- **H6:** no public Hindi results for Muse Spark, and no study of whether an upgrade widens the Hindi–English gap. Hindi IFEval/GSM8K give matched pairs.
+## Remaining hypotheses
+1. **Judge-version bias (E2)** — a 1.3 judge passes 1.3's mistakes more often. Cheap with Contributor judges (~$0.30).
+2. **Reasoning effort isn't monotonic (E4)** — fixed: same 16k token limit at every level, cut-offs counted apart. ~$0.10–1 on Contributor.
+3. **Pinned-model drift (canary)** — needs ~8 days of data.
 
-## Open items / blockers
-- [ ] Meta Model API call works from India (decides everything)
-- [ ] $150 Meta credits claimed (needs card on Meta account)
-- [ ] Modal ($100) / Baseten ($100) / Fireworks ($25) credits requested
-- [ ] Discord role claimed; ask: Glimmer vs SAM 3 vs SAM 3.1, which Spark versions are reachable
-- [ ] Confirm whether "max" reasoning effort exists and how Contributor-mode limits work
-- [ ] Pick demo datasets and check licenses (candidates: CORD, SROIE, Banking77)
-- [ ] **Start the canary by Oct 28** — it needs ~8 days of data
-- [ ] Make repo public before submitting
+## Open items
+- [ ] E7: real-voice confirmation of E6 (lines recorded at `#/record`; run when ready, ≤ $4)
+- [ ] E4 pilot, then E2 (both on Contributor, under $2 together)
+- [ ] Switch on the canary: GitHub secret `MODEL_API_KEY`, variables `CANARY_MODELS`, `CANARY_BUDGET_USD=8`
+- [ ] Decide whether to delete Codex's older `ui/` (the new site is `web/`)
+- [ ] Record the 3-minute video ([docs/DEMO.md](docs/DEMO.md))
+- [ ] Make the repo public, then submit by the evening of Nov 4 IST
 
 ## Schedule (IST)
 | Date | Work |
 |---|---|
-| Oct 27 | Research + first API call. Agents 101 session 9:30 PM |
-| Oct 28–29 | Runner, deterministic scorers, paired stats on 2 task packs. **Start canary.** Agents 102 Oct 28 9:30 PM |
-| Oct 30–31 | Adaptive stopping, judge cascade, disagreement mining |
-| Nov 1–2 | Full study run, report, export |
-| Nov 3 | Get other hackers on Discord to run it (Impact evidence). Record 3-min video |
-| Nov 4 | Submit by evening IST |
+| Oct 28 | E7, E4 pilot, E2. Switch on the canary |
+| Oct 29–31 | Fix anything the runs turn up; site polish; ask 1–2 developers to try it |
+| Nov 1–2 | Canary summary, final numbers into the site |
+| Nov 3 | Record the video |
+| Nov 4 | Make public, submit by evening |

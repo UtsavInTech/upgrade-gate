@@ -89,3 +89,14 @@ class Experiments(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TokenLimitSpec(unittest.TestCase):
+    def test_limit_suffix(self):
+        from upgrade_gate.cli import parse_candidate
+        c = parse_candidate("spark-1.3-c@xhigh/16000")
+        self.assertEqual(c.model_id, "muse-spark-1.3-contributor")
+        self.assertEqual(c.params, {"max_completion_tokens": 16000, "reasoning_effort": "xhigh"})
+        self.assertEqual(parse_candidate("spark-1.3@low").params["max_completion_tokens"], 4000)
+        with self.assertRaises(SystemExit):
+            parse_candidate("spark-1.3@low/abc")

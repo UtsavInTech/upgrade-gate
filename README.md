@@ -2,7 +2,15 @@
 
 We replay your tasks on two LLM versions and turn the differences into a GO, NO-GO, or INCONCLUSIVE release decision, with the answers and costs attached.
 
-![E1 saved API run: the old scorer claimed an improvement; corrected content scoring found none](ui/screenshots/e1-dashboard.png)
+![Upgrade Gate report for the voice-note run: pass rate barely moves, but Spark 1.3's wrong-without-warning answers rise from 18 to 42 of 135 clips](web/screenshots/report.png)
+
+## What we found (Meta Muse Spark 1.2 → 1.3, 27 Oct 2026, $18.31 of real API calls)
+
+- **Voice notes:** same accuracy (278 vs 274 of 405 answers), but answers that are **wrong or blank with no warning rose from 18 to 42 of 135 clips** (paired exact test, p = 3 × 10⁻⁶). Spark 1.2 often says "I can't hear the audio"; 1.3 never does, and instead returns wrong digits or empty fields. An accuracy-only gate calls this INCONCLUSIVE. Meta's docs warn that 1.3 audio is "not fully supported".
+- **Text, invoices and Hindi (1,325 tasks):** our first scorer reported a significant +1.1 point gain for 1.3. It came from Hindi spelling (`Somwar` vs `Somvar`). With content scoring the change is 0.0.
+- **Contributor mode:** identical answers to Standard on every task, at $0.10 vs $1.80 per 1,000 tasks.
+
+Full account and caveats: [findings/LOG.md](findings/LOG.md).
 
 ## The problem
 
@@ -26,17 +34,16 @@ The models are near the ceiling here. This does not establish that 1.3 is safe o
 
 ## Try it without spending money
 
-From this checkout, run these three commands:
-
 ```sh
-python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
-npm --prefix ui ci
-npm --prefix ui run dev
+npm --prefix web install
+npm --prefix web run dev     # http://127.0.0.1:5191
 ```
 
-Open the printed local URL. A fresh clone uses the committed **demo data**, which has synthetic regressions and is labeled throughout. In Utsav's local checkout the dashboard discovers saved real runs under `results/`, including E1, and selects real data first. It makes no model calls. Python 3.9+ and Node 20.19+ or 22.12+ are required.
+- `#/` — the findings.
+- `#/report/e6-audio` (also `e1-upgrade`, `e3-contributor`) — the report: gate verdict, slices with 95% ranges, every task with both versions' answers, audio and documents, filters and search.
+- `#/record` — record the voice-note lines in a real voice for the confirmation run (E7).
 
-Switch between **Content correctness** and **Strict requested format**. Select a heatmap cell to read its answers and the failed scoring rule. Use **Presenter mode**, then ← / →, to walk through the six-part demo. New local runs appear automatically while the dev server runs. `npm --prefix ui run build` creates a static build with copied data and attachments; it works without API access. `npm --prefix ui run sync` refreshes a static snapshot. Details: [dashboard guide](ui/README.md), [three-minute script](docs/DEMO.md).
+The site reads exported data committed under `web/public`, so it makes no model calls. To refresh it from your own runs: `npm --prefix web run data`. To run the pipeline itself: `python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'`, add `MODEL_API_KEY` to `.env`, then `.venv/bin/upgrade-gate check`.
 
 ## How it works
 

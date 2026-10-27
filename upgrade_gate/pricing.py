@@ -15,18 +15,11 @@ PRICES: Dict[str, Tuple[float, float, float]] = {
     "muse-spark-1.2-contributor": _CONTRIBUTOR,
     "muse-spark-1.3-contributor": _CONTRIBUTOR,
     "muse-wonder-1.0": _WONDER,
-    # open-weight models, OpenRouter list prices (cached rate unknown -> input rate)
-    "muse-spark-open": (1.25, 1.25, 4.25),
-    "muse-glimmer-30b": (0.30, 0.30, 1.20),
 }
 
 
 def price_for(model_id: str) -> Tuple[Tuple[float, float, float], bool]:
     """Return ((cached, input, output), known). Unknown models price at 0, known=False."""
-    if model_id.startswith("meta/"):
-        model_id = model_id[len("meta/"):]
-    if model_id == "muse-wonder":
-        model_id = "muse-wonder-1.0"
     if model_id in PRICES:
         return PRICES[model_id], True
     return (0.0, 0.0, 0.0), False

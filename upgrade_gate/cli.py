@@ -10,10 +10,7 @@
   upgrade-gate all ... --yes                 run -> score -> gate -> report -> export
 
 Candidates are preset names with an optional effort suffix:
-  spark-1.1, spark-1.2, spark-1.3, spark-1.2-c, spark-1.3-c (Contributor mode), wonder,
-  open (Muse Spark Open), glimmer (Muse Glimmer 30B)
-Provider: Meta Model API by default; set MODEL_PROVIDER=openrouter + OPENROUTER_API_KEY in .env
-to route the same models through OpenRouter.
+  spark-1.1, spark-1.2, spark-1.3, spark-1.2-c, spark-1.3-c (Contributor mode), wonder
   e.g. spark-1.3@high  ->  muse-spark-1.3 with reasoning_effort=high
 """
 from __future__ import annotations
@@ -33,8 +30,6 @@ PRESETS: Dict[str, str] = {
     "spark-1.2-c": "muse-spark-1.2-contributor",
     "spark-1.3-c": "muse-spark-1.3-contributor",
     "wonder": "muse-wonder-1.0",
-    "open": "muse-spark-open",          # open weights (OpenRouter)
-    "glimmer": "muse-glimmer-30b",      # open weights, small (OpenRouter)
 }
 EFFORTS = ("minimal", "low", "medium", "high", "xhigh", "max")
 DEFAULT_PARAMS = {"max_completion_tokens": 4000}
@@ -76,9 +71,10 @@ def make_judges(names: List[str]):
     client = ModelClient()
     judges = []
     for n in names:
-        if n == "open" and config.get("OPEN_JUDGE_BASE"):
-            oj = config.open_judge()
-            judges.append(OpenAICompatJudge("open", oj["base"], oj["key"], oj["model"]))
+        if n == "open":
+            cfg = config.load()
+            judges.append(OpenAICompatJudge("open", cfg.get("OPEN_JUDGE_BASE"), cfg.get("OPEN_JUDGE_KEY"),
+                                            cfg.get("OPEN_JUDGE_MODEL")))
         else:
             c = parse_candidate(n)
             judges.append(LLMJudge(c.name, c.model_id, client, params={"reasoning_effort": "low",
@@ -88,17 +84,37 @@ def make_judges(names: List[str]):
 
 # ---------------------------------------------------------------- commands
 
+def print_spend() -> None:
+    from . import spend
+    s = spend.status()
+    print("Spend: $%.2f used locally + $%.2f set aside for the canary ($%.2f used) of $%.2f limit "
+          "-> $%.2f left (hard ceiling $%.0f)" % (s["local_spent_usd"], s["canary_reserved_usd"],
+                                                 s["canary_spent_usd"], s["limit_usd"], s["left_usd"],
+                                                 s["hard_ceiling_usd"]))
+
+
+def cmd_spend(args) -> int:
+    print_spend()
+    return 0
+
+
 def cmd_check(args) -> int:
     from .client import ModelClient
-    from . import config
+    from . import config, spend
+    if not config.model_api_key():
+        print("MODEL_API_KEY is not set. Put it in .env at the repo root (see .env.example).")
+        return 1
+    print_spend()
     client = ModelClient()
-    print("provider: %s  base: %s  key: %s" % (config.provider(), client.base_url,
-                                              "set" if config.model_api_key() else "MISSING"))
     ok = True
     for spec in _split(args.models) or ["spark-1.2", "spark-1.3", "spark-1.3-c"]:
         c = parse_candidate(spec)
-        res = client.chat(c.model_id, [{"role": "user", "content": "Reply with the word ok."}],
-                          {"max_completion_tokens": 200}, use_cache=False)
+        try:
+            res = client.chat(c.model_id, [{"role": "user", "content": "Reply with the word ok."}],
+                              {"max_completion_tokens": 200}, use_cache=False)
+        except spend.SpendCapError as e:
+            print("STOP", e)
+            return 1
         status = "OK " if res.error is None else "ERR"
         ok &= res.error is None
         print("%s %-28s %s  (%d ms, $%.5f)" % (status, c.model_id,
@@ -113,6 +129,7 @@ def cmd_estimate(args) -> int:
     cands = [parse_candidate(x) for x in [args.baseline] + _split(args.candidate)]
     est = estimate_cost(tasks, cands, args.repeats)
     print(json.dumps(est, indent=2))
+    print_spend()
     return 0
 
 
@@ -123,6 +140,7 @@ def cmd_run(args) -> str:
     est = estimate_cost(tasks, cands, args.repeats)
     print("Tasks: %d  candidates: %s  repeats: %d" % (len(tasks), ", ".join(c.name for c in cands), args.repeats))
     print("Estimated cost: %s" % json.dumps(est))
+    print_spend()
     if not args.yes:
         raise SystemExit("Add --yes to spend money on this run.")
     run_dir = run(tasks, cands, baseline=cands[0].name, repeats=args.repeats, out_root=args.out,
@@ -198,6 +216,9 @@ def build_parser() -> argparse.ArgumentParser:
         sp.add_argument("--n", type=int, default=None, help="max tasks per pack")
         sp.add_argument("--seed", type=int, default=0)
         sp.add_argument("--repeats", type=int, default=3)
+
+    sp = sub.add_parser("spend", help="show lifetime spend vs the cap, spends nothing")
+    sp.set_defaults(fn=cmd_spend)
 
     sp = sub.add_parser("check", help="one tiny call per model")
     sp.add_argument("--models", default="")

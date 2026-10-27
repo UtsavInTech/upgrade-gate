@@ -29,10 +29,11 @@ Each prompt has a `gold` answer. [test_checks.py](test_checks.py) checks that ev
    ```
    Open the saved `-smoke.jsonl` and read the raw `text`. If a reasoning model's answers are cut off, raise `CANARY_MAX_TOKENS`.
 3. **Turn on the schedule** in the GitHub repo settings:
-   - Secrets → Actions → add `MODEL_API_KEY` (your Meta key, or your OpenRouter key)
-   - Variables → Actions → add `MODEL_API_BASE` (`https://openrouter.ai/api/v1` for OpenRouter) and `CANARY_MODELS` (e.g. `muse-spark-1.2,muse-spark-1.3`; the `meta/` prefix is added for OpenRouter) (optional: `CANARY_EXTRA_JSON`, e.g. `{"reasoning_effort":"low"}`)
+   - Secrets → Actions → add `MODEL_API_KEY`
+   - Variables → Actions → add `MODEL_API_BASE` and `CANARY_MODELS` (optional: `CANARY_EXTRA_JSON`, e.g. `{"reasoning_effort":"low"}`)
    - Actions tab → **canary** → **Run workflow** once to check it works.
 4. Set a spend alert on your Meta account.
+5. Budget: the runner skips any call that could push total canary spend (read from `canary/data`) past `CANARY_BUDGET_USD` (default $15; set it as a repo variable to change it). The local tool sets this amount aside inside its overall cap.
 
 ## Cost
 

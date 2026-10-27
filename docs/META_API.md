@@ -2,22 +2,6 @@
 
 Read from dev.meta.ai/docs on Oct 27, 2026. Re-check before quoting numbers in the submission.
 
-## Via OpenRouter (what we use: no Meta billing setup needed)
-Checked Oct 27, 2026 from `openrouter.ai/api/v1/models`:
-
-| OpenRouter id | Host | $/1M in / out |
-|---|---|---|
-| `meta/muse-spark-1.1`, `-1.2`, `-1.3` | **Meta only** | 1.25 / 4.25 |
-| `meta/muse-spark-1.2-contributor`, `-1.3-contributor` | Meta only | 0.10 / 0.20 |
-| `meta/muse-wonder` | Meta | 4.00 / 20.00 |
-| `meta/muse-spark-open` | | 1.25 / 4.25 |
-| `meta/muse-glimmer-30b` | DeepInfra, Together | 0.30 / 1.20 |
-
-- `upgrade_gate/client.py` translates for OpenRouter: adds the `meta/` prefix, sends `max_tokens` instead of `max_completion_tokens`, pins Spark/Wonder to the Meta host with `allow_fallbacks: false`, and records OpenRouter's billed `usage.cost`.
-- Contributor variants need training allowed: the client sends `provider.data_collection: "allow"`. If OpenRouter still says "no endpoints match your data policy", turn on *Model training* under openrouter.ai/settings/privacy.
-- Supported params on the Meta endpoint: `max_tokens, reasoning, reasoning_effort, response_format, structured_outputs, temperature, top_p, top_k, tools`.
-- **Hackathon risk:** judging gives 25% to "Use of Meta AI tooling". Say clearly in the write-up that every call goes to Meta-hosted Muse models (OpenRouter is only the billing route), and use Meta-specific features (Contributor mode, reasoning effort, open weights).
-
 ## Basics
 - Base URL `https://api.meta.ai/v1`, Bearer auth with `MODEL_API_KEY`.
 - Drop-in compatible with the OpenAI SDK (Chat Completions + Responses) and the Anthropic SDK (Messages). We use **Chat Completions**: `POST /v1/chat/completions`.

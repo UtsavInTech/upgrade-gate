@@ -3,8 +3,7 @@
 Uses only the Python standard library.
 
 Environment variables:
-  MODEL_API_KEY      required. Meta Model API key, or an OpenRouter key when
-                     MODEL_API_BASE=https://openrouter.ai/api/v1. Never commit it.
+  MODEL_API_KEY      required. Your Meta Model API key. Never commit it.
   MODEL_API_BASE     API base URL (default https://api.meta.ai/v1). Requests go to
                      {base}/chat/completions (OpenAI-compatible, per Meta docs).
   CANARY_MODELS      comma-separated model IDs, e.g. "muse-spark-1.2,muse-spark-1.3".
@@ -13,6 +12,8 @@ Environment variables:
   CANARY_MAX_TOKENS  max_completion_tokens (default 4000). Reasoning tokens count toward it.
   CANARY_EXTRA_JSON  JSON merged into each request body (default '{"reasoning_effort": "low"}').
   CANARY_WORKERS     parallel requests (default 4).
+  CANARY_BUDGET_USD  lifetime canary budget (default 15). Spend so far is read from canary/data;
+                     calls that could go over it are skipped before they are sent.
 
 Usage:
   python3 canary/run.py            # full run
@@ -31,7 +32,9 @@ import urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+sys.path.insert(1, os.path.dirname(HERE))
 from checks import check  # noqa: E402
+from upgrade_gate import spend  # noqa: E402  (stdlib only; enforces CANARY_BUDGET_USD)
 
 SYSTEM_PROMPT = "You are a helpful assistant. Follow the user's formatting instructions exactly."
 IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
@@ -40,9 +43,6 @@ MAX_RETRIES = 4
 
 def call_model(base, key, model, prompt, max_tokens, extra):
     """One chat request. Returns a dict with text, usage and transport metadata."""
-    if "openrouter.ai" in base:
-        # Same Meta models via OpenRouter: meta/ prefix, max_tokens, pinned to Meta, real cost.
-        model = model if "/" in model else "meta/" + model
     body = {
         "model": model,
         "messages": [
@@ -52,12 +52,7 @@ def call_model(base, key, model, prompt, max_tokens, extra):
         "temperature": 0,
     }
     if max_tokens:
-        body["max_tokens" if "openrouter.ai" in base else "max_completion_tokens"] = max_tokens
-    if "openrouter.ai" in base:
-        body["provider"] = {"order": ["meta"], "allow_fallbacks": False}
-        if model.endswith("-contributor"):
-            body["provider"]["data_collection"] = "allow"
-        body["usage"] = {"include": True}
+        body["max_completion_tokens"] = max_tokens
     body.update(extra)
     data = json.dumps(body).encode("utf-8")
     url = base.rstrip("/") + "/chat/completions"
@@ -116,7 +111,7 @@ def main():
     ap.add_argument("--limit", type=int, default=0, help="only the first N prompts, 1 repeat")
     args = ap.parse_args()
 
-    key = os.environ.get("MODEL_API_KEY") or os.environ.get("OPENROUTER_API_KEY")
+    key = os.environ.get("MODEL_API_KEY")
     base = os.environ.get("MODEL_API_BASE") or "https://api.meta.ai/v1"
     models = [m.strip() for m in os.environ.get("CANARY_MODELS", "").split(",") if m.strip()]
     if not key or not base or not models:
@@ -142,10 +137,23 @@ def main():
     suffix = "-smoke" if args.limit else ""
     out_path = os.path.join(out_dir, "run-%s%s.jsonl" % (run_id, suffix))
 
+    budget = spend.CanaryBudget(os.path.join(HERE, "data"))
+    print("Canary budget: $%.2f spent of $%.2f" % (budget.spent, budget.budget), flush=True)
+    stopped = []
+
     def work(job):
         model, p, rep = job
+        msgs = [{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": p["prompt"]}]
+        try:
+            reserved = budget.reserve(spend.worst_case_usd(model, msgs, {"max_completion_tokens": max_tokens}))
+        except spend.SpendCapError as e:
+            if not stopped:
+                stopped.append(str(e))
+                print("STOP:", e, flush=True)
+            return None
         t = dt.datetime.now(dt.timezone.utc)
         res = call_model(base, key, model, p["prompt"], max_tokens, extra)
+        budget.settle(reserved, spend.pricing.cost(model, spend.usage_from_api(res.get("usage"))))
         passed, reason = check(res["text"], p["check"]) if res["text"] is not None else (None, "api error")
         return {
             "run_id": run_id,
@@ -167,6 +175,8 @@ def main():
     done = errors = passes = 0
     with open(out_path, "w", encoding="utf-8") as out, cf.ThreadPoolExecutor(workers) as pool:
         for row in pool.map(work, jobs):
+            if row is None:  # skipped by the budget
+                continue
             out.write(json.dumps(row, ensure_ascii=False) + "\n")
             done += 1
             errors += row["passed"] is None

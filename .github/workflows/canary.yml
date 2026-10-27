@@ -34,6 +34,7 @@ jobs:
           MODEL_API_BASE: ${{ vars.MODEL_API_BASE }}
           CANARY_MODELS: ${{ vars.CANARY_MODELS }}
           CANARY_EXTRA_JSON: ${{ vars.CANARY_EXTRA_JSON }}
+          CANARY_BUDGET_USD: ${{ vars.CANARY_BUDGET_USD || '15' }}
         run: python canary/run.py
       - name: Summarise
         run: python canary/summarize.py > /dev/null

@@ -6,6 +6,7 @@ __pycache__/
 results/*/
 !results/.gitkeep
 .cache/
+.spend/
 *.egg-info/
 ui/node_modules/
 ui/dist/

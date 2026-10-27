@@ -20,6 +20,12 @@ cp .env.example .env            # add MODEL_API_KEY
 ```
 Exit code: 0 = go, 2 = no-go, 3 = inconclusive, so it can gate a CI pipeline.
 
+**Spending cap.** Every real API call reserves its worst-case cost first and is refused if the
+lifetime total could pass `MAX_TOTAL_SPEND_USD` (default $90; anything above $100 is clamped to
+$100). Spend is logged in `.spend/ledger.jsonl`; don't delete it. `upgrade-gate spend` shows
+what's left. The GitHub canary has its own `CANARY_BUDGET_USD` (default $15), which is set aside
+inside the same limit. A run stopped by the cap can be resumed with the same `--run-id`.
+
 ## Layout
 
 | Path | What |

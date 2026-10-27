@@ -19,6 +19,7 @@ from typing import Any, Dict, List, Optional, Sequence, Set, Tuple
 from . import pricing
 from .client import ChatResult, ModelClient, build_messages
 from .schema import ResponseRecord, RunInfo, read_jsonl, write_jsonl
+from .spend import SpendCapError
 
 IMAGE_TOKENS = 1000      # rough per-image input estimate
 PDF_TOKENS = 3000        # rough per-PDF input estimate
@@ -165,6 +166,12 @@ def run(tasks, candidates, baseline, repeats=3, out_root="results", run_id=None,
         try:
             msgs = build_messages(task)
             res = client.chat(cand["model_id"], msgs, params=cand["params"], cache_salt="rep%d" % rep)
+        except SpendCapError as e:  # not recorded, so a resume after raising the cap redoes it
+            with lock:
+                if not state.get("cap"):
+                    state["cap"] = str(e)
+                    print("[%s] %s" % (run_id, e), flush=True)
+            return
         except Exception as e:  # bad attachment etc. -> record, never crash the run
             res = ChatResult(text=None, usage={"input_tokens": 0, "output_tokens": 0, "reasoning_tokens": 0,
                                                "cached_tokens": 0},
@@ -204,6 +211,10 @@ def run(tasks, candidates, baseline, repeats=3, out_root="results", run_id=None,
         for i, job in enumerate(it):
             with lock:
                 over = budget_usd is not None and state["spent"] > budget_usd
+                capped = bool(state.get("cap"))
+            if capped:
+                skipped = total - i
+                break
             if over:
                 budget_hit = True
                 skipped = total - i
@@ -217,6 +228,8 @@ def run(tasks, candidates, baseline, repeats=3, out_root="results", run_id=None,
             fut.result()
 
     extra = ["resumed"] if resumed else []
+    if state.get("cap"):
+        extra.append("stopped by lifetime spend cap (%d jobs not scheduled): %s" % (skipped, state["cap"]))
     if budget_hit:
         extra.append("budget stop: spent $%.4f > budget $%.4f; %d of %d jobs not scheduled"
                      % (state["spent"], budget_usd, skipped, total))

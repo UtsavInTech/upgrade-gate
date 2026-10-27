@@ -4,6 +4,8 @@
 - Retries (exp backoff + jitter, honours Retry-After) on 408/429/5xx/timeouts/connection errors.
 - Per-model concurrency semaphore and per-model requests-per-minute limiter.
 - Disk cache keyed on (model_id, messages, params, cache_salt). Errors are never cached.
+- Lifetime spending cap (spend.py): real calls raise spend.SpendCapError instead of going
+  over MAX_TOTAL_SPEND_USD. Calls to a mock on localhost are not counted.
 """
 from __future__ import annotations
 
@@ -22,7 +24,7 @@ import urllib.request
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
-from . import config, pricing
+from . import config, pricing, spend
 
 log = logging.getLogger(__name__)
 
@@ -251,11 +253,20 @@ class ModelClient:
             self._warned.add(model_id)
             log.warning("no price for model %s: cost will be recorded as 0", model_id)
 
-        body = wire_request(self.base_url, model_id, params)
-        body["messages"] = messages
+        guard = spend.ledger() if spend.is_billable(self.base_url) else None
+        reserved = guard.reserve(spend.worst_case_usd(model_id, messages, params)) if guard else 0.0
+
+        body = {"model": model_id, "messages": messages}
+        body.update(params)
         sem, _ = self._controls(model_id)
-        with sem:
-            data, err, latency = self._post(body)
+        data = None
+        try:
+            with sem:
+                data, err, latency = self._post(body)
+        finally:
+            if guard:
+                billed = pricing.cost(model_id, map_usage(data.get("usage"))) if isinstance(data, dict) else 0.0
+                guard.settle(reserved, billed, model_id, source="client")
         if err is not None:
             return ChatResult(text=None, usage=_empty_usage(), cost_usd=0.0, latency_ms=latency,
                               error=err, returned_model=None, cached=False, raw=None)
@@ -267,12 +278,7 @@ class ModelClient:
         usage = map_usage(data.get("usage"))
         text = _extract_text(data)
         cost = pricing.cost(model_id, usage)
-        billed = (data.get("usage") or {}).get("cost")  # OpenRouter reports the real charge
-        if isinstance(billed, (int, float)) and not isinstance(billed, bool):
-            cost = float(billed)
         returned_model = data.get("model")
-        if data.get("provider"):
-            returned_model = "%s@%s" % (returned_model, data["provider"])
         if text is None:
             return ChatResult(text=None, usage=usage, cost_usd=cost, latency_ms=latency,
                               error="no message content in response", returned_model=returned_model,
@@ -283,39 +289,6 @@ class ModelClient:
                                   "ts": time.time()})
         return ChatResult(text=text, usage=usage, cost_usd=cost, latency_ms=latency, error=None,
                           returned_model=returned_model, cached=False, raw=data)
-
-
-# ---------------------------------------------------------------- providers
-
-# Canonical ids are Meta's own (muse-spark-1.3 ...). OpenRouter names them meta/<id>,
-# except Wonder, which is meta/muse-wonder.
-_OPENROUTER_IDS = {"muse-wonder-1.0": "meta/muse-wonder"}
-
-
-def is_openrouter(base_url: str) -> bool:
-    return "openrouter.ai" in (base_url or "")
-
-
-def wire_request(base_url: str, model_id: str, params: dict) -> dict:
-    """Translate a canonical request into the provider's dialect."""
-    body = {"model": model_id}
-    p = dict(params)
-    if is_openrouter(base_url):
-        body["model"] = _OPENROUTER_IDS.get(model_id) or (model_id if "/" in model_id else "meta/" + model_id)
-        if "max_completion_tokens" in p:
-            p["max_tokens"] = p.pop("max_completion_tokens")
-        # Pin Meta-hosted models to Meta (no silent fallback to another host) and report real cost.
-        routing = dict(p.pop("provider", {}) or {})
-        if body["model"].startswith("meta/muse-spark") or body["model"] == "meta/muse-wonder":
-            routing.setdefault("order", ["meta"])
-            routing.setdefault("allow_fallbacks", False)
-        if model_id.endswith("-contributor"):
-            routing.setdefault("data_collection", "allow")  # Contributor mode = Meta may train on it
-        if routing:
-            p["provider"] = routing
-        p.setdefault("usage", {"include": True})
-    body.update(p)
-    return body
 
 
 # ---------------------------------------------------------------- messages

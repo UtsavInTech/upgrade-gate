@@ -1,0 +1,46 @@
+name: canary
+
+# 4 runs a day at 03:00, 09:00, 15:00, 21:00 IST (cron is UTC).
+# GitHub can start scheduled jobs a few minutes late. Every row records its real timestamp.
+on:
+  schedule:
+    - cron: "30 21 * * *"
+    - cron: "30 3 * * *"
+    - cron: "30 9 * * *"
+    - cron: "30 15 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: canary
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Self-test checks
+        run: cd canary && python -m unittest test_checks.py
+      - name: Run canary
+        env:
+          MODEL_API_KEY: ${{ secrets.MODEL_API_KEY }}
+          MODEL_API_BASE: ${{ vars.MODEL_API_BASE }}
+          CANARY_MODELS: ${{ vars.CANARY_MODELS }}
+          CANARY_EXTRA_JSON: ${{ vars.CANARY_EXTRA_JSON || '{}' }}
+        run: python canary/run.py
+      - name: Summarise
+        run: python canary/summarize.py > /dev/null
+      - name: Commit results
+        run: |
+          git config user.name "canary-bot"
+          git config user.email "canary-bot@users.noreply.github.com"
+          git add canary/data canary/reports
+          git commit -m "canary: run $(date -u +%Y-%m-%dT%H:%MZ)" || exit 0
+          for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 5; done

@@ -48,7 +48,7 @@ Artificial Analysis marks **Muse Spark 1.1 as deprecated** ("This model is depre
 
 ## H5: Pinned model ID changes behaviour over days (canary)
 
-- **Status:** planned — **start Oct 28** (needs ~8 days of data)
+- **Status:** suite ready ([canary/](../canary/README.md)) — **start Oct 28** (needs ~8 days of data)
 - **Belief it challenges:** "pinning a model version gives stable behaviour."
 - **Sub-hypothesis H5b (new):** output varies with **server load / time of day**. Reason: GPU batching makes even temperature-0 outputs depend on what else is in the batch, so busy hours may give different answers than quiet hours. IST night is US daytime peak.
 - **Prediction (confidence %):** _fill in before running_

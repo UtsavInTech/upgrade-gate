@@ -45,6 +45,24 @@ Artificial Analysis marks **Muse Spark 1.1 as deprecated** ("This model is depre
 
 ---
 
+## E4 result: more reasoning effort makes 1.3 worse at listening
+
+- **Pilot (text, 28 Oct, $0.02):** maths, instructions and extraction scored 100% at every effort level (minimal → xhigh) with no cut-offs. Extra thinking only cost more (196 → 751 output tokens). So the full run moved to the voice clips, where the model struggles.
+- **Run:** Spark 1.3 Contributor, 135 synthetic voice clips × 5 effort levels × 3 tries, same 16,000-token limit at every level (fixes the old 4,000 limit that could cut off high effort). 2,025 calls, **$0.62**.
+- **Result:** correct answers fall at every step: **72.8% (minimal) → 68.9 → 64.2 → 63.7 → 58.5% (xhigh)**, counting cut-offs as wrong. Minimal vs xhigh per clip: **−11.9 pts (95% range −18.7 to −5.2), p = 0.0009**, 19 clips worse, 3 better; similar in English, Hindi and Hinglish. Cost per 1,000 clips $0.09 → $0.53.
+- **Why:** with more thinking the model increasingly decides it can't hear the clip: "I can't hear the audio" goes **0 → 2 → 27 → 29 → 44** answers (of 405); blank answers 1 → 33–47; token-limit cut-offs 0 → 17. At minimal effort it just transcribes and answers.
+- **Takeaway:** for voice input on Spark 1.3, use `reasoning_effort: "minimal"`: more accurate and ~6× cheaper than xhigh.
+- **Limits:** synthetic voices, Contributor mode (E3 showed it matches Standard on text), one run. Neighbouring steps are not individually significant; the trend and the endpoints are.
+
+## E2 result: no judge-version bias when the judge has a reference answer
+
+- **Design change (28 Oct):** the text packs gave only 9 wrong answers in total, too few to measure a false-pass rate. E2 instead judged the saved E6 voice-note answers (~250 wrong answers from both versions) with Spark 1.2 and 1.3 Contributor judges. No new answers; 1,620 judge calls, **$0.06**.
+- **Result:** **0 false passes** for both judges on both versions' wrong answers (0/125 and 0/124 each). No sign that a judge goes easier on its own version. The gate decision is the same with either judge as with fixed-rule scoring.
+- **Detail:** both judges marked ~4% of 1.2's correct answers as wrong; 22 of those 24 votes were answers that say "I can't hear the audio" and then answer anyway. A reasonable call.
+- **Limits:** the judges saw the reference answer, which makes grading easy. Bias may still appear in reference-free judging of open-ended answers; not tested.
+
+---
+
 ## E7 result: the silent-failure pattern holds on a real voice
 
 - **Pre-registered** on 27 Oct, before any recording: same models and settings as E6, same failure-type rules unchanged; prediction "1.3 gives more confident-wrong-or-blank answers than 1.2 (paired, majority of 3 tries), p < 0.05".

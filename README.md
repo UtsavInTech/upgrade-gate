@@ -4,11 +4,14 @@ We replay your tasks on two LLM versions and turn the differences into a GO, NO-
 
 ![Upgrade Gate report for the voice-note run: pass rate barely moves, but Spark 1.3's wrong-without-warning answers rise from 18 to 42 of 135 clips](web/screenshots/report.png)
 
-## What we found (Meta Muse Spark 1.2 → 1.3, 27 Oct 2026, $18.31 of real API calls)
+## What we found (Meta Muse Spark 1.2 → 1.3, 27 Oct 2026, $19.78 of real API calls)
 
 - **Voice notes:** same accuracy (278 vs 274 of 405 answers), but answers that are **wrong or blank with no warning rose from 18 to 42 of 135 clips** (paired exact test, p = 3 × 10⁻⁶). Spark 1.2 often says "I can't hear the audio"; 1.3 never does, and instead returns wrong digits or empty fields. An accuracy-only gate calls this INCONCLUSIVE. Meta's docs warn that 1.3 audio is "not fully supported".
 - **Text, invoices and Hindi (1,325 tasks):** our first scorer reported a significant +1.1 point gain for 1.3. It came from Hindi spelling (`Somwar` vs `Somvar`). With content scoring the change is 0.0.
+- **Confirmed with a real voice:** 45 lines read by a person. Wrong-or-blank answers 6 → 13 (p = 0.016), all-blank answers 0 → 18, accuracy −11 points. The gate says NO-GO on its own.
+- **More thinking, worse listening:** on voice clips, Spark 1.3 gets fewer right at every step up in reasoning effort (72.8% at minimal → 58.5% at xhigh, p = 0.0009) while costing 6× more; it increasingly decides it can't hear the clip.
 - **Contributor mode:** identical answers to Standard on every task, at $0.10 vs $1.80 per 1,000 tasks.
+- **Judges:** Spark 1.2 and 1.3 judges, given the reference answer, passed none of ~250 wrong answers from either version. No sign of judge-version bias.
 
 Full account and caveats: [findings/LOG.md](findings/LOG.md).
 

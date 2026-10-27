@@ -4,6 +4,7 @@ import type { Route } from "../App";
 
 const NAV = [
   { href: "#audio", label: "Voice notes" },
+  { href: "#effort", label: "Effort" },
   { href: "#scoring", label: "Scoring" },
   { href: "#cost", label: "Cost" },
   { href: "#how", label: "How it works" },

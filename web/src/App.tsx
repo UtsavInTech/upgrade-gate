@@ -2,6 +2,7 @@ import { MotionConfig } from "motion/react";
 import { useCallback, useEffect, useState } from "react";
 import { AudioSection } from "./components/AudioSection";
 import { CostSection } from "./components/CostSection";
+import { EffortSection } from "./components/EffortSection";
 import { Header, Logo } from "./components/Header";
 import { Hero } from "./components/Hero";
 import { HowSection } from "./components/HowSection";
@@ -98,6 +99,7 @@ export default function App() {
               <>
                 <Hero site={site} />
                 <AudioSection e6={site.e6} e7={site.e7} />
+                {site.e4?.status === "done" && <EffortSection e4={site.e4} />}
                 <ScoringSection e1={site.e1} />
                 <CostSection e3={site.e3} />
                 <HowSection />

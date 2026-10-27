@@ -54,11 +54,14 @@ Task packs (public data, known answers) ──► Adaptive runner ──► Meta
 - Any "first tool" / "nobody has done this" wording.
 - What survives: **the first study of Muse Spark versions, serving modes and effort levels, with a gate whose own error rates are measured.**
 
-## Results so far (all from real API runs, $18.31 spent of a $90 cap)
+## Results so far (all from real API runs, $19.78 spent of a $90 cap)
 | Run | Question | Result | Cost |
 |---|---|---|---|
 | **E6 voice notes** | Does 1.3 listen worse than 1.2 (Meta's docs warn about 1.3 audio)? | Same accuracy (278 vs 274 of 405), but answers that are **wrong or blank with no warning rose 18 → 42 of 135 clips, p = 3e-6**. 1.2 often says "I can't hear the audio" (23 clips, sometimes while quoting the speech); 1.3 never does. Accuracy-only gate: INCONCLUSIVE (~9,000 more clips needed). | $3.34 |
 | **E1 text, docs, Hindi** | 1.2 → 1.3 on 1,325 tasks × 3 tries | First scorer said **+1.1 pts, p = 6e-5**. Reading answers: 1.2 was right in other spellings (Somwar/Somvar). Content scoring: **0.0 change**. GO. | $14.55 |
+| **E7 real voice** | Does E6 hold with a person's voice? (pre-registered) | **Confirmed:** silent failures 6 → 13 of 45 (p = 0.016), all-blank answers 0 → 18, accuracy −11 pts. Gate NO-GO. | $0.78 |
+| **E4 effort ladder** | Is more reasoning effort ever worse? | **Yes, on voice clips:** 72.8% (minimal) → 58.5% (xhigh), p = 0.0009; "can't hear" 0 → 44; 6× the cost. Text: 100% at every level. | $0.64 |
+| **E2 judge bias** | Does a judge go easy on its own version? | **No** (with a reference answer): 0 false passes of ~250 wrong answers for either judge. | $0.06 |
 | **E3 Contributor mode** | Same model at ~1/18 the price: same quality? | **Identical** (3,971 / 3,975 each). $0.10 vs $1.80 per 1,000 tasks. GO. | $0.40 |
 
 Details and caveats: [findings/LOG.md](findings/LOG.md). Tables: `experiments/out/`.
@@ -76,7 +79,7 @@ Details and caveats: [findings/LOG.md](findings/LOG.md). Tables: `experiments/ou
 | Demo | 25% | 8 | record the video around the report: PR check → voice-note report → one clip |
 | Meta tooling | 25% | 8.5 | E6 (Meta's own 1.3 audio warning, measured) + Contributor mode + effort levels |
 | Technical depth | 20% | 8.5 | E7 real-voice confirmation; measured gate error rates |
-| **Weighted** | | **≈ 8.1** | **8.5+** with E7 confirmed and a sharp video |
+| **Weighted** | | **≈ 8.4** | **8.7** with a sharp video and 1–2 outside users |
 
 ## Remaining hypotheses
 1. **Judge-version bias (E2)** — a 1.3 judge passes 1.3's mistakes more often. Cheap with Contributor judges (~$0.30).
@@ -84,8 +87,9 @@ Details and caveats: [findings/LOG.md](findings/LOG.md). Tables: `experiments/ou
 3. **Pinned-model drift (canary)** — needs ~8 days of data.
 
 ## Open items
-- [ ] E7: real-voice confirmation of E6 (lines recorded at `#/record`; run when ready, ≤ $4)
-- [ ] E4 pilot, then E2 (both on Contributor, under $2 together)
+- [x] E7 real-voice confirmation (confirmed), E4 effort ladder (finding), E2 judge bias (null)
+- [x] Gate checks silent failures itself (voice notes: NO-GO); bring-your-own-tasks
+- [ ] Post the Discord ask and X thread (`docs/OUTREACH.md`)
 - [ ] Switch on the canary: GitHub secret `MODEL_API_KEY`, variables `CANARY_MODELS`, `CANARY_BUDGET_USD=8`
 - [ ] Decide whether to delete Codex's older `ui/` (the new site is `web/`)
 - [ ] Record the 3-minute video ([docs/DEMO.md](docs/DEMO.md))

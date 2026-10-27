@@ -1,0 +1,79 @@
+{
+  "run_dir": "/Users/utsavintech/Documents/upgrade-gate/results/e2-judges-e6-audio",
+  "confusion": {
+    "spark-1.2-c|spark-1.2@low": {
+      "TP": 266,
+      "TN": 125,
+      "FN": 12
+    },
+    "spark-1.2-c|spark-1.3@low": {
+      "TP": 274,
+      "TN": 124
+    },
+    "spark-1.3-c|spark-1.2@low": {
+      "TP": 266,
+      "TN": 125,
+      "FN": 12
+    },
+    "spark-1.3-c|spark-1.3@low": {
+      "TP": 274,
+      "TN": 124
+    }
+  },
+  "gate_by_judge": [
+    {
+      "slice": "ground truth",
+      "n": 134,
+      "delta": -0.022388059701492536,
+      "ci": [
+        -0.09701492537313433,
+        0.05223880597014925
+      ],
+      "regressions": 14,
+      "improvements": 11,
+      "p": 0.6900379657745361
+    },
+    {
+      "slice": "judge=spark-1.2-c",
+      "n": 134,
+      "delta": -0.007462686567164179,
+      "ci": [
+        -0.08208955223880597,
+        0.06716417910447761
+      ],
+      "regressions": 13,
+      "improvements": 12,
+      "p": 1.0
+    },
+    {
+      "slice": "judge=spark-1.3-c",
+      "n": 134,
+      "delta": -0.007462686567164179,
+      "ci": [
+        -0.08208955223880597,
+        0.06716417910447761
+      ],
+      "regressions": 13,
+      "improvements": 12,
+      "p": 1.0
+    }
+  ],
+  "self_preference": [
+    {
+      "judge": "spark-1.2-c",
+      "fp_base": 0,
+      "wrong_base": 125,
+      "fp_cand": 0,
+      "wrong_cand": 124,
+      "p": 1.0
+    },
+    {
+      "judge": "spark-1.3-c",
+      "fp_base": 0,
+      "wrong_base": 125,
+      "fp_cand": 0,
+      "wrong_cand": 124,
+      "p": 1.0
+    }
+  ]
+}

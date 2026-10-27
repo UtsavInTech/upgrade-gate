@@ -279,6 +279,42 @@ def e3() -> dict:
     return res
 
 
+# ------------------------------------------------------------------ E4 effort ladder on voice clips
+
+def e4() -> dict:
+    run = "e4-effort"
+    d = os.path.join(RESULTS, run)
+    if not os.path.exists(os.path.join(d, "scores.jsonl")):
+        return {"status": "not run"}
+    import e6_audio as ex
+    tasks = tasks_by_id(d)
+    resp = {(r["task_id"], r["candidate"], r["repeat"]): r for r in _load(run, "responses.jsonl")}
+    levels = ["minimal", "low", "medium", "high", "xhigh"]
+    cand = {l: "spark-1.3-c@%s/16000" % l for l in levels}
+    stats = {l: {"answers": 0, "correct": 0, "modes": collections.Counter(), "cost": 0.0, "out_tokens": 0}
+             for l in levels}
+    lvl = {v: k for k, v in cand.items()}
+    for s in _load(run, "scores.jsonl"):
+        l = lvl.get(s["candidate"])
+        if not l:
+            continue
+        r = resp.get((s["task_id"], s["candidate"], s["repeat"]), {})
+        st = stats[l]
+        st["answers"] += 1
+        st["correct"] += s["passed"] is True
+        st["modes"][ex._mode(tasks[s["task_id"]], r, s["passed"] is True)] += 1
+        st["cost"] += r.get("cost_usd") or 0.0
+        st["out_tokens"] += (r.get("usage") or {}).get("output_tokens", 0)
+    maj = majority(os.path.join(d, "scores.jsonl"))
+    end = _slim(compare(pairs(maj, tasks, cand["minimal"], cand["xhigh"]), "minimal->xhigh"))
+    return {"status": "done", "model": "spark-1.3 Contributor", "clips": len(tasks), **_run_cost(run),
+            "levels": [{"level": l, "answers": stats[l]["answers"], "correct": stats[l]["correct"],
+                        "modes": dict(stats[l]["modes"]),
+                        "cost_per_1000": round(stats[l]["cost"] / max(1, stats[l]["answers"]) * 1000, 4),
+                        "avg_output_tokens": stats[l]["out_tokens"] // max(1, stats[l]["answers"])} for l in levels],
+            "minimal_vs_xhigh": end}
+
+
 # ------------------------------------------------------------------ E7 real voices
 
 def e7() -> dict:
@@ -425,7 +461,7 @@ def main() -> None:
     site = {
         "generated_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "spend": {"total_usd": round(s["local_spent_usd"] + s["canary_spent_usd"], 2), "limit_usd": s["limit_usd"]},
-        "e1": e1(), "e6": e6(), "e3": e3(), "e7": e7(),
+        "e1": e1(), "e6": e6(), "e3": e3(), "e7": e7(), "e4": e4(),
     }
     path = os.path.join(OUT_DIR, "data", "site.json")
     with open(path, "w", encoding="utf-8") as f:

@@ -115,6 +115,22 @@ export type E7 = {
   fresh_cost_usd?: number;
 };
 
+export type E4 = {
+  status: "done" | "not run";
+  clips: number;
+  calls: number;
+  fresh_cost_usd: number;
+  levels: {
+    level: string;
+    answers: number;
+    correct: number;
+    modes: Record<string, number>;
+    cost_per_1000: number;
+    avg_output_tokens: number;
+  }[];
+  minimal_vs_xhigh: Comparison;
+};
+
 export type Site = {
   generated_utc: string;
   spend: { total_usd: number; limit_usd: number };
@@ -122,6 +138,7 @@ export type Site = {
   e6: E6;
   e3: E3;
   e7?: E7;
+  e4?: E4;
 };
 
 export async function loadSite(): Promise<Site> {

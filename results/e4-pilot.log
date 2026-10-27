@@ -1,0 +1,53 @@
+e4-effort: 30 tasks × 5 candidates × 1 repeats
+estimate: {"n_tasks": 30, "n_candidates": 5, "repeats": 1, "n_calls": 150, "input_tokens_per_pass": 1482, "avg_output_tokens": 300, "per_candidate_usd": {"spark-1.3-c@minimal/16000": 0.001948, "spark-1.3-c@low/16000": 0.001948, "spark-1.3-c@medium/16000": 0.001948, "spark-1.3-c@high/16000": 0.001948, "spark-1.3-c@xhigh/16000": 0.001948}, "total_usd": 0.00974, "unknown_price_models": []}
+[e4-effort] 150 jobs (0 already done) -> results/e4-effort
+[e4-effort] 8/150 (5%) spent=$0.0005 errors=0 cached=0 7s
+[e4-effort] 15/150 (10%) spent=$0.0011 errors=0 cached=0 11s
+[e4-effort] 23/150 (15%) spent=$0.0018 errors=0 cached=0 14s
+[e4-effort] 30/150 (20%) spent=$0.0023 errors=0 cached=0 18s
+[e4-effort] 38/150 (25%) spent=$0.0033 errors=0 cached=0 22s
+[e4-effort] 45/150 (30%) spent=$0.0042 errors=0 cached=0 24s
+[e4-effort] 53/150 (35%) spent=$0.0048 errors=0 cached=0 28s
+[e4-effort] 60/150 (40%) spent=$0.0053 errors=0 cached=0 32s
+[e4-effort] 68/150 (45%) spent=$0.0070 errors=0 cached=0 34s
+[e4-effort] 75/150 (50%) spent=$0.0080 errors=0 cached=0 37s
+[e4-effort] 83/150 (55%) spent=$0.0086 errors=0 cached=0 40s
+[e4-effort] 90/150 (60%) spent=$0.0094 errors=0 cached=0 44s
+[e4-effort] 98/150 (65%) spent=$0.0103 errors=0 cached=0 48s
+[e4-effort] 105/150 (70%) spent=$0.0111 errors=0 cached=0 50s
+[e4-effort] 113/150 (75%) spent=$0.0120 errors=0 cached=0 54s
+[e4-effort] 120/150 (80%) spent=$0.0129 errors=0 cached=0 57s
+[e4-effort] 128/150 (85%) spent=$0.0135 errors=0 cached=0 60s
+[e4-effort] 135/150 (90%) spent=$0.0140 errors=0 cached=0 64s
+[e4-effort] 143/150 (95%) spent=$0.0152 errors=0 cached=0 70s
+[e4-effort] 150/150 (100%) spent=$0.0175 errors=0 cached=0 81s
+# E4 — reasoning effort ladder on muse-spark-1.3 Contributor (limit 16000 tokens)
+
+Run: `results/e4-effort`
+
+| Effort | correct (finished answers) | correct (cut-offs as fail) | cut off | avg output tokens | cost $ |
+|---|---|---|---|---|---|
+| minimal | 100.0% | 100.0% | 0 / 30 | 196 | 0.001 |
+| low | 100.0% | 100.0% | 0 / 30 | 430 | 0.003 |
+| medium | 100.0% | 100.0% | 0 / 30 | 686 | 0.004 |
+| high | 100.0% | 100.0% | 0 / 30 | 710 | 0.004 |
+| xhigh | 100.0% | 100.0% | 0 / 30 | 751 | 0.005 |
+
+## Step-ups (negative Δ = more effort was worse; cut-offs excluded)
+
+| Slice | n | Δ pts | 95% CI | lost | gained | McNemar p |
+|---|---|---|---|---|---|---|
+| minimal→low extraction | 10 | +0.0 | +0.0 to +0.0 | 0 | 0 | 1 |
+| minimal→low instruction | 10 | +0.0 | +0.0 to +0.0 | 0 | 0 | 1 |
+| minimal→low math | 10 | +0.0 | +0.0 to +0.0 | 0 | 0 | 1 |
+| low→medium extraction | 10 | +0.0 | +0.0 to +0.0 | 0 | 0 | 1 |
+| low→medium instruction | 10 | +0.0 | +0.0 to +0.0 | 0 | 0 | 1 |
+| low→medium math | 10 | +0.0 | +0.0 to +0.0 | 0 | 0 | 1 |
+| medium→high extraction | 10 | +0.0 | +0.0 to +0.0 | 0 | 0 | 1 |
+| medium→high instruction | 10 | +0.0 | +0.0 to +0.0 | 0 | 0 | 1 |
+| medium→high math | 10 | +0.0 | +0.0 to +0.0 | 0 | 0 | 1 |
+| high→xhigh extraction | 10 | +0.0 | +0.0 to +0.0 | 0 | 0 | 1 |
+| high→xhigh instruction | 10 | +0.0 | +0.0 to +0.0 | 0 | 0 | 1 |
+| high→xhigh math | 10 | +0.0 | +0.0 to +0.0 | 0 | 0 | 1 |
+
+wrote experiments/out/e4_effort.md

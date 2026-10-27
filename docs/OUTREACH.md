@@ -11,7 +11,9 @@ Edit freely; these are starting points in your voice. Post the X thread with the
 >
 > First result surprised me: on voice notes (English, Hindi, Hinglish), Spark 1.3 gets about as many right
 > as 1.2, but when it misunderstands it **stops saying "I can't hear this"** and returns wrong or blank
-> answers instead (18 → 42 of 135 clips).
+> answers instead (18 → 42 of 135 clips). I re-ran it on my own recorded voice with the prediction written
+> down first, and it held (6 → 13 of 45). It runs as a GitHub check: the PR that bumps the model fails and
+> the deploy step is skipped.
 >
 > If you're already calling Spark in your project, could you try it on 20–50 of your own prompts? It takes
 > about 10 minutes and costs a few cents on Contributor mode. Guide: `docs/BRING_YOUR_OWN_TASKS.md` in
@@ -26,10 +28,10 @@ Edit freely; these are starting points in your voice. Post the X thread with the
 > answers instead: 18 → 42 clips. Each square below is one voice note.
 
 **Post 2** (attach the 20-second clip recording)
-> Example: a customer reads out an order number. 1.2 gets it right (and once admits it can't hear).
-> 1.3 returns `{"order_number": ""}` three times out of three, as if nothing were wrong.
+> Example: a customer leaves a Hindi voice note with their pincode, 452089. 1.2 gets it right.
+> 1.3 answers 380015, a real Ahmedabad pincode, just the wrong one, three times out of three.
 >
-> A voice bot on 1.3 would save an empty order and nobody would know.
+> It's correctly shaped, so a format check passes it. That's the error that reaches your database.
 
 **Post 3**
 > An accuracy-only check calls this upgrade "inconclusive". It would need ~9,000 more clips to decide.
@@ -39,8 +41,15 @@ Edit freely; these are starting points in your voice. Post the X thread with the
 > Somwar vs Somvar.
 
 **Post 4**
-> Built for the @Meta AI developer hackathon. Open source: <repo link>
-> Run it on your own prompts before your next model upgrade.
+> Then we recorded 45 of the lines in a real voice, with the prediction written down first. It held:
+> wrong-or-blank 6 → 13, and accuracy fell 11 points.
+>
+> Also: on voice notes, giving 1.3 *more* reasoning effort made it worse (73% → 59%) at 6× the cost.
+> It talks itself into "I can't hear this". For voice input, use minimal effort.
 
-Before posting: if the real-voice rerun (E7) is done, add one line with its result, including if it
-did *not* confirm the pattern. Credibility is worth more than a cleaner headline.
+**Post 5** (attach a screenshot of the PR checks: two red, one green, deploy skipped)
+> It runs as a GitHub check. The PR that bumps the model fails, and the deploy never runs.
+> Built for the @Meta AI developer hackathon. Open source: <repo link>. Bring your own tasks as a JSONL file.
+
+Before posting: make the repo public so the link works. Keep the caveats when people ask: one speaker
+for the real-voice run, synthetic voices for the main run.

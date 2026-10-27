@@ -79,7 +79,7 @@ Details and caveats: [findings/LOG.md](findings/LOG.md). Tables: `experiments/ou
 | Demo | 25% | 8 | record the video around the report: PR check → voice-note report → one clip |
 | Meta tooling | 25% | 8.5 | E6 (Meta's own 1.3 audio warning, measured) + Contributor mode + effort levels |
 | Technical depth | 20% | 8.5 | E7 real-voice confirmation; measured gate error rates |
-| **Weighted** | | **≈ 8.4** | **8.7** with a sharp video and 1–2 outside users |
+| **Weighted** | | **≈ 8.0–8.4** (independent council: 77/100 before the real PR and fixes) | **8.5+** with the PR in the video, more speakers, 1 outside user |
 
 ## Remaining hypotheses
 1. **Judge-version bias (E2)** — a 1.3 judge passes 1.3's mistakes more often. Cheap with Contributor judges (~$0.30).
@@ -88,12 +88,17 @@ Details and caveats: [findings/LOG.md](findings/LOG.md). Tables: `experiments/ou
 
 ## Open items
 - [x] E7 real-voice confirmation (confirmed), E4 effort ladder (finding), E2 judge bias (null)
-- [x] Gate checks silent failures itself (voice notes: NO-GO); bring-your-own-tasks
+- [x] Gate checks silent failures itself, per input type (voice notes: NO-GO); bring-your-own-tasks
+- [x] Real blocked upgrade: PR `upgrade/spark-1.3` → voice-notes ❌, real-voices ❌, text-and-documents ✅, deploy skipped (28 Oct)
+- [x] Council review fixes: audio-only headlines, "wrong, no warning" label, honest E4 wording, synced README/demo/screenshots
 - [ ] Post the Discord ask and X thread (`docs/OUTREACH.md`)
 - [ ] Switch on the canary: GitHub secret `MODEL_API_KEY`, variables `CANARY_MODELS`, `CANARY_BUDGET_USD=8`
 - [ ] Decide whether to delete Codex's older `ui/` (the new site is `web/`)
 - [ ] Record the 3-minute video ([docs/DEMO.md](docs/DEMO.md))
-- [ ] Make the repo public, then submit by the evening of Nov 4 IST
+- [ ] Make the repo public, add branch protection requiring the three `upgrade-gate / …` checks (PR then shows "Merging is blocked")
+- [ ] 2–3 more speakers at `#/record` + a 60-label audit (council priority 3)
+- [ ] One real outside user trial, or state plainly that there wasn't one (council priority 4)
+- [ ] Submit by the evening of Nov 4 IST
 
 ## Schedule (IST)
 | Date | Work |

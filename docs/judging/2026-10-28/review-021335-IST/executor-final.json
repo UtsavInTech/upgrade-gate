@@ -1,0 +1,40 @@
+{
+  "lens": "executor",
+  "reviewed": [
+    "A",
+    "D"
+  ],
+  "a": {
+    "impact": 7.4,
+    "demo": 7.6,
+    "meta_tooling": 8.3,
+    "technical_depth": 8.2,
+    "weighted": 78.35,
+    "stage1_pass": true,
+    "top5": "no",
+    "top10": "yes"
+  },
+  "b": {
+    "low": {
+      "impact": 7.9,
+      "demo": 8.7,
+      "meta_tooling": 8.6,
+      "technical_depth": 8.7,
+      "weighted": 84.35,
+      "stage1_pass": true,
+      "top5": "no",
+      "top10": "yes"
+    },
+    "high": {
+      "impact": 8.4,
+      "demo": 9.0,
+      "meta_tooling": 9.0,
+      "technical_depth": 9.1,
+      "weighted": 88.4,
+      "stage1_pass": true,
+      "top5": "yes",
+      "top10": "yes"
+    }
+  },
+  "revision_summary": "Single revision: A Demo7.8\u21927.6 and weighted78.85\u219278.35 because authenticated API evidence did not verify the hosted PR/check scene; retain verified local replay. Other A/B scores unchanged. B2/B6 stipulated working. Blank-response observations are descriptive; no new grouped significance assumed. See executor-peer.md. Initial prose arithmetic corrected; criteria unchanged except the single Demo revision."
+}

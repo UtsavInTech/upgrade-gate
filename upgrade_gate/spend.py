@@ -82,15 +82,52 @@ def usage_from_api(u: Optional[dict]) -> dict:
             "cached_tokens": int(ptd.get("cached_tokens") or 0)}
 
 
+# Generous per-input token bounds for attachments (Meta bills ~20 tokens per second of audio and a
+# few hundred per image; these are 3-10x higher so the cap stays safe without starving a run).
+AUDIO_TOKENS_PER_SECOND = 60
+IMAGE_TOKENS = 3000
+PDF_TOKENS = 30000
+
+
+def _input_tokens(messages: list) -> float:
+    """Upper bound on input tokens. Text: 1 token per 2 bytes (real ratio ~4). Audio by duration,
+    images and PDFs by fixed generous amounts, instead of counting their base64 bytes as text."""
+    total = 0.0
+    for m in messages:
+        content = m.get("content") if isinstance(m, dict) else m
+        parts = content if isinstance(content, list) else [content]
+        for part in parts:
+            if isinstance(part, str):
+                total += len(part.encode("utf-8")) / 2.0
+            elif isinstance(part, dict):
+                kind = part.get("type")
+                if kind == "text":
+                    total += len(str(part.get("text", "")).encode("utf-8")) / 2.0
+                elif kind == "input_audio":
+                    audio = part.get("input_audio") or {}
+                    raw = len(audio.get("data", "")) * 3 / 4  # base64 -> bytes
+                    # WAV at 16 kHz mono 16-bit = 32,000 bytes/s; MP3 assumed as low as 16 kbit/s
+                    seconds = raw / (32000.0 if audio.get("format") == "wav" else 2000.0)
+                    total += seconds * AUDIO_TOKENS_PER_SECOND + 100
+                elif kind == "image_url":
+                    total += IMAGE_TOKENS
+                elif kind == "file":
+                    total += PDF_TOKENS
+                else:
+                    total += len(json.dumps(part, ensure_ascii=False).encode("utf-8")) / 2.0
+            total += 8  # per-part overhead
+    return total
+
+
 def worst_case_usd(model_id: str, messages: list, params: Optional[dict] = None) -> float:
-    """Upper bound for one call. Input: 1 token per 2 bytes of the JSON body (real ratio is ~4,
-    so this over-reserves). Output: the full max_completion_tokens."""
+    """Upper bound for one call: generous input estimate (see _input_tokens) plus the full
+    max_completion_tokens as output (reasoning tokens count toward it)."""
     (_, p_in, p_out), known = pricing.price_for(model_id)
     if not known:
         raise SpendCapError("no price for model %r, so its cost can't be capped. Add it to "
                             "upgrade_gate/pricing.py first." % model_id)
     params = params or {}
-    in_tokens = len(json.dumps(messages, ensure_ascii=False).encode("utf-8")) / 2.0
+    in_tokens = _input_tokens(messages)
     out_tokens = params.get("max_completion_tokens") or params.get("max_tokens") or DEFAULT_MAX_OUTPUT_TOKENS
     return (in_tokens * p_in + float(out_tokens) * p_out) / 1_000_000
 

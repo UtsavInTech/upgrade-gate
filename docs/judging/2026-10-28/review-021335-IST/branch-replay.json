@@ -1,0 +1,29 @@
+[
+  {
+    "suite": "voice-notes",
+    "branch_commit": "92f04d8ede349843172c8ecb96ad9b8d92131708",
+    "command": "PYTHONPATH=<isolated branch> .venv/bin/python scripts/ci_gate.py voice-notes --baseline spark-1.2@low",
+    "exit": 2,
+    "stdout": "Failure types, audio input (135 tasks): wrong or blank with no warning 18 -> 42, says it can't answer 21 -> 0  << flagged\nFailure types, text input (135 tasks): wrong or blank with no warning 0 -> 0, says it can't answer 0 -> 0\nNO-GO  (spark-1.2@low -> spark-1.3@low)\n  - Silent failures rose. Audio input: answers that are wrong or blank with no warning rose from 18 to 42 of 135 tasks (p = 3e-06; blank 0 → 7); answers admitting it can't answer fell from 21 to 0.\n  - CI overlaps the drop limit. Approximately 9072 more independent tasks are needed (normal approximation, 80% power; not a guarantee).\nwrote /var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-branch-audit-5ash5zwh/generated/upgrade-gate-voice-notes/report.md\nwrote /var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-branch-audit-5ash5zwh/generated/upgrade-gate-voice-notes/report.html\n### upgrade-gate / voice-notes: NO-GO\n\n`spark-1.2@low` → `spark-1.3@low` · e6-audio\n\nAccuracy alone: **INCONCLUSIVE**. The failure-type check changed the decision.\n\n- Silent failures rose. Audio input: answers that are wrong or blank with no warning rose from 18 to 42 of 135 tasks (p = 3e-06; blank 0 → 7); answers admitting it can't answer fell from 21 to 0.\n- CI overlaps the drop limit. Approximately 9072 more independent tasks are needed (normal approximation, 80% power; not a guarantee).\n\n| Input | Tasks | Wrong or blank, no warning | Says it can't answer |\n|---|---|---|---|\n| audio input | 135 | 18 → 42 ⚠ | 21 → 0 |\n| text input | 135 | 0 → 0 | 0 → 0 |\n\n**One failing case** (`audio-synth-extract-03-hi`): the answer is filled in, so a required-fields check passes it.\n\n> नमस्ते, मैं स्नेहा कुलकर्णी अहमदाबाद से बोल रही हूँ। मेरा ऑर्डर नंबर 9 3 4 3 7 है। मेरा पिनकोड 4 5 2 0 8 9 है। कृपया मुझे वापस कॉल करें।\n\n- Correct: `{\"order_number\": \"93437\", \"pincode\": \"452089\", \"city\": [\"Ahmedabad\", \"अहमदाबाद\"]}`\n- `spark-1.2@low`: `{\"order_number\":\"93437\",\"pincode\":\"452089\",\"city\":\"Ahmedabad\"}`\n- `spark-1.3@low`: `{\"order_number\":\"93437\",\"pincode\":\"380015\",\"city\":\"Ahmedabad\"}`\n\n",
+    "stderr": "",
+    "generated_outputs_discarded": true
+  },
+  {
+    "suite": "real-voices",
+    "branch_commit": "92f04d8ede349843172c8ecb96ad9b8d92131708",
+    "command": "PYTHONPATH=<isolated branch> .venv/bin/python scripts/ci_gate.py real-voices --baseline spark-1.2@low",
+    "exit": 2,
+    "stdout": "Failure types, audio input (45 tasks): wrong or blank with no warning 6 -> 13, says it can't answer 1 -> 0  << flagged\nNO-GO  (spark-1.2@low -> spark-1.3@low)\n  - Silent failures rose. Audio input: answers that are wrong or blank with no warning rose from 6 to 13 of 45 tasks (p = 0.02; blank 0 → 6); answers admitting it can't answer fell from 1 to 0.\n  - Overall CI upper bound -2.2 pts is below the allowed drop of 2.0 pts.\nwrote /var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-branch-audit-5ash5zwh/generated/upgrade-gate-real-voices/report.md\nwrote /var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-branch-audit-5ash5zwh/generated/upgrade-gate-real-voices/report.html\n### upgrade-gate / real-voices: NO-GO\n\n`spark-1.2@low` → `spark-1.3@low` · e7-real-voices\n\n- Silent failures rose. Audio input: answers that are wrong or blank with no warning rose from 6 to 13 of 45 tasks (p = 0.02; blank 0 → 6); answers admitting it can't answer fell from 1 to 0.\n- Overall CI upper bound -2.2 pts is below the allowed drop of 2.0 pts.\n\n| Input | Tasks | Wrong or blank, no warning | Says it can't answer |\n|---|---|---|---|\n| audio input | 45 | 6 → 13 ⚠ | 1 → 0 |\n\n",
+    "stderr": "",
+    "generated_outputs_discarded": true
+  },
+  {
+    "suite": "text-and-documents",
+    "branch_commit": "92f04d8ede349843172c8ecb96ad9b8d92131708",
+    "command": "PYTHONPATH=<isolated branch> .venv/bin/python scripts/ci_gate.py text-and-documents --baseline spark-1.2@low",
+    "exit": 0,
+    "stdout": "Failure types, image input (100 tasks): wrong or blank with no warning 1 -> 1, says it can't answer 0 -> 0\nFailure types, PDF input (100 tasks): wrong or blank with no warning 0 -> 0, says it can't answer 0 -> 0\nFailure types, text input (1125 tasks): wrong or blank with no warning 0 -> 0, says it can't answer 0 -> 0\nGO  (spark-1.2@low -> spark-1.3@low)\n  - Overall change +0.0 pts (95% CI +0.0 to +0.0) clears the 2.0 pt drop limit; no tested slice regresses significantly.\nwrote /var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-branch-audit-5ash5zwh/generated/upgrade-gate-text-and-documents/report.md\nwrote /var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-branch-audit-5ash5zwh/generated/upgrade-gate-text-and-documents/report.html\n### upgrade-gate / text-and-documents: GO\n\n`spark-1.2@low` → `spark-1.3@low` · e1-upgrade\n\n- Overall change +0.0 pts (95% CI +0.0 to +0.0) clears the 2.0 pt drop limit; no tested slice regresses significantly.\n\n| Input | Tasks | Wrong or blank, no warning | Says it can't answer |\n|---|---|---|---|\n| image input | 100 | 1 → 1 | 0 → 0 |\n| PDF input | 100 | 0 → 0 | 0 → 0 |\n| text input | 1125 | 0 → 0 | 0 → 0 |\n\n",
+    "stderr": "",
+    "generated_outputs_discarded": true
+  }
+]

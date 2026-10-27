@@ -143,3 +143,15 @@ class StrictRunBudget(SpendBase):
         spent = sum(r["cost_usd"] for r in rows)
         self.assertLessEqual(spent, 0.01)
         self.assertEqual(calls, 2)  # the third call's worst case would pass $0.01, so it is never sent
+
+
+class AttachmentEstimate(unittest.TestCase):
+    def test_audio_reserved_by_duration_not_base64_size(self):
+        import base64
+        ten_seconds = base64.b64encode(b"\0" * 320000).decode()  # 10 s of 16 kHz mono 16-bit audio
+        msgs = [{"role": "user", "content": [{"type": "text", "text": "Listen."},
+                                             {"type": "input_audio", "input_audio": {"data": ten_seconds, "format": "wav"}}]}]
+        tokens = spend._input_tokens(msgs)
+        self.assertGreater(tokens, 600)     # still well above the ~200 Meta bills for 10 s
+        self.assertLess(tokens, 1000)       # but not the ~213,000 that counting base64 as text gave
+        self.assertLess(spend.worst_case_usd("muse-spark-1.3", msgs, {"max_completion_tokens": 4000}), 0.02)

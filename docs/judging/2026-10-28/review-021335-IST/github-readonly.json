@@ -1,0 +1,40 @@
+{
+  "pulls": [],
+  "workflow_runs": [
+    {
+      "id": 40575628047,
+      "name": "canary",
+      "head_branch": "main",
+      "head_sha": "b0534530c959743a76e75968be70dbce2ce1981f",
+      "event": "schedule",
+      "status": "completed",
+      "conclusion": "failure",
+      "html_url": "https://github.com/UtsavInTech/upgrade-gate/actions/runs/40575628047"
+    },
+    {
+      "id": 40531568789,
+      "name": "canary",
+      "head_branch": "main",
+      "head_sha": "bf9d6356d4e354474e3c996a92293399fd31c2fb",
+      "event": "schedule",
+      "status": "completed",
+      "conclusion": "failure",
+      "html_url": "https://github.com/UtsavInTech/upgrade-gate/actions/runs/40531568789"
+    }
+  ],
+  "upgrade_branch": {
+    "name": "upgrade/spark-1.3",
+    "sha": "92f04d8ede349843172c8ecb96ad9b8d92131708",
+    "protected": false
+  },
+  "main_rules": [],
+  "repository": {
+    "full_name": "UtsavInTech/upgrade-gate",
+    "private": true,
+    "default_branch": "main"
+  },
+  "protection_query": {
+    "http_status": 404
+  },
+  "caution": "These are read-only API observations with available credentials; no pull request or upgrade workflow run could be verified. Do not infer fabricated intent."
+}

@@ -1,0 +1,37 @@
+{
+  "lens": "contrarian",
+  "reviewed": ["B", "E"],
+  "a": {
+    "impact": 7.4,
+    "demo": 7.6,
+    "meta_tooling": 8.5,
+    "technical_depth": 8.1,
+    "weighted": 78.65,
+    "stage1_pass": true,
+    "top5": "no",
+    "top10": "yes"
+  },
+  "b": {
+    "low": {
+      "impact": 7.2,
+      "demo": 8.4,
+      "meta_tooling": 8.5,
+      "technical_depth": 7.8,
+      "weighted": 79.45,
+      "stage1_pass": true,
+      "top5": "no",
+      "top10": "shortlist"
+    },
+    "high": {
+      "impact": 8.2,
+      "demo": 8.9,
+      "meta_tooling": 9.0,
+      "technical_depth": 8.8,
+      "weighted": 86.95,
+      "stage1_pass": true,
+      "top5": "yes",
+      "top10": "yes"
+    }
+  },
+  "revision_summary": "One revision: A Demo7.8 to7.6 because available authenticated API evidence did not verify a hosted upgrade PR/check/deploy-skipped/merge-blocking demonstration and confirmed repository privacy (verified-facts.md:7); A Technical8.0 to8.1 because executor independently confirmed178tests, web build and replay exits2/2/0 with model restored (verified-facts.md:5). A weighted78.95 to78.65. Other A scores/votes and all B scores/votes unchanged. Clarified three-dot PR diff is only release/model.json, not apparent deletions from comparing current main to older branch (verified-facts.md:3)."
+}

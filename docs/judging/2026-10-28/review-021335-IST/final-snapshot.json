@@ -1,0 +1,17 @@
+{
+  "ended": "2026-10-28T02:27:11.726816+05:30",
+  "head": "29862c5258f9368fdc828f4c6276546b97467eac",
+  "status": "?? docs/judging/2026-10-28/council-report-20261028-022711-IST.html\n?? docs/judging/2026-10-28/council-report-20261028-022711-IST.md\n?? docs/judging/2026-10-28/council-transcript-20261028-022711-IST.md\n?? docs/judging/2026-10-28/review-021335-IST/\n",
+  "reviewed_commit": "29862c5258f9368fdc828f4c6276546b97467eac",
+  "hashes": {
+    "README.md": "6e47ce3add5ed2b2b72377227905f33e8ac3a16136c3d6ea00665d5e31f1263d",
+    "STATUS.md": "3306d01f7e7d914c55d0f4f811605ad42e1a88e785f734d6cc49d49f8a665baf",
+    "release/policy.json": "cd5c160fda8b207f15f6beea630a53df94f104b9ba3c1546213b1eb652bafac0",
+    ".github/workflows/upgrade-gate.yml": "9db3f7644ed7697dd042b856111bb68e0a2556f31397d7e55666e73ff7f06074",
+    "scripts/ci_gate.py": "90207f3f476cb2a6c933d3cac6ecaa45f7e391d27c5fd54e06f4169f4e0aa66b",
+    "upgrade_gate/behaviour.py": "4d63dfd702e10400edbeb79ba9112ffa2341f22afbea820a3b55a8bc63646a78",
+    "upgrade_gate/gate.py": "23add94f114cff8ad509093a6a4b3b75dc1e2d8b1a7e2445cf602cd23e4e3cff",
+    "upgrade_gate/stats.py": "675aa2bffd9f381af4f6e2509fcd9bf1dbe551db1101ad29f0a874cb2c0b6173",
+    "upgrade_gate/scorers.py": "b97370900e9c5327fd9c9e848e5c3e6923b082889a361b7e77115249117a0328"
+  }
+}

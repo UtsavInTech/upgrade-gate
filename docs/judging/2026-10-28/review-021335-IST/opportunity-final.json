@@ -1,0 +1,40 @@
+{
+  "lens": "opportunity",
+  "reviewed": [
+    "C",
+    "E"
+  ],
+  "a": {
+    "impact": 7.1,
+    "demo": 8,
+    "meta_tooling": 8.5,
+    "technical_depth": 8,
+    "weighted": 78.55,
+    "stage1_pass": true,
+    "top5": "no",
+    "top10": "yes"
+  },
+  "b": {
+    "low": {
+      "impact": 7.4,
+      "demo": 8.5,
+      "meta_tooling": 8.7,
+      "technical_depth": 8,
+      "weighted": 81.2,
+      "stage1_pass": true,
+      "top5": "no",
+      "top10": "yes"
+    },
+    "high": {
+      "impact": 8.2,
+      "demo": 8.7,
+      "meta_tooling": 9.2,
+      "technical_depth": 8.7,
+      "weighted": 86.75,
+      "stage1_pass": true,
+      "top5": "yes",
+      "top10": "yes"
+    }
+  },
+  "revision_summary": "One revision: A unchanged. B-low impact 7.5 to 7.4 and technical 8.4 to 8.0; B-high demo 9.0 to 8.7 and technical 9.0 to 8.7. Exact B1 does not repair B7 video script; B additions do not repair accuracy clustering or ensure strong label agreement. Blank-only confirmation is descriptive/task-level, not clustered statistical significance. Initial preserved."
+}

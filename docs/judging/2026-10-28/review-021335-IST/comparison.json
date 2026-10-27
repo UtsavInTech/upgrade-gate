@@ -1,0 +1,57 @@
+{
+  "commit": "29862c5258f9368fdc828f4c6276546b97467eac",
+  "snapshot_a": {
+    "impact": 7.44,
+    "demo": 7.74,
+    "meta_tooling": 8.42,
+    "technical_depth": 8.14,
+    "weighted": 79.0,
+    "stage1_pass": true,
+    "top5_votes_yes": 0,
+    "top10_votes_yes": 5
+  },
+  "snapshot_b": {
+    "weighted_low": 82.06,
+    "weighted_high": 87.7
+  },
+  "previous_weighted": 77,
+  "judges": [
+    {
+      "lens": "contrarian",
+      "a_weighted": 78.65,
+      "b_low": 79.45,
+      "b_high": 86.95
+    },
+    {
+      "lens": "first_principles",
+      "a_weighted": 79.5,
+      "b_low": 83.3,
+      "b_high": 88.6
+    },
+    {
+      "lens": "outsider",
+      "a_weighted": 79.95,
+      "b_low": 82.0,
+      "b_high": 87.8
+    },
+    {
+      "lens": "opportunity",
+      "a_weighted": 78.55,
+      "b_low": 81.2,
+      "b_high": 86.75
+    },
+    {
+      "lens": "executor",
+      "a_weighted": 78.35,
+      "b_low": 84.35,
+      "b_high": 88.4
+    }
+  ],
+  "top_recommendations": [
+    "Reconcile E7 claims and every demo surface with the chosen item-level policy; label blank observations, combined failures and the accuracy-based veto separately.",
+    "Make the actual upgrade PR and completed hosted check/deploy-skipped evidence inspectable; publish the repo and enable the required checks before submission.",
+    "Audit the frozen production labels blindly, publish agreement and disagreements, and complete the extra-speaker run without requiring a favorable outcome.",
+    "Implement the strict budget-capped fresh-run path and reusable Action; demonstrate both failure and legitimate GO/INCONCLUSIVE handling.",
+    "Record the concise evidence-led video with corrected narration, then post outreach without claiming users, engagement or bonus-prize fit that has not been observed."
+  ]
+}

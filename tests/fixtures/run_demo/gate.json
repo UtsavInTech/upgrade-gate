@@ -1,0 +1,453 @@
+{
+  "run_id": "run_demo",
+  "baseline": "spark-1.2",
+  "candidate": "spark-1.3",
+  "decision": "no-go",
+  "reasons": [
+    "category=doc-image regressed -10.0 pts (95% CI -16.0 to -5.0, Holm p=0.01758); overall changed +2.7 pts.",
+    "modality=image regressed -10.0 pts (95% CI -16.0 to -5.0, Holm p=0.01758); overall changed +2.7 pts."
+  ],
+  "overall": {
+    "slice": "overall",
+    "n": 300,
+    "base_rate": 0.7633333333333333,
+    "cand_rate": 0.79,
+    "delta": 0.02666666666666667,
+    "ci_low": -0.006666666666666667,
+    "ci_high": 0.06333333333333334,
+    "b": 10,
+    "c": 18,
+    "p_value": 0.1849333420395851,
+    "p_adjusted": null,
+    "verdict": "inconclusive",
+    "noise_floor": 0.07,
+    "unpaired_tasks": 0,
+    "api_error_rows": 4
+  },
+  "slices": [
+    {
+      "slice": "category=classification",
+      "n": 50,
+      "base_rate": 0.74,
+      "cand_rate": 0.84,
+      "delta": 0.1,
+      "ci_low": 0.02,
+      "ci_high": 0.18,
+      "b": 0,
+      "c": 5,
+      "p_value": 0.0625,
+      "p_adjusted": 0.375,
+      "verdict": "inconclusive"
+    },
+    {
+      "slice": "category=doc-image",
+      "n": 100,
+      "base_rate": 0.83,
+      "cand_rate": 0.73,
+      "delta": -0.1,
+      "ci_low": -0.16,
+      "ci_high": -0.05,
+      "b": 10,
+      "c": 0,
+      "p_value": 0.001953125,
+      "p_adjusted": 0.017578125,
+      "verdict": "regression"
+    },
+    {
+      "slice": "category=extraction",
+      "n": 50,
+      "base_rate": 0.7,
+      "cand_rate": 0.8,
+      "delta": 0.1,
+      "ci_low": 0.02,
+      "ci_high": 0.18,
+      "b": 0,
+      "c": 5,
+      "p_value": 0.0625,
+      "p_adjusted": 0.375,
+      "verdict": "inconclusive"
+    },
+    {
+      "slice": "category=instruction",
+      "n": 50,
+      "base_rate": 0.74,
+      "cand_rate": 0.84,
+      "delta": 0.1,
+      "ci_low": 0.02,
+      "ci_high": 0.18,
+      "b": 0,
+      "c": 5,
+      "p_value": 0.0625,
+      "p_adjusted": 0.375,
+      "verdict": "inconclusive"
+    },
+    {
+      "slice": "category=math",
+      "n": 50,
+      "base_rate": 0.74,
+      "cand_rate": 0.8,
+      "delta": 0.06,
+      "ci_low": 0.0,
+      "ci_high": 0.14,
+      "b": 0,
+      "c": 3,
+      "p_value": 0.25,
+      "p_adjusted": 0.375,
+      "verdict": "inconclusive"
+    },
+    {
+      "slice": "lang=en",
+      "n": 100,
+      "base_rate": 0.73,
+      "cand_rate": 0.8,
+      "delta": 0.07,
+      "ci_low": 0.01,
+      "ci_high": 0.14,
+      "b": 2,
+      "c": 9,
+      "p_value": 0.0654296875,
+      "p_adjusted": 0.375,
+      "verdict": "inconclusive"
+    },
+    {
+      "slice": "lang=hi",
+      "n": 100,
+      "base_rate": 0.82,
+      "cand_rate": 0.76,
+      "delta": -0.06,
+      "ci_low": -0.11,
+      "ci_high": -0.02,
+      "b": 6,
+      "c": 0,
+      "p_value": 0.03125,
+      "p_adjusted": 0.21875,
+      "verdict": "inconclusive"
+    },
+    {
+      "slice": "lang=hinglish",
+      "n": 100,
+      "base_rate": 0.74,
+      "cand_rate": 0.81,
+      "delta": 0.07,
+      "ci_low": 0.01,
+      "ci_high": 0.14,
+      "b": 2,
+      "c": 9,
+      "p_value": 0.0654296875,
+      "p_adjusted": 0.375,
+      "verdict": "inconclusive"
+    },
+    {
+      "slice": "modality=image",
+      "n": 100,
+      "base_rate": 0.83,
+      "cand_rate": 0.73,
+      "delta": -0.1,
+      "ci_low": -0.16,
+      "ci_high": -0.05,
+      "b": 10,
+      "c": 0,
+      "p_value": 0.001953125,
+      "p_adjusted": 0.017578125,
+      "verdict": "regression"
+    },
+    {
+      "slice": "modality=text",
+      "n": 200,
+      "base_rate": 0.73,
+      "cand_rate": 0.82,
+      "delta": 0.09,
+      "ci_low": 0.055,
+      "ci_high": 0.13,
+      "b": 0,
+      "c": 18,
+      "p_value": 7.62939453125e-06,
+      "p_adjusted": 7.62939453125e-05,
+      "verdict": "improvement"
+    }
+  ],
+  "regressions": [
+    {
+      "task_id": "demo-000",
+      "category": "doc-image",
+      "lang": "hi",
+      "base_text": "{\"invoice_id\": \"INV-0000\", \"total_inr\": 1200}",
+      "cand_text": "{\"invoice_id\": \"INV-0000\", \"total_inr\": 1300}",
+      "reference": {
+        "invoice_id": "INV-0000",
+        "total_inr": 1200
+      },
+      "evidence": {
+        "base_passes": 3,
+        "base_repeats": 3,
+        "cand_passes": 0,
+        "cand_repeats": 3,
+        "failure_consistency": 1.0,
+        "confirmed": true,
+        "supporting_slices": [
+          "category=doc-image",
+          "modality=image"
+        ],
+        "source": "majority of score rows"
+      }
+    },
+    {
+      "task_id": "demo-001",
+      "category": "doc-image",
+      "lang": "en",
+      "base_text": "{\"invoice_id\": \"INV-0001\", \"total_inr\": 1217}",
+      "cand_text": "{\"invoice_id\": \"INV-0001\", \"total_inr\": 1317}",
+      "reference": {
+        "invoice_id": "INV-0001",
+        "total_inr": 1217
+      },
+      "evidence": {
+        "base_passes": 3,
+        "base_repeats": 3,
+        "cand_passes": 0,
+        "cand_repeats": 3,
+        "failure_consistency": 1.0,
+        "confirmed": true,
+        "supporting_slices": [
+          "category=doc-image",
+          "modality=image"
+        ],
+        "source": "majority of score rows"
+      }
+    },
+    {
+      "task_id": "demo-002",
+      "category": "doc-image",
+      "lang": "hinglish",
+      "base_text": "{\"invoice_id\": \"INV-0002\", \"total_inr\": 1234}",
+      "cand_text": "{\"invoice_id\": \"INV-0002\", \"total_inr\": 1334}",
+      "reference": {
+        "invoice_id": "INV-0002",
+        "total_inr": 1234
+      },
+      "evidence": {
+        "base_passes": 2,
+        "base_repeats": 3,
+        "cand_passes": 0,
+        "cand_repeats": 3,
+        "failure_consistency": 1.0,
+        "confirmed": true,
+        "supporting_slices": [
+          "category=doc-image",
+          "modality=image"
+        ],
+        "source": "majority of score rows"
+      }
+    },
+    {
+      "task_id": "demo-004",
+      "category": "doc-image",
+      "lang": "en",
+      "base_text": "{\"invoice_id\": \"INV-0004\", \"total_inr\": 1268}",
+      "cand_text": "{\"invoice_id\": \"INV-0004\", \"total_inr\": 1368}",
+      "reference": {
+        "invoice_id": "INV-0004",
+        "total_inr": 1268
+      },
+      "evidence": {
+        "base_passes": 3,
+        "base_repeats": 3,
+        "cand_passes": 0,
+        "cand_repeats": 3,
+        "failure_consistency": 1.0,
+        "confirmed": true,
+        "supporting_slices": [
+          "category=doc-image",
+          "modality=image"
+        ],
+        "source": "majority of score rows"
+      }
+    },
+    {
+      "task_id": "demo-005",
+      "category": "doc-image",
+      "lang": "hinglish",
+      "base_text": "{\"invoice_id\": \"INV-0005\", \"total_inr\": 1285}",
+      "cand_text": "{\"invoice_id\": \"INV-0005\", \"total_inr\": 1385}",
+      "reference": {
+        "invoice_id": "INV-0005",
+        "total_inr": 1285
+      },
+      "evidence": {
+        "base_passes": 3,
+        "base_repeats": 3,
+        "cand_passes": 0,
+        "cand_repeats": 3,
+        "failure_consistency": 1.0,
+        "confirmed": true,
+        "supporting_slices": [
+          "category=doc-image",
+          "modality=image"
+        ],
+        "source": "majority of score rows"
+      }
+    },
+    {
+      "task_id": "demo-006",
+      "category": "doc-image",
+      "lang": "hi",
+      "base_text": "{\"invoice_id\": \"INV-0006\", \"total_inr\": 1302}",
+      "cand_text": "{\"invoice_id\": \"INV-0006\", \"total_inr\": 1402}",
+      "reference": {
+        "invoice_id": "INV-0006",
+        "total_inr": 1302
+      },
+      "evidence": {
+        "base_passes": 3,
+        "base_repeats": 3,
+        "cand_passes": 0,
+        "cand_repeats": 3,
+        "failure_consistency": 1.0,
+        "confirmed": true,
+        "supporting_slices": [
+          "category=doc-image",
+          "modality=image"
+        ],
+        "source": "majority of score rows"
+      }
+    },
+    {
+      "task_id": "demo-009",
+      "category": "doc-image",
+      "lang": "hi",
+      "base_text": "{\"invoice_id\": \"INV-0009\", \"total_inr\": 1353}",
+      "cand_text": "{\"invoice_id\": \"INV-0009\", \"total_inr\": 1453}",
+      "reference": {
+        "invoice_id": "INV-0009",
+        "total_inr": 1353
+      },
+      "evidence": {
+        "base_passes": 3,
+        "base_repeats": 3,
+        "cand_passes": 0,
+        "cand_repeats": 3,
+        "failure_consistency": 1.0,
+        "confirmed": true,
+        "supporting_slices": [
+          "category=doc-image",
+          "modality=image"
+        ],
+        "source": "majority of score rows"
+      }
+    },
+    {
+      "task_id": "demo-012",
+      "category": "doc-image",
+      "lang": "hi",
+      "base_text": "{\"invoice_id\": \"INV-0012\", \"total_inr\": 1404}",
+      "cand_text": "{\"invoice_id\": \"INV-0012\", \"total_inr\": 1504}",
+      "reference": {
+        "invoice_id": "INV-0012",
+        "total_inr": 1404
+      },
+      "evidence": {
+        "base_passes": 2,
+        "base_repeats": 3,
+        "cand_passes": 0,
+        "cand_repeats": 3,
+        "failure_consistency": 1.0,
+        "confirmed": true,
+        "supporting_slices": [
+          "category=doc-image",
+          "modality=image"
+        ],
+        "source": "majority of score rows"
+      }
+    },
+    {
+      "task_id": "demo-015",
+      "category": "doc-image",
+      "lang": "hi",
+      "base_text": "{\"invoice_id\": \"INV-0015\", \"total_inr\": 1455}",
+      "cand_text": "{\"invoice_id\": \"INV-0015\", \"total_inr\": 1555}",
+      "reference": {
+        "invoice_id": "INV-0015",
+        "total_inr": 1455
+      },
+      "evidence": {
+        "base_passes": 3,
+        "base_repeats": 3,
+        "cand_passes": 0,
+        "cand_repeats": 3,
+        "failure_consistency": 1.0,
+        "confirmed": true,
+        "supporting_slices": [
+          "category=doc-image",
+          "modality=image"
+        ],
+        "source": "majority of score rows"
+      }
+    },
+    {
+      "task_id": "demo-003",
+      "category": "doc-image",
+      "lang": "hi",
+      "base_text": "{\"invoice_id\": \"INV-0003\", \"total_inr\": 1251}",
+      "cand_text": "{\"invoice_id\": \"INV-0003\", \"total_inr\": 1351}",
+      "reference": {
+        "invoice_id": "INV-0003",
+        "total_inr": 1251
+      },
+      "evidence": {
+        "base_passes": 3,
+        "base_repeats": 3,
+        "cand_passes": 1,
+        "cand_repeats": 3,
+        "failure_consistency": 0.6666666666666667,
+        "confirmed": true,
+        "supporting_slices": [
+          "category=doc-image",
+          "modality=image"
+        ],
+        "source": "majority of score rows"
+      }
+    }
+  ],
+  "cost": {
+    "base_usd": 0.3428039999999999,
+    "cand_usd": 0.41491999999999946,
+    "delta_pct": 21.037094082916074,
+    "judge_usd": 0.0,
+    "model_usd": {
+      "spark-1.2": 0.3428039999999999,
+      "spark-1.3": 0.41491999999999946
+    },
+    "judge_by_candidate": {
+      "spark-1.2": 0.0,
+      "spark-1.3": 0.0
+    },
+    "usage": {
+      "spark-1.2": {
+        "input_tokens": 111000,
+        "output_tokens": 58273,
+        "reasoning_tokens": 0
+      },
+      "spark-1.3": {
+        "input_tokens": 111000,
+        "output_tokens": 75980,
+        "reasoning_tokens": 0
+      }
+    }
+  },
+  "thresholds": {
+    "max_drop": 0.02,
+    "alpha": 0.05,
+    "min_n": 30,
+    "slice_min_n": 10,
+    "confidence_level": 0.95,
+    "n_boot": 10000,
+    "bootstrap_seed": 0,
+    "rules": {
+      "no-go": "n >= min_n and (any slice Holm p < alpha and delta < 0, or overall CI high < -max_drop)",
+      "go": "n >= min_n, no significant regressing slice, and overall CI low > -max_drop",
+      "inconclusive": "otherwise; sample size estimates assume independent task pairs"
+    },
+    "cost_includes_judging": true
+  },
+  "created_utc": "2026-10-27T08:59:12.244880+00:00"
+}

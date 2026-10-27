@@ -53,7 +53,7 @@ def generate():
             reference = str((i + 17) * 3)
             prompt = {'en': 'Compute (%d + 17) × 3. Reply with the integer only.', 'hi': '(%d + 17) × 3 की गणना करें। केवल पूर्णांक दें।', 'hinglish': '(%d + 17) × 3 calculate karo. Sirf integer do.'}[lang] % i
             attachments = []
-        tasks.append(dict(id=task_id, pack='synthetic-demo', category=category, lang=lang, modality='image' if attachments else 'text', prompt=prompt, reference=reference, scorer={'type': 'json_fields' if isinstance(reference, dict) else 'exact'}, attachments=attachments, pair_id=None, meta={'synthetic': True}))
+        tasks.append(dict(id=task_id, pack='synthetic-demo', category=category, lang=lang, modality='image' if attachments else 'text', prompt=prompt, reference=reference, scorer={'type': 'json_fields' if isinstance(reference, dict) else 'exact_cs'}, attachments=attachments, pair_id=None, meta={'synthetic': True}))
         base_pass = i % 5 != 0
         if i in losses:
             base_pass = True

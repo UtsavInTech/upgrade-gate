@@ -1,5 +1,5 @@
 import { motion, useScroll, useSpring } from "motion/react";
-import { Moon, Presentation, Sun } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 
 const NAV = [
   { href: "#audio", label: "Voice notes" },
@@ -52,9 +52,8 @@ export function Header({
           <button
             type="button"
             onClick={onPresent}
-            className="hidden items-center gap-2 rounded-md border border-line px-3 py-2 text-sm font-medium transition-colors hover:bg-surface sm:inline-flex"
+            className="hidden items-center rounded-md border border-line px-3 py-2 text-sm font-medium transition-colors hover:bg-surface sm:inline-flex"
           >
-            <Presentation aria-hidden className="size-4" />
             Present
           </button>
           <button

@@ -12,7 +12,6 @@ export function ScoringSection({ e1 }: { e1: E1 }) {
   return (
     <Section
       id="scoring"
-      index="02"
       eyebrow="Text, documents and Hindi · 7,950 calls"
       title="Our own scorer invented an improvement."
       lede={
@@ -24,12 +23,10 @@ export function ScoringSection({ e1 }: { e1: E1 }) {
       }
     >
       <Reveal className="grid items-stretch gap-4 md:grid-cols-[1fr_auto_1fr]">
-        <div className="rounded-2xl border border-line p-6 sm:p-8">
+        <div className="rounded-lg border border-line p-6 sm:p-8">
           <div className="flex items-center justify-between">
             <p className="text-sm font-medium text-muted">Before: exact-match scorer</p>
-            <span className="rounded-md bg-risk-soft px-2 py-0.5 text-xs font-semibold tracking-wide text-risk">
-              NOT REAL
-            </span>
+            <span className="text-xs font-bold tracking-[0.08em] text-risk">NOT REAL</span>
           </div>
           <p className="mt-3 text-[clamp(3rem,7vw,5rem)] leading-none font-semibold tracking-[-0.04em] text-faint">
             {before ? pts(before.delta, 2) : "–"}
@@ -42,7 +39,7 @@ export function ScoringSection({ e1 }: { e1: E1 }) {
         <div className="hidden items-center text-3xl text-faint md:flex" aria-hidden>
           →
         </div>
-        <div className="rounded-2xl border border-line bg-surface p-6 sm:p-8">
+        <div className="rounded-lg border border-line bg-surface p-6 sm:p-8">
           <div className="flex items-center justify-between">
             <p className="text-sm font-medium text-muted">After: correct answers, any spelling</p>
             <Verdict decision={e1.decision} />
@@ -111,7 +108,7 @@ export function ScoringSection({ e1 }: { e1: E1 }) {
 
         <Reveal delay={0.05}>
           <h3 className="mb-5 text-lg font-semibold">Answers the old scorer rejected</h3>
-          <ul className="divide-y divide-line rounded-2xl border border-line">
+          <ul className="divide-y divide-line rounded-lg border border-line">
             {e1.examples.slice(0, 5).map((ex) => (
               <li
                 key={ex.task_id + ex.candidate}

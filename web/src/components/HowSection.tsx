@@ -28,7 +28,6 @@ export function HowSection() {
   return (
     <Section
       id="how"
-      index="04"
       eyebrow="How it works"
       title="A release check that fits in CI."
       lede="Every paid call reserves its worst-case cost first, and a lifetime spending cap stops runs before they go over budget."
@@ -55,7 +54,7 @@ export function HowSection() {
       </ol>
 
       <Reveal delay={0.1} className="mt-16 grid gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
-        <pre className="overflow-x-auto rounded-2xl bg-[#0d1117] p-6 font-mono text-[13px] leading-7 text-[#d6dde4]">
+        <pre className="overflow-x-auto rounded-lg bg-[#0d1117] p-6 font-mono text-[13px] leading-7 text-[#d6dde4]">
           <code>
             <span className="text-[#7d8a96]"># one command: run, score, gate, report</span>
             {"\n"}upgrade-gate all --packs audio-synth \{"\n"}

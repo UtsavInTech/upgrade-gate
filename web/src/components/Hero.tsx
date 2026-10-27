@@ -1,5 +1,3 @@
-import { motion } from "motion/react";
-import { ArrowDown, ArrowRight } from "lucide-react";
 import type { Site } from "../data";
 import { BASE, CAND } from "../data";
 import { Verdict } from "./ui";
@@ -40,16 +38,12 @@ export function Hero({ site }: { site: Site }) {
   return (
     <section id="top" data-slide className="relative overflow-hidden">
       <div className="mx-auto grid max-w-6xl gap-14 px-4 pt-16 pb-20 sm:px-8 sm:pt-24 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-16 lg:pb-28">
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.2, 0.7, 0.2, 1] }}
-        >
-          <p className="mb-6 inline-flex items-center gap-2 rounded-full bg-accent-soft px-3 py-1 text-sm font-medium text-accent">
-            Meta Muse Spark 1.2 → 1.3
+        <div>
+          <p className="mb-6 text-sm font-medium text-muted">
+            Meta Muse Spark 1.2 → 1.3 · tested 27 October 2026
           </p>
           <h1 className="text-[clamp(2.6rem,6.4vw,4.9rem)] leading-[1.02] font-semibold tracking-[-0.035em] text-balance">
-            Before you upgrade a model, check <span className="text-accent">how</span> it fails.
+            Before you upgrade a model, check how it fails.
           </h1>
           <p className="mt-7 max-w-xl text-lg leading-relaxed text-muted text-pretty sm:text-xl">
             Upgrade Gate replays the same tasks on the old and new model, scores every answer against a known
@@ -57,45 +51,29 @@ export function Hero({ site }: { site: Site }) {
             failures your users will notice.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-3">
-            <a
-              href="#audio"
-              className="inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-3 font-semibold text-accent-ink transition-transform active:scale-[0.98]"
-            >
+            <a href="#audio" className="rounded-md bg-accent px-5 py-3 font-semibold text-accent-ink">
               See what we found
-              <ArrowDown aria-hidden className="size-4" />
             </a>
             <a
               href="https://github.com/UtsavInTech/upgrade-gate"
-              className="inline-flex items-center gap-2 rounded-lg px-4 py-3 font-medium text-fg transition-colors hover:bg-surface"
+              className="px-4 py-3 font-medium text-fg underline decoration-line underline-offset-4 transition-colors hover:decoration-fg"
             >
               Source on GitHub
-              <ArrowRight aria-hidden className="size-4" />
             </a>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.aside
-          aria-label="Release checklist"
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.15, ease: [0.2, 0.7, 0.2, 1] }}
-          className="self-end rounded-2xl border border-line bg-surface p-2"
-        >
-          <div className="flex items-baseline justify-between px-4 pt-3 pb-4">
+        <aside aria-label="Release checklist" className="self-end rounded-lg border border-line">
+          <div className="flex items-baseline justify-between border-b border-line px-5 py-3">
             <h2 className="text-sm font-semibold">Release checklist</h2>
             <span className="font-mono text-xs text-faint">1.2 → 1.3</span>
           </div>
-          <ol className="space-y-1.5">
-            {checks.map((c, i) => (
-              <motion.li
-                key={c.area}
-                initial={{ opacity: 0, x: 12 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.4, delay: 0.35 + i * 0.12 }}
-              >
+          <ol className="divide-y divide-line">
+            {checks.map((c) => (
+              <li key={c.area}>
                 <a
                   href={c.href}
-                  className="group grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-1 rounded-xl bg-bg px-4 py-4 transition-colors hover:bg-surface-2"
+                  className="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-1 px-5 py-4 transition-colors hover:bg-surface"
                 >
                   <span className="font-semibold">{c.area}</span>
                   <span className="row-span-2">
@@ -105,10 +83,10 @@ export function Hero({ site }: { site: Site }) {
                     {c.finding} <span className="text-faint">· {c.detail}</span>
                   </span>
                 </a>
-              </motion.li>
+              </li>
             ))}
           </ol>
-          <dl className="grid grid-cols-3 gap-2 px-4 pt-5 pb-3 text-sm">
+          <dl className="grid grid-cols-3 gap-2 border-t border-line bg-surface px-5 py-4 text-sm">
             <div>
               <dt className="text-faint">API calls</dt>
               <dd className="font-semibold">{calls.toLocaleString("en-IN")}</dd>
@@ -122,7 +100,7 @@ export function Hero({ site }: { site: Site }) {
               <dd className="font-semibold">EN · HI · Hinglish</dd>
             </div>
           </dl>
-        </motion.aside>
+        </aside>
       </div>
     </section>
   );

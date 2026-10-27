@@ -6,7 +6,7 @@ import { Reveal, Section, Verdict } from "./ui";
 export function CostSection({ e3 }: { e3: E3 }) {
   if (e3.status !== "done" || !e3.cost_per_1000 || !e3.standard || !e3.contributor) {
     return (
-      <Section id="cost" index="03" eyebrow="Contributor mode" title="Cost comparison is still running.">
+      <Section id="cost" eyebrow="Contributor mode" title="Cost comparison is still running.">
         <p className="text-muted">This section fills in when the saved run is exported.</p>
       </Section>
     );
@@ -23,7 +23,6 @@ export function CostSection({ e3 }: { e3: E3 }) {
   return (
     <Section
       id="cost"
-      index="03"
       eyebrow="Contributor mode · 7,950 calls"
       title={
         <>
@@ -39,7 +38,7 @@ export function CostSection({ e3 }: { e3: E3 }) {
       }
     >
       <Reveal className="grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
-        <figure className="rounded-2xl border border-line p-6 sm:p-8">
+        <figure className="rounded-lg border border-line p-6 sm:p-8">
           <figcaption className="mb-6">
             <h3 className="text-lg font-semibold">Cost per 1,000 tasks</h3>
             <p className="text-sm text-muted">
@@ -67,7 +66,7 @@ export function CostSection({ e3 }: { e3: E3 }) {
           </ul>
         </figure>
 
-        <div className="flex flex-col justify-between gap-6 rounded-2xl bg-surface p-6 sm:p-8">
+        <div className="flex flex-col justify-between gap-6 rounded-lg bg-surface p-6 sm:p-8">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold">Quality gate</h3>
             <Verdict decision={e3.decision ?? "inconclusive"} />

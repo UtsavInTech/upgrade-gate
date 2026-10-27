@@ -23,7 +23,7 @@ export function FailureChart({ e6 }: { e6: E6 }) {
   const total = (model: string) => ORDER.reduce((s, m) => s + count(model, m), 0);
 
   return (
-    <figure className="rounded-2xl border border-line bg-surface p-5 sm:p-7">
+    <figure className="rounded-lg border border-line bg-surface p-5 sm:p-7">
       <figcaption className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 className="text-lg font-semibold">How every audio answer turned out</h3>

@@ -1,5 +1,4 @@
 import { AnimatePresence, motion } from "motion/react";
-import { Mic, Volume2 } from "lucide-react";
 import { useState } from "react";
 import type { AudioExample, E6 } from "../data";
 import { BASE, CAND, LANG_LABEL, formatExpected, pval, shortModel } from "../data";
@@ -21,7 +20,6 @@ export function AudioSection({ e6 }: { e6: E6 }) {
   return (
     <Section
       id="audio"
-      index="01"
       eyebrow="Voice notes · the finding"
       title={
         <>
@@ -77,8 +75,8 @@ export function AudioSection({ e6 }: { e6: E6 }) {
         <FailureChart e6={e6} />
       </Reveal>
 
-      <Reveal delay={0.05} className="mt-6 grid gap-4 md:grid-cols-2">
-        <div className="rounded-2xl border border-line p-6">
+      <Reveal delay={0.05} className="mt-10 grid gap-8 md:grid-cols-2">
+        <div className="border-t-2 border-line pt-5">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold">Checking accuracy only</h3>
             <Verdict decision={e6.decision} />
@@ -92,7 +90,7 @@ export function AudioSection({ e6 }: { e6: E6 }) {
             .
           </p>
         </div>
-        <div className="rounded-2xl border border-risk/40 bg-risk-soft p-6">
+        <div className="border-t-2 border-risk pt-5">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold">Checking how it fails</h3>
             <Verdict decision="risk" />
@@ -134,7 +132,7 @@ function Examples({ examples }: { examples: AudioExample[] }) {
         <div
           role="tablist"
           aria-label="Examples"
-          className="flex gap-2 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible"
+          className="flex gap-1 overflow-x-auto pb-1 lg:flex-col lg:gap-0 lg:overflow-visible"
         >
           {examples.map((e, k) => (
             <button
@@ -142,8 +140,8 @@ function Examples({ examples }: { examples: AudioExample[] }) {
               role="tab"
               aria-selected={k === i}
               onClick={() => setI(k)}
-              className={`shrink-0 rounded-xl border px-4 py-3 text-left transition-colors ${
-                k === i ? "border-accent bg-accent-soft" : "border-line hover:bg-surface"
+              className={`shrink-0 border-b-2 px-3 py-2.5 text-left transition-colors lg:border-b-0 lg:border-l-2 lg:pl-4 ${
+                k === i ? "border-accent text-fg" : "border-line text-muted hover:text-fg"
               }`}
             >
               <span className="block text-sm font-semibold">{KIND[e.kind]}</span>
@@ -162,10 +160,9 @@ function Examples({ examples }: { examples: AudioExample[] }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.22 }}
-            className="rounded-2xl border border-line bg-surface p-5 sm:p-7"
+            className="rounded-lg border border-line bg-surface p-5 sm:p-7"
           >
             <div className="flex flex-wrap items-center gap-3 text-sm text-muted">
-              <Mic aria-hidden className="size-4" />
               <span>
                 {LANG_LABEL[ex.lang]} · voice “{ex.voice}”
               </span>
@@ -176,8 +173,8 @@ function Examples({ examples }: { examples: AudioExample[] }) {
             </audio>
             <div className="mt-5 grid gap-4 sm:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
               <div>
-                <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold tracking-wide text-faint uppercase">
-                  <Volume2 aria-hidden className="size-3.5" /> What the clip says
+                <p className="mb-1 text-xs font-semibold tracking-wide text-faint uppercase">
+                  What the clip says
                 </p>
                 <p className="leading-relaxed">{ex.transcript}</p>
               </div>
@@ -188,9 +185,9 @@ function Examples({ examples }: { examples: AudioExample[] }) {
                 <p className="font-mono text-sm leading-relaxed">{formatExpected(ex.expected)}</p>
               </div>
             </div>
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
+            <div className="mt-10 grid gap-8 md:grid-cols-2">
               {[BASE, CAND].map((m) => (
-                <div key={m} className="rounded-xl bg-bg p-4">
+                <div key={m} className="rounded-md bg-bg p-4">
                   <p className="mb-3 font-semibold">{shortModel(m)}</p>
                   <ol className="space-y-3">
                     {ex.answers[m].map((a, k) => (

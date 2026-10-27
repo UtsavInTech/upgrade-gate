@@ -11,3 +11,6 @@ results/*/
 ui/node_modules/
 ui/dist/
 .claude/
+
+# real voice recordings stay private (the repo becomes public)
+data/audio-real/

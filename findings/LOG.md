@@ -45,6 +45,17 @@ Artificial Analysis marks **Muse Spark 1.1 as deprecated** ("This model is depre
 
 ---
 
+## E7 result: the silent-failure pattern holds on a real voice
+
+- **Pre-registered** on 27 Oct, before any recording: same models and settings as E6, same failure-type rules unchanged; prediction "1.3 gives more confident-wrong-or-blank answers than 1.2 (paired, majority of 3 tries), p < 0.05".
+- **Run:** 28 Oct. One speaker (Utsav) read 45 of the E6 lines (15 English, 15 Hindi, 15 Hinglish; 15 each of order voice note, spoken maths, customer request) into a laptop microphone via `web/#/record`. 270 calls, **$0.78**, 1 answer cut off by the token limit (1.3).
+- **Result:** **CONFIRMED.** Confident wrong or blank: **6 → 13 of 45 clips, p = 0.016.** Answers with every field blank: **0 → 18** of 135. Unlike the synthetic voices, accuracy also fell: **−11.1 pts (95% range −20.0 to −2.2)**, all of it in voice-note extraction (−33 pts; 5 clips lost, 0 gained). Gate: **NO-GO** on both counts (silent failures, and accuracy past the 2-pt drop limit).
+- **Difference from E6:** with the real voice, 1.2 rarely said "I can't hear the audio" (7 answers vs 65 on synthetic voices). So on real speech the story is mostly "1.3 hands back blank fields and mishears more digits", not "1.3 stopped admitting it can't hear".
+- **Checked by hand:** every failed extraction is a real misheard number (digits added, dropped or repeated) or a 1.3 blank. A few numbers were misheard identically by both versions (e.g. pincode 452089 as 540289), which may be reading slips; they count against both versions equally in the paired test. Blanks can't be explained by misreading.
+- **Limits:** one speaker, one microphone, 45 clips. Recordings are kept private (not committed); results and answers are in the report.
+
+---
+
 ## E6 result: 1.3 hears about as well as 1.2, but fails silently instead of saying so
 
 - **Why we ran it:** Meta's docs say audio understanding in Muse Spark 1.3 "is currently not fully supported" and quality "may be degraded". We wanted to see whether an upgrade gate catches that on its own.
@@ -64,7 +75,7 @@ Artificial Analysis marks **Muse Spark 1.1 as deprecated** ("This model is depre
   - Synthetic TTS voices are cleaner than real voice notes. One run on one day, effort low only.
   - Holm over the 8 failure-type tests leaves the two "all" results significant (3e-6 and 2e-7); the per-language ones are supporting detail.
 
-- **Confirmation planned (E7, pre-registered 27 Oct before any recording):** the same lines read by real people via `web/#/record`, same models and settings, the same failure-type rules unchanged. Prediction: more "confident wrong or blank" on 1.3, p < 0.05. If it fails, E6 is reported as a synthetic-voice result only. Script: `experiments/e7_real_voices.py`.
+- **Confirmed with a real voice (E7, 28 Oct):** see the E7 section below.
 
 ---
 

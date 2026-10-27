@@ -1,0 +1,175 @@
+{
+  "run_dir": "results/e7-real-voices",
+  "rows": [
+    {
+      "slice": "overall",
+      "n": 45,
+      "delta": -0.1111111111111111,
+      "ci": [
+        -0.2,
+        -0.022222222222222223
+      ],
+      "regressions": 5,
+      "improvements": 0,
+      "p": 0.0625
+    },
+    {
+      "slice": "lang=en",
+      "n": 15,
+      "delta": -0.13333333333333333,
+      "ci": [
+        -0.3333333333333333,
+        0.0
+      ],
+      "regressions": 2,
+      "improvements": 0,
+      "p": 0.5
+    },
+    {
+      "slice": "lang=hi",
+      "n": 15,
+      "delta": -0.06666666666666667,
+      "ci": [
+        -0.2,
+        0.0
+      ],
+      "regressions": 1,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "lang=hinglish",
+      "n": 15,
+      "delta": -0.13333333333333333,
+      "ci": [
+        -0.3333333333333333,
+        0.0
+      ],
+      "regressions": 2,
+      "improvements": 0,
+      "p": 0.5
+    },
+    {
+      "slice": "category=classification",
+      "n": 15,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "category=extraction",
+      "n": 15,
+      "delta": -0.3333333333333333,
+      "ci": [
+        -0.6,
+        -0.13333333333333333
+      ],
+      "regressions": 5,
+      "improvements": 0,
+      "p": 0.0625
+    },
+    {
+      "slice": "category=math",
+      "n": 15,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    }
+  ],
+  "tests": [
+    {
+      "flag": "confident wrong or blank",
+      "lang": "all",
+      "tasks": 45,
+      "spark-1.2@low": 6,
+      "spark-1.3@low": 13,
+      "only_spark-1.2@low": 0,
+      "only_spark-1.3@low": 7,
+      "p": 0.015625
+    },
+    {
+      "flag": "confident wrong or blank",
+      "lang": "en",
+      "tasks": 15,
+      "spark-1.2@low": 2,
+      "spark-1.3@low": 3,
+      "only_spark-1.2@low": 0,
+      "only_spark-1.3@low": 1,
+      "p": 1.0
+    },
+    {
+      "flag": "confident wrong or blank",
+      "lang": "hi",
+      "tasks": 15,
+      "spark-1.2@low": 3,
+      "spark-1.3@low": 5,
+      "only_spark-1.2@low": 0,
+      "only_spark-1.3@low": 2,
+      "p": 0.5
+    },
+    {
+      "flag": "confident wrong or blank",
+      "lang": "hinglish",
+      "tasks": 15,
+      "spark-1.2@low": 1,
+      "spark-1.3@low": 5,
+      "only_spark-1.2@low": 0,
+      "only_spark-1.3@low": 4,
+      "p": 0.125
+    },
+    {
+      "flag": "says it can't hear",
+      "lang": "all",
+      "tasks": 45,
+      "spark-1.2@low": 1,
+      "spark-1.3@low": 0,
+      "only_spark-1.2@low": 1,
+      "only_spark-1.3@low": 0,
+      "p": 1.0
+    },
+    {
+      "flag": "says it can't hear",
+      "lang": "en",
+      "tasks": 15,
+      "spark-1.2@low": 0,
+      "spark-1.3@low": 0,
+      "only_spark-1.2@low": 0,
+      "only_spark-1.3@low": 0,
+      "p": 1.0
+    },
+    {
+      "flag": "says it can't hear",
+      "lang": "hi",
+      "tasks": 15,
+      "spark-1.2@low": 0,
+      "spark-1.3@low": 0,
+      "only_spark-1.2@low": 0,
+      "only_spark-1.3@low": 0,
+      "p": 1.0
+    },
+    {
+      "flag": "says it can't hear",
+      "lang": "hinglish",
+      "tasks": 15,
+      "spark-1.2@low": 1,
+      "spark-1.3@low": 0,
+      "only_spark-1.2@low": 1,
+      "only_spark-1.3@low": 0,
+      "p": 1.0
+    }
+  ],
+  "speakers": [
+    "utsav"
+  ],
+  "confirmed": true
+}

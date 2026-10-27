@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
-import type { AudioExample, E6 } from "../data";
-import { BASE, CAND, LANG_LABEL, formatExpected, pval, shortModel } from "../data";
+import type { AudioExample, E6, E7 } from "../data";
+import { BASE, CAND, LANG_LABEL, formatExpected, pts, pval, shortModel } from "../data";
 import { ClipGrid } from "./ClipGrid";
 import { ModeChip, Reveal, Section, Stat, Verdict } from "./ui";
 
@@ -11,7 +11,7 @@ const KIND: Record<string, string> = {
   intent: "Customer request",
 };
 
-export function AudioSection({ e6 }: { e6: E6 }) {
+export function AudioSection({ e6, e7 }: { e6: E6; e7?: E7 }) {
   const acc = (m: string) => e6.accuracy[`${m}|audio`];
   const text = (m: string) => e6.accuracy[`${m}|text`];
   const silent = e6.tests.find((t) => t.flag === "confident wrong or blank" && t.lang === "all");
@@ -108,10 +108,63 @@ export function AudioSection({ e6 }: { e6: E6 }) {
         <Examples examples={e6.examples} />
       </Reveal>
 
+      {e7?.status === "done" && e7.silent && (
+        <div className="mt-16 grid gap-8 border-t-2 border-fg pt-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+          <div>
+            <p className="text-sm font-medium text-muted">Confirmation with a real voice</p>
+            <h3 className="mt-2 text-2xl font-semibold tracking-tight text-balance">
+              {e7.confirmed
+                ? "The same thing happens with a human voice."
+                : "A human voice did not confirm it."}
+            </h3>
+            <p className="mt-3 text-muted">
+              Before recording, we wrote down the prediction and froze the rules. Then a person read{" "}
+              {e7.clips} of the same lines into a microphone, in English, Hindi and Hinglish.
+            </p>
+          </div>
+          <dl className="grid grid-cols-2 gap-6 sm:grid-cols-3">
+            <div>
+              <dt className="text-sm text-muted">Wrong or blank, no warning</dt>
+              <dd className="mt-1 text-3xl font-semibold tracking-tight">
+                {e7.silent.baseline} <span className="text-faint">→</span>{" "}
+                <span className="text-risk">{e7.silent.candidate}</span>
+              </dd>
+              <dd className="text-sm text-muted">
+                of {e7.clips} clips, p = {pval(e7.silent.p)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-muted">Answers with every field blank</dt>
+              <dd className="mt-1 text-3xl font-semibold tracking-tight">
+                {e7.blank_answers?.[BASE] ?? 0} <span className="text-faint">→</span>{" "}
+                <span className="text-risk">{e7.blank_answers?.[CAND] ?? 0}</span>
+              </dd>
+              <dd className="text-sm text-muted">of {(e7.clips ?? 0) * 3} answers</dd>
+            </div>
+            {e7.accuracy && (
+              <div>
+                <dt className="text-sm text-muted">Correct answers</dt>
+                <dd className="mt-1 text-3xl font-semibold tracking-tight text-risk">
+                  {pts(e7.accuracy.delta)} pts
+                </dd>
+                <dd className="text-sm text-muted">
+                  95% range {pts(e7.accuracy.ci[0])} to {pts(e7.accuracy.ci[1])}
+                </dd>
+              </div>
+            )}
+          </dl>
+          <p className="text-sm text-faint lg:col-span-2">
+            One speaker, 45 clips, 3 tries each, so this is a small sample. Some numbers were misheard the
+            same way by both versions, which may be reading slips; those count against both equally. Gate
+            decision on this run: <Verdict decision={e7.decision ?? "inconclusive"} />. The recordings stay
+            private; the answers are in the report.
+          </p>
+        </div>
+      )}
+
       <p className="mt-8 max-w-3xl text-sm text-faint">
-        These clips use text-to-speech voices, which are cleaner than real voice notes. A rerun with recorded
-        human voices is in progress. Reasoning effort low, one run on 27 October 2026. The answer-type rules
-        were written after reading the answers, so treat this as a strong lead until the rerun confirms it.
+        The 135 clips above use text-to-speech voices, which are cleaner than real voice notes. Reasoning
+        effort low, run on 27 October 2026.
       </p>
     </Section>
   );

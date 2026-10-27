@@ -97,7 +97,7 @@ export default function App() {
             {site && (
               <>
                 <Hero site={site} />
-                <AudioSection e6={site.e6} />
+                <AudioSection e6={site.e6} e7={site.e7} />
                 <ScoringSection e1={site.e1} />
                 <CostSection e3={site.e3} />
                 <HowSection />

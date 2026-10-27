@@ -10,7 +10,7 @@ type Check = {
 };
 
 export function Hero({ site }: { site: Site }) {
-  const { e1, e6, e3 } = site;
+  const { e1, e6, e3, e7 } = site;
   const silent = e6.tests.find((t) => t.flag === "confident wrong or blank" && t.lang === "all");
   const std = e3.cost_per_1000 && e3.standard ? e3.cost_per_1000[e3.standard] : null;
   const con = e3.cost_per_1000 && e3.contributor ? e3.cost_per_1000[e3.contributor] : null;
@@ -23,7 +23,11 @@ export function Hero({ site }: { site: Site }) {
       name: "upgrade-gate / voice-notes",
       state: voiceState,
       summary: silent
-        ? `Wrong or blank with no warning: ${silent[BASE]} → ${silent[CAND]} of ${silent.tasks} clips. Accuracy alone was inconclusive.`
+        ? `Wrong or blank with no warning: ${silent[BASE]} → ${silent[CAND]} of ${silent.tasks} clips${
+            e7?.confirmed && e7.silent
+              ? `; ${e7.silent.baseline} → ${e7.silent.candidate} with a real voice`
+              : ""
+          }.`
         : "Accuracy inconclusive.",
       href: "#/report/e6-audio",
     },

@@ -279,13 +279,39 @@ def e3() -> dict:
     return res
 
 
+# ------------------------------------------------------------------ E7 real voices
+
+def e7() -> dict:
+    run = "e7-real-voices"
+    d = os.path.join(RESULTS, run)
+    out_json = os.path.join(ROOT, "experiments", "out", "e7_real_voices.json")
+    if not os.path.exists(os.path.join(d, "scores.jsonl")) or not os.path.exists(out_json):
+        return {"status": "not run"}
+    import e6_audio as ex
+    with open(out_json, encoding="utf-8") as f:
+        res = json.load(f)
+    counts, _, tests = ex.failure_modes(d, tasks_by_id(d))
+    gate = _json(run, "gate.json") or {}
+    main = next(t for t in tests if t["flag"] == "confident wrong or blank" and t["lang"] == "all")
+    overall = next((r for r in res["rows"] if r["slice"] == "overall"), None)
+    return {"status": "done", "speakers": res.get("speakers"), "clips": main["tasks"], **_run_cost(run),
+            "confirmed": res.get("confirmed"), "silent": {"baseline": main[A], "candidate": main[B], "p": main["p"]},
+            "blank_answers": {c: counts[(c, "all", "silent blank")] for c in (A, B)},
+            "accuracy": _slim(overall) if overall else None,
+            "decision": gate.get("decision"), "accuracy_decision": gate.get("accuracy_decision", gate.get("decision"))}
+
+
 # ------------------------------------------------------------------ report view: one file per run
 
 RUNS = [
     ("e6-audio", "Voice notes", "Spoken English, Hindi and Hinglish clips, each with a text twin"),
     ("e1-upgrade", "Text, documents, Hindi", "Maths, extraction, intent, instructions, invoice images and PDFs"),
     ("e3-contributor", "Contributor mode", "Same model, cheaper serving mode"),
+    ("e7-real-voices", "Real voices", "The voice-note lines read aloud by a person (45 clips, English, Hindi, Hinglish)"),
 ]
+# Runs whose audio is a real person's voice: results are published, the recordings are not
+# (the repo becomes public). Pass --publish-real-voice to include them.
+PRIVATE_AUDIO = {"e7-real-voices"}
 
 
 def _attachment(path: str, keep: bool):
@@ -365,6 +391,8 @@ def run_detail(run: str, title: str, blurb: str):
                   else "both pass" if b["pass"] else "both fail")
         interesting = status != "both pass" or b["mode"] != c["mode"]
         att = (t.get("attachments") or [None])[0]
+        if run in PRIVATE_AUDIO and "--publish-real-voice" not in sys.argv:
+            att = None
         rows.append({
             "id": tid, "category": t["category"], "lang": t["lang"], "modality": t["modality"],
             "prompt": t["prompt"][:900], "transcript": (t.get("meta") or {}).get("transcript"),
@@ -397,7 +425,7 @@ def main() -> None:
     site = {
         "generated_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "spend": {"total_usd": round(s["local_spent_usd"] + s["canary_spent_usd"], 2), "limit_usd": s["limit_usd"]},
-        "e1": e1(), "e6": e6(), "e3": e3(),
+        "e1": e1(), "e6": e6(), "e3": e3(), "e7": e7(),
     }
     path = os.path.join(OUT_DIR, "data", "site.json")
     with open(path, "w", encoding="utf-8") as f:

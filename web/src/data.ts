@@ -103,12 +103,25 @@ export type E3 = {
   cost_per_1000?: Record<string, number>;
 };
 
+export type E7 = {
+  status: "done" | "not run";
+  speakers?: string[];
+  clips?: number;
+  confirmed?: boolean;
+  silent?: { baseline: number; candidate: number; p: number };
+  blank_answers?: Record<string, number>;
+  accuracy?: Comparison | null;
+  decision?: string;
+  fresh_cost_usd?: number;
+};
+
 export type Site = {
   generated_utc: string;
   spend: { total_usd: number; limit_usd: number };
   e1: E1;
   e6: E6;
   e3: E3;
+  e7?: E7;
 };
 
 export async function loadSite(): Promise<Site> {

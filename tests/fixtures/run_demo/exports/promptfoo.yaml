@@ -1,0 +1,156 @@
+# Supply a provider: promptfoo eval -c promptfoo.yaml --providers <provider-id>
+# Image tasks: configure a multimodal prompt template using vars.attachments.
+description: 'Upgrade Gate confirmed regressions: run_demo'
+prompts:
+- '{{prompt}}'
+tests:
+- description: demo-000 / doc-image / hi
+  vars:
+    prompt: संलग्न चालान पढ़ें। invoice_id और total_inr JSON में दें।
+    attachments:
+    - tests/fixtures/run_demo/assets/demo-000.svg
+  assert:
+  - type: is-json
+  - type: javascript
+    value: "const canonical = x => Array.isArray(x) ? x.map(canonical) :\n  x !==\
+      \ null && typeof x === 'object' ? Object.fromEntries(Object.keys(x).sort().map(k\
+      \ => [k, canonical(x[k])])) : x;\nconst equal = (a,b) => JSON.stringify(canonical(a))\
+      \ === JSON.stringify(canonical(b));\nconst expected = {\"invoice_id\": \"INV-0000\"\
+      , \"total_inr\": 1200};\ntry { const actual = JSON.parse(output); return Object.keys(expected).every(k\
+      \ => Object.prototype.hasOwnProperty.call(actual,k) && equal(actual[k], expected[k]));\
+      \ } catch { return false; }"
+- description: demo-001 / doc-image / en
+  vars:
+    prompt: Read the attached invoice. Return invoice_id and total_inr as JSON.
+    attachments:
+    - tests/fixtures/run_demo/assets/demo-001.svg
+  assert:
+  - type: is-json
+  - type: javascript
+    value: "const canonical = x => Array.isArray(x) ? x.map(canonical) :\n  x !==\
+      \ null && typeof x === 'object' ? Object.fromEntries(Object.keys(x).sort().map(k\
+      \ => [k, canonical(x[k])])) : x;\nconst equal = (a,b) => JSON.stringify(canonical(a))\
+      \ === JSON.stringify(canonical(b));\nconst expected = {\"invoice_id\": \"INV-0001\"\
+      , \"total_inr\": 1217};\ntry { const actual = JSON.parse(output); return Object.keys(expected).every(k\
+      \ => Object.prototype.hasOwnProperty.call(actual,k) && equal(actual[k], expected[k]));\
+      \ } catch { return false; }"
+- description: demo-002 / doc-image / hinglish
+  vars:
+    prompt: Invoice image padho aur invoice_id, total_inr JSON mein do.
+    attachments:
+    - tests/fixtures/run_demo/assets/demo-002.svg
+  assert:
+  - type: is-json
+  - type: javascript
+    value: "const canonical = x => Array.isArray(x) ? x.map(canonical) :\n  x !==\
+      \ null && typeof x === 'object' ? Object.fromEntries(Object.keys(x).sort().map(k\
+      \ => [k, canonical(x[k])])) : x;\nconst equal = (a,b) => JSON.stringify(canonical(a))\
+      \ === JSON.stringify(canonical(b));\nconst expected = {\"invoice_id\": \"INV-0002\"\
+      , \"total_inr\": 1234};\ntry { const actual = JSON.parse(output); return Object.keys(expected).every(k\
+      \ => Object.prototype.hasOwnProperty.call(actual,k) && equal(actual[k], expected[k]));\
+      \ } catch { return false; }"
+- description: demo-004 / doc-image / en
+  vars:
+    prompt: Read the attached invoice. Return invoice_id and total_inr as JSON.
+    attachments:
+    - tests/fixtures/run_demo/assets/demo-004.svg
+  assert:
+  - type: is-json
+  - type: javascript
+    value: "const canonical = x => Array.isArray(x) ? x.map(canonical) :\n  x !==\
+      \ null && typeof x === 'object' ? Object.fromEntries(Object.keys(x).sort().map(k\
+      \ => [k, canonical(x[k])])) : x;\nconst equal = (a,b) => JSON.stringify(canonical(a))\
+      \ === JSON.stringify(canonical(b));\nconst expected = {\"invoice_id\": \"INV-0004\"\
+      , \"total_inr\": 1268};\ntry { const actual = JSON.parse(output); return Object.keys(expected).every(k\
+      \ => Object.prototype.hasOwnProperty.call(actual,k) && equal(actual[k], expected[k]));\
+      \ } catch { return false; }"
+- description: demo-005 / doc-image / hinglish
+  vars:
+    prompt: Invoice image padho aur invoice_id, total_inr JSON mein do.
+    attachments:
+    - tests/fixtures/run_demo/assets/demo-005.svg
+  assert:
+  - type: is-json
+  - type: javascript
+    value: "const canonical = x => Array.isArray(x) ? x.map(canonical) :\n  x !==\
+      \ null && typeof x === 'object' ? Object.fromEntries(Object.keys(x).sort().map(k\
+      \ => [k, canonical(x[k])])) : x;\nconst equal = (a,b) => JSON.stringify(canonical(a))\
+      \ === JSON.stringify(canonical(b));\nconst expected = {\"invoice_id\": \"INV-0005\"\
+      , \"total_inr\": 1285};\ntry { const actual = JSON.parse(output); return Object.keys(expected).every(k\
+      \ => Object.prototype.hasOwnProperty.call(actual,k) && equal(actual[k], expected[k]));\
+      \ } catch { return false; }"
+- description: demo-006 / doc-image / hi
+  vars:
+    prompt: संलग्न चालान पढ़ें। invoice_id और total_inr JSON में दें।
+    attachments:
+    - tests/fixtures/run_demo/assets/demo-006.svg
+  assert:
+  - type: is-json
+  - type: javascript
+    value: "const canonical = x => Array.isArray(x) ? x.map(canonical) :\n  x !==\
+      \ null && typeof x === 'object' ? Object.fromEntries(Object.keys(x).sort().map(k\
+      \ => [k, canonical(x[k])])) : x;\nconst equal = (a,b) => JSON.stringify(canonical(a))\
+      \ === JSON.stringify(canonical(b));\nconst expected = {\"invoice_id\": \"INV-0006\"\
+      , \"total_inr\": 1302};\ntry { const actual = JSON.parse(output); return Object.keys(expected).every(k\
+      \ => Object.prototype.hasOwnProperty.call(actual,k) && equal(actual[k], expected[k]));\
+      \ } catch { return false; }"
+- description: demo-009 / doc-image / hi
+  vars:
+    prompt: संलग्न चालान पढ़ें। invoice_id और total_inr JSON में दें।
+    attachments:
+    - tests/fixtures/run_demo/assets/demo-009.svg
+  assert:
+  - type: is-json
+  - type: javascript
+    value: "const canonical = x => Array.isArray(x) ? x.map(canonical) :\n  x !==\
+      \ null && typeof x === 'object' ? Object.fromEntries(Object.keys(x).sort().map(k\
+      \ => [k, canonical(x[k])])) : x;\nconst equal = (a,b) => JSON.stringify(canonical(a))\
+      \ === JSON.stringify(canonical(b));\nconst expected = {\"invoice_id\": \"INV-0009\"\
+      , \"total_inr\": 1353};\ntry { const actual = JSON.parse(output); return Object.keys(expected).every(k\
+      \ => Object.prototype.hasOwnProperty.call(actual,k) && equal(actual[k], expected[k]));\
+      \ } catch { return false; }"
+- description: demo-012 / doc-image / hi
+  vars:
+    prompt: संलग्न चालान पढ़ें। invoice_id और total_inr JSON में दें।
+    attachments:
+    - tests/fixtures/run_demo/assets/demo-012.svg
+  assert:
+  - type: is-json
+  - type: javascript
+    value: "const canonical = x => Array.isArray(x) ? x.map(canonical) :\n  x !==\
+      \ null && typeof x === 'object' ? Object.fromEntries(Object.keys(x).sort().map(k\
+      \ => [k, canonical(x[k])])) : x;\nconst equal = (a,b) => JSON.stringify(canonical(a))\
+      \ === JSON.stringify(canonical(b));\nconst expected = {\"invoice_id\": \"INV-0012\"\
+      , \"total_inr\": 1404};\ntry { const actual = JSON.parse(output); return Object.keys(expected).every(k\
+      \ => Object.prototype.hasOwnProperty.call(actual,k) && equal(actual[k], expected[k]));\
+      \ } catch { return false; }"
+- description: demo-015 / doc-image / hi
+  vars:
+    prompt: संलग्न चालान पढ़ें। invoice_id और total_inr JSON में दें।
+    attachments:
+    - tests/fixtures/run_demo/assets/demo-015.svg
+  assert:
+  - type: is-json
+  - type: javascript
+    value: "const canonical = x => Array.isArray(x) ? x.map(canonical) :\n  x !==\
+      \ null && typeof x === 'object' ? Object.fromEntries(Object.keys(x).sort().map(k\
+      \ => [k, canonical(x[k])])) : x;\nconst equal = (a,b) => JSON.stringify(canonical(a))\
+      \ === JSON.stringify(canonical(b));\nconst expected = {\"invoice_id\": \"INV-0015\"\
+      , \"total_inr\": 1455};\ntry { const actual = JSON.parse(output); return Object.keys(expected).every(k\
+      \ => Object.prototype.hasOwnProperty.call(actual,k) && equal(actual[k], expected[k]));\
+      \ } catch { return false; }"
+- description: demo-003 / doc-image / hi
+  vars:
+    prompt: संलग्न चालान पढ़ें। invoice_id और total_inr JSON में दें।
+    attachments:
+    - tests/fixtures/run_demo/assets/demo-003.svg
+  assert:
+  - type: is-json
+  - type: javascript
+    value: "const canonical = x => Array.isArray(x) ? x.map(canonical) :\n  x !==\
+      \ null && typeof x === 'object' ? Object.fromEntries(Object.keys(x).sort().map(k\
+      \ => [k, canonical(x[k])])) : x;\nconst equal = (a,b) => JSON.stringify(canonical(a))\
+      \ === JSON.stringify(canonical(b));\nconst expected = {\"invoice_id\": \"INV-0003\"\
+      , \"total_inr\": 1251};\ntry { const actual = JSON.parse(output); return Object.keys(expected).every(k\
+      \ => Object.prototype.hasOwnProperty.call(actual,k) && equal(actual[k], expected[k]));\
+      \ } catch { return false; }"

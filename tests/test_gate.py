@@ -61,3 +61,29 @@ def test_horizon_and_custom_alpha(tmp_path):
     assert result['thresholds']['confidence_level']==.999
     assert result['decision']=='inconclusive'
     assert 'more independent tasks' in result['reasons'][0]
+
+
+def test_fixture_matches_shared_shapes_and_live_scorers():
+    from upgrade_gate.schema import RunInfo, Task, ResponseRecord, ScoreRecord
+    from upgrade_gate.scorers import score_text
+    RunInfo(**json.loads((FIXTURE/'run.json').read_text()))
+    tasks = {row['id']:row for row in read_jsonl(str(FIXTURE/'tasks.jsonl'))}
+    scores = {(row['task_id'],row['candidate'],row['repeat']):row for row in read_jsonl(str(FIXTURE/'scores.jsonl'))}
+    for task in tasks.values():
+        Task(**task)
+    for response in read_jsonl(str(FIXTURE/'responses.jsonl')):
+        ResponseRecord(**response)
+        score = scores[(response['task_id'],response['candidate'],response['repeat'])]
+        ScoreRecord(**score)
+        assert score_text(tasks[response['task_id']],response['text'])[0] == score['passed']
+
+
+def test_reverse_response_order_and_authoritative_scores(tmp_path):
+    root = copy_run(tmp_path)
+    responses = list(read_jsonl(str(root/'responses.jsonl')))
+    write_jsonl(str(root/'responses.jsonl'),reversed(responses))
+    gate = evaluate_run(str(root),'spark-1.2','spark-1.3')
+    case = next(row for row in gate['regressions'] if row['task_id']=='demo-000')
+    assert json.loads(case['base_text'])['total_inr']==1200
+    assert json.loads(case['cand_text'])['total_inr']==1300
+    assert case['evidence']['cand_passes']==0

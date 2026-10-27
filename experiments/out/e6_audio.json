@@ -1,0 +1,555 @@
+{
+  "run_dir": "results/e6-audio",
+  "rows": [
+    {
+      "slice": "audio: overall",
+      "n": 134,
+      "delta": -0.022388059701492536,
+      "ci": [
+        -0.09701492537313433,
+        0.05223880597014925
+      ],
+      "regressions": 14,
+      "improvements": 11,
+      "p": 0.6900379657745361
+    },
+    {
+      "slice": "audio: lang=en",
+      "n": 45,
+      "delta": 0.06666666666666667,
+      "ci": [
+        -0.06666666666666667,
+        0.2
+      ],
+      "regressions": 3,
+      "improvements": 6,
+      "p": 0.5078125
+    },
+    {
+      "slice": "audio: lang=hi",
+      "n": 45,
+      "delta": -0.1111111111111111,
+      "ci": [
+        -0.2222222222222222,
+        0.0
+      ],
+      "regressions": 6,
+      "improvements": 1,
+      "p": 0.125
+    },
+    {
+      "slice": "audio: lang=hinglish",
+      "n": 44,
+      "delta": -0.022727272727272728,
+      "ci": [
+        -0.1590909090909091,
+        0.11363636363636363
+      ],
+      "regressions": 5,
+      "improvements": 4,
+      "p": 1.0
+    },
+    {
+      "slice": "audio: category=classification",
+      "n": 45,
+      "delta": 0.044444444444444446,
+      "ci": [
+        0.0,
+        0.1111111111111111
+      ],
+      "regressions": 0,
+      "improvements": 2,
+      "p": 0.5
+    },
+    {
+      "slice": "audio: category=extraction",
+      "n": 44,
+      "delta": -0.18181818181818182,
+      "ci": [
+        -0.3409090909090909,
+        -0.022727272727272728
+      ],
+      "regressions": 11,
+      "improvements": 3,
+      "p": 0.057373046875
+    },
+    {
+      "slice": "audio: category=math",
+      "n": 45,
+      "delta": 0.06666666666666667,
+      "ci": [
+        -0.06666666666666667,
+        0.2
+      ],
+      "regressions": 3,
+      "improvements": 6,
+      "p": 0.5078125
+    },
+    {
+      "slice": "text: overall",
+      "n": 135,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "text: lang=en",
+      "n": 45,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "text: lang=hi",
+      "n": 45,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "text: lang=hinglish",
+      "n": 45,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "text: category=classification",
+      "n": 45,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "text: category=extraction",
+      "n": 45,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "text: category=math",
+      "n": 45,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    }
+  ],
+  "strict_rows": [
+    {
+      "slice": "audio: overall",
+      "n": 134,
+      "delta": -0.007462686567164179,
+      "ci": [
+        -0.08208955223880597,
+        0.06716417910447761
+      ],
+      "regressions": 13,
+      "improvements": 12,
+      "p": 1.0
+    },
+    {
+      "slice": "audio: lang=en",
+      "n": 45,
+      "delta": 0.06666666666666667,
+      "ci": [
+        -0.06666666666666667,
+        0.2
+      ],
+      "regressions": 3,
+      "improvements": 6,
+      "p": 0.5078125
+    },
+    {
+      "slice": "audio: lang=hi",
+      "n": 45,
+      "delta": -0.1111111111111111,
+      "ci": [
+        -0.2222222222222222,
+        0.0
+      ],
+      "regressions": 6,
+      "improvements": 1,
+      "p": 0.125
+    },
+    {
+      "slice": "audio: lang=hinglish",
+      "n": 44,
+      "delta": 0.022727272727272728,
+      "ci": [
+        -0.11363636363636363,
+        0.1590909090909091
+      ],
+      "regressions": 4,
+      "improvements": 5,
+      "p": 1.0
+    },
+    {
+      "slice": "audio: category=classification",
+      "n": 45,
+      "delta": 0.044444444444444446,
+      "ci": [
+        0.0,
+        0.1111111111111111
+      ],
+      "regressions": 0,
+      "improvements": 2,
+      "p": 0.5
+    },
+    {
+      "slice": "audio: category=extraction",
+      "n": 44,
+      "delta": -0.18181818181818182,
+      "ci": [
+        -0.3409090909090909,
+        -0.022727272727272728
+      ],
+      "regressions": 11,
+      "improvements": 3,
+      "p": 0.057373046875
+    },
+    {
+      "slice": "audio: category=math",
+      "n": 45,
+      "delta": 0.1111111111111111,
+      "ci": [
+        -0.022222222222222223,
+        0.24444444444444444
+      ],
+      "regressions": 2,
+      "improvements": 7,
+      "p": 0.1796875
+    },
+    {
+      "slice": "text: overall",
+      "n": 135,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "text: lang=en",
+      "n": 45,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "text: lang=hi",
+      "n": 45,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "text: lang=hinglish",
+      "n": 45,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "text: category=classification",
+      "n": 45,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "text: category=extraction",
+      "n": 45,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "text: category=math",
+      "n": 45,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    }
+  ],
+  "listening_failures": {
+    "spark-1.2@low": [
+      "audio-synth-extract-00-en",
+      "audio-synth-extract-00-hi",
+      "audio-synth-extract-01-hi",
+      "audio-synth-extract-01-hinglish",
+      "audio-synth-extract-02-hi",
+      "audio-synth-extract-03-en",
+      "audio-synth-extract-04-en",
+      "audio-synth-extract-04-hi",
+      "audio-synth-extract-05-en",
+      "audio-synth-extract-05-hinglish",
+      "audio-synth-extract-06-en",
+      "audio-synth-extract-06-hi",
+      "audio-synth-extract-06-hinglish",
+      "audio-synth-extract-07-en",
+      "audio-synth-extract-07-hi",
+      "audio-synth-extract-08-hi",
+      "audio-synth-extract-09-en",
+      "audio-synth-extract-09-hi",
+      "audio-synth-extract-09-hinglish",
+      "audio-synth-extract-10-en",
+      "audio-synth-extract-10-hinglish",
+      "audio-synth-extract-11-en",
+      "audio-synth-extract-11-hinglish",
+      "audio-synth-extract-13-en",
+      "audio-synth-extract-13-hi",
+      "audio-synth-extract-13-hinglish",
+      "audio-synth-intent-01-en",
+      "audio-synth-intent-02-en",
+      "audio-synth-intent-04-en",
+      "audio-synth-intent-07-en",
+      "audio-synth-math-00-en",
+      "audio-synth-math-00-hinglish",
+      "audio-synth-math-01-en",
+      "audio-synth-math-03-en",
+      "audio-synth-math-04-hinglish",
+      "audio-synth-math-06-en",
+      "audio-synth-math-06-hinglish",
+      "audio-synth-math-08-hinglish",
+      "audio-synth-math-10-hinglish",
+      "audio-synth-math-13-en",
+      "audio-synth-math-13-hinglish",
+      "audio-synth-math-14-en"
+    ],
+    "spark-1.3@low": [
+      "audio-synth-extract-00-hi",
+      "audio-synth-extract-01-hi",
+      "audio-synth-extract-01-hinglish",
+      "audio-synth-extract-02-hi",
+      "audio-synth-extract-02-hinglish",
+      "audio-synth-extract-03-en",
+      "audio-synth-extract-03-hi",
+      "audio-synth-extract-04-en",
+      "audio-synth-extract-04-hi",
+      "audio-synth-extract-04-hinglish",
+      "audio-synth-extract-05-en",
+      "audio-synth-extract-05-hinglish",
+      "audio-synth-extract-06-en",
+      "audio-synth-extract-06-hinglish",
+      "audio-synth-extract-07-hi",
+      "audio-synth-extract-08-en",
+      "audio-synth-extract-08-hi",
+      "audio-synth-extract-09-en",
+      "audio-synth-extract-09-hi",
+      "audio-synth-extract-09-hinglish",
+      "audio-synth-extract-10-en",
+      "audio-synth-extract-10-hi",
+      "audio-synth-extract-10-hinglish",
+      "audio-synth-extract-11-en",
+      "audio-synth-extract-12-en",
+      "audio-synth-extract-12-hi",
+      "audio-synth-extract-12-hinglish",
+      "audio-synth-extract-13-en",
+      "audio-synth-extract-13-hi",
+      "audio-synth-extract-13-hinglish",
+      "audio-synth-extract-14-en",
+      "audio-synth-extract-14-hi",
+      "audio-synth-extract-14-hinglish",
+      "audio-synth-intent-01-en",
+      "audio-synth-intent-02-en",
+      "audio-synth-math-00-en",
+      "audio-synth-math-00-hinglish",
+      "audio-synth-math-01-en",
+      "audio-synth-math-06-hinglish",
+      "audio-synth-math-07-hi",
+      "audio-synth-math-07-hinglish",
+      "audio-synth-math-08-hi",
+      "audio-synth-math-13-en",
+      "audio-synth-math-14-en"
+    ]
+  },
+  "failure_modes": {
+    "spark-1.2@low|en|correct": 78,
+    "spark-1.2@low|all|correct": 278,
+    "spark-1.2@low|hinglish|correct": 94,
+    "spark-1.3@low|hi|correct": 94,
+    "spark-1.3@low|all|correct": 274,
+    "spark-1.3@low|hinglish|correct": 92,
+    "spark-1.2@low|hi|correct": 106,
+    "spark-1.3@low|en|correct": 88,
+    "spark-1.3@low|en|confident wrong": 29,
+    "spark-1.3@low|all|confident wrong": 90,
+    "spark-1.3@low|hinglish|confident wrong": 26,
+    "spark-1.3@low|hinglish|silent blank": 10,
+    "spark-1.3@low|all|silent blank": 30,
+    "spark-1.2@low|hi|confident wrong": 27,
+    "spark-1.2@low|all|confident wrong": 60,
+    "spark-1.2@low|hinglish|no answer (token limit)": 2,
+    "spark-1.2@low|all|no answer (token limit)": 2,
+    "spark-1.2@low|hinglish|confident wrong": 16,
+    "spark-1.3@low|en|silent blank": 15,
+    "spark-1.3@low|hi|confident wrong": 35,
+    "spark-1.3@low|en|no answer (token limit)": 2,
+    "spark-1.3@low|all|no answer (token limit)": 7,
+    "spark-1.2@low|hinglish|says it can't hear": 23,
+    "spark-1.2@low|all|says it can't hear": 65,
+    "spark-1.2@low|en|says it can't hear": 40,
+    "spark-1.3@low|hinglish|no answer (token limit)": 5,
+    "spark-1.2@low|en|confident wrong": 17,
+    "spark-1.3@low|en|says it can't hear": 1,
+    "spark-1.3@low|all|says it can't hear": 4,
+    "spark-1.2@low|hi|says it can't hear": 2,
+    "spark-1.3@low|hinglish|says it can't hear": 2,
+    "spark-1.3@low|hi|silent blank": 5,
+    "spark-1.3@low|hi|says it can't hear": 1
+  },
+  "deny_with_answer": {
+    "spark-1.2@low": 11
+  },
+  "failure_tests": [
+    {
+      "flag": "confident wrong or blank",
+      "lang": "all",
+      "tasks": 135,
+      "spark-1.2@low": 18,
+      "spark-1.3@low": 42,
+      "only_spark-1.2@low": 2,
+      "only_spark-1.3@low": 26,
+      "p": 3.032386302947998e-06
+    },
+    {
+      "flag": "confident wrong or blank",
+      "lang": "en",
+      "tasks": 45,
+      "spark-1.2@low": 6,
+      "spark-1.3@low": 17,
+      "only_spark-1.2@low": 0,
+      "only_spark-1.3@low": 11,
+      "p": 0.0009765625
+    },
+    {
+      "flag": "confident wrong or blank",
+      "lang": "hi",
+      "tasks": 45,
+      "spark-1.2@low": 9,
+      "spark-1.3@low": 14,
+      "only_spark-1.2@low": 1,
+      "only_spark-1.3@low": 6,
+      "p": 0.125
+    },
+    {
+      "flag": "confident wrong or blank",
+      "lang": "hinglish",
+      "tasks": 45,
+      "spark-1.2@low": 3,
+      "spark-1.3@low": 11,
+      "only_spark-1.2@low": 1,
+      "only_spark-1.3@low": 9,
+      "p": 0.021484375
+    },
+    {
+      "flag": "says it can't hear",
+      "lang": "all",
+      "tasks": 135,
+      "spark-1.2@low": 23,
+      "spark-1.3@low": 0,
+      "only_spark-1.2@low": 23,
+      "only_spark-1.3@low": 0,
+      "p": 2.384185791015625e-07
+    },
+    {
+      "flag": "says it can't hear",
+      "lang": "en",
+      "tasks": 45,
+      "spark-1.2@low": 14,
+      "spark-1.3@low": 0,
+      "only_spark-1.2@low": 14,
+      "only_spark-1.3@low": 0,
+      "p": 0.0001220703125
+    },
+    {
+      "flag": "says it can't hear",
+      "lang": "hi",
+      "tasks": 45,
+      "spark-1.2@low": 0,
+      "spark-1.3@low": 0,
+      "only_spark-1.2@low": 0,
+      "only_spark-1.3@low": 0,
+      "p": 1.0
+    },
+    {
+      "flag": "says it can't hear",
+      "lang": "hinglish",
+      "tasks": 45,
+      "spark-1.2@low": 9,
+      "spark-1.3@low": 0,
+      "only_spark-1.2@low": 9,
+      "only_spark-1.3@low": 0,
+      "p": 0.00390625
+    }
+  ]
+}

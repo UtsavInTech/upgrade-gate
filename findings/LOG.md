@@ -36,6 +36,27 @@ Artificial Analysis marks **Muse Spark 1.1 as deprecated** ("This model is depre
 
 ---
 
+## E6 result: 1.3 hears about as well as 1.2, but fails silently instead of saying so
+
+- **Why we ran it:** Meta's docs say audio understanding in Muse Spark 1.3 "is currently not fully supported" and quality "may be degraded". We wanted to see whether an upgrade gate catches that on its own.
+- **Run:** Oct 27. 135 synthetic voice clips (45 each English, Hindi, Hinglish; spoken math, a customer voice note with order number + pincode + city, intent of a voice note) made with macOS text-to-speech (voices Tara, Rishi, Lekha), each with a **text twin** of the same words. Spark 1.2 vs 1.3, effort low, 3 repeats: 1,620 calls, **$3.34**, 9 answers cut off by the 4,000-token limit (7 on 1.3). Tables: [../experiments/out/e6_audio.md](../experiments/out/e6_audio.md).
+- **Text twins:** both versions 100% correct. So every audio failure is a listening problem, not a reasoning one.
+- **Accuracy on audio:** basically the same: 278 vs 274 of 405 answers correct. Per task: -2.2 pts, CI -9.7 to +5.2. The gate says **INCONCLUSIVE** and would need ~9,000 more tasks to decide on accuracy alone. Slices: Hindi -11.1 pts (p = 0.13), voice-note extraction -18.2 pts (p = 0.06), both not significant.
+- **What changed is how they fail** (per task, majority of 3 repeats, exact McNemar):
+  - "Confident wrong or blank" answers: **18 → 42 tasks, p = 3e-6.** 1.3 returns wrong digits, or JSON with every field empty (`{"order_number": "", "pincode": "", "city": ""}`), with no warning.
+  - "I can't listen to audio": **23 → 0 tasks, p = 2e-7.** 1.2 often says it can't hear the clip. In 11 answers it says that **and then quotes the spoken words and answers correctly** ("based on the text you provided…"). It hears the audio but believes the user typed it.
+  - 1.2 never says this on Hindi clips; it happens on English (14 tasks) and Hinglish (9).
+- **What this means:**
+  1. On accuracy the upgrade looks neutral. In a product it isn't: 1.2's failures can be detected (it says it can't hear) while 1.3's look like valid answers. A voice-note bot on 1.3 would store wrong or empty order numbers without flagging anything.
+  2. **Accuracy-only gates miss this.** The failure-type shift is significant with 135 tasks, where the accuracy test needs about 9,000. Upgrade gates should track *abstain vs confident-wrong*, not just pass rate.
+  3. It is consistent with Meta's warning, but the problem we measured is not "1.3 hears worse". It is "1.3 stopped admitting when it hasn't understood".
+- **Caveats:**
+  - The failure-type rules (the "can't hear" pattern, "all fields blank") were written after reading the answers. That makes this exploratory. To confirm it, rerun on fresh clips (new seed, different speaking rate) with the rules frozen first. Cost ≈ $3.
+  - Synthetic TTS voices are cleaner than real voice notes. One run on one day, effort low only.
+  - Holm over the 8 failure-type tests leaves the two "all" results significant (3e-6 and 2e-7); the per-language ones are supporting detail.
+
+---
+
 ## H1: Judge-version bias in upgrade gates
 
 - **Status:** planned (sharpened after literature check)

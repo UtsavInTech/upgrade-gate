@@ -12,7 +12,8 @@ Edit freely; these are starting points in your voice. Post the X thread with the
 > First result surprised me: on voice notes (English, Hindi, Hinglish), Spark 1.3 gets about as many right
 > as 1.2, but when it misunderstands it **stops saying "I can't hear this"** and returns wrong or blank
 > answers instead (18 → 42 of 135 clips). I re-ran it on my own recorded voice with the prediction written
-> down first, and it held (6 → 13 of 45). It runs as a GitHub check: the PR that bumps the model fails and
+> down first: accuracy fell 11 points and blank answers appeared only on 1.3 (the silent-failure rise is
+> borderline at that size). It runs as a GitHub check: the PR that bumps the model fails and
 > the deploy step is skipped.
 >
 > If you're already calling Spark in your project, could you try it on 20–50 of your own prompts? It takes
@@ -42,11 +43,11 @@ Edit freely; these are starting points in your voice. Post the X thread with the
 > Somwar vs Somvar.
 
 **Post 4**
-> Then we recorded 45 of the lines in a real voice, with the prediction written down first. It held:
-> wrong-or-blank 6 → 13, and accuracy fell 11 points.
+> Then we recorded 45 of the lines in a real voice, with the prediction written down first. Accuracy fell
+> 11 points and 1.3 started returning blank fields. (The wrong-or-blank rise is borderline at 45 clips.)
 >
 > Also: on voice notes, giving 1.3 *more* reasoning effort made it worse (73% → 59%) at 6× the cost.
-> It talks itself into "I can't hear this". For voice input, use minimal effort.
+> It talks itself into "I can't hear this". Worth testing minimal effort first for voice input.
 
 **Post 5** (attach a screenshot of the PR checks: two red, one green, deploy skipped)
 > It runs as a GitHub check. The PR that bumps the model fails, and the deploy never runs.

@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-10-27T19:48:00Z",
+ "generated_utc": "2026-10-27T21:37:11Z",
  "spend": {
   "total_usd": 19.78,
   "limit_usd": 90.0
@@ -2374,6 +2374,21 @@
   "calls": 270,
   "fresh_cost_usd": 0.7776,
   "reused_answers": 0,
+  "items": {
+   "n": 15,
+   "worse": 5,
+   "better": 0,
+   "p": 0.0625
+  },
+  "blank_clips": {
+   "baseline": 0,
+   "candidate": 6,
+   "p": 0.03125
+  },
+  "wrong_only_clips": {
+   "baseline": 6,
+   "candidate": 6
+  },
   "confirmed": true,
   "silent": {
    "baseline": 6,

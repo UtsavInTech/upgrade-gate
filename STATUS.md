@@ -59,10 +59,10 @@ Task packs (public data, known answers) ──► Adaptive runner ──► Meta
 |---|---|---|---|
 | **E6 voice notes** | Does 1.3 listen worse than 1.2 (Meta's docs warn about 1.3 audio)? | Same accuracy (278 vs 274 of 405), but answers that are **wrong or blank with no warning rose 18 → 42 of 135 clips, p = 3e-6**. 1.2 often says "I can't hear the audio" (23 clips, sometimes while quoting the speech); 1.3 never does. Accuracy-only gate: INCONCLUSIVE (~9,000 more clips needed). | $3.34 |
 | **E1 text, docs, Hindi** | 1.2 → 1.3 on 1,325 tasks × 3 tries | First scorer said **+1.1 pts, p = 6e-5**. Reading answers: 1.2 was right in other spellings (Somwar/Somvar). Content scoring: **0.0 change**. GO. | $14.55 |
-| **E7 real voice** | Does E6 hold with a person's voice? (pre-registered) | **Confirmed:** silent failures 6 → 13 of 45 (p = 0.016), all-blank answers 0 → 18, accuracy −11 pts. Gate NO-GO. | $0.78 |
+| **E7 real voice** | Does E6 hold with a person's voice? (pre-registered) | **Partly.** Accuracy −11 pts (gate NO-GO); blank clips 0 → 6. Wrong-or-blank 6 → 13 per clip (p = 0.016) but borderline by item (5 vs 0, p = 0.06); filled-in wrong 6 → 6. | $0.78 |
 | **E4 effort ladder** | Is more reasoning effort ever worse? | **Yes, on voice clips:** 72.8% (minimal) → 58.5% (xhigh), p = 0.0009; "can't hear" 0 → 44; 6× the cost. Text: 100% at every level. | $0.64 |
 | **E2 judge bias** | Does a judge go easy on its own version? | **No** (with a reference answer): 0 false passes of ~250 wrong answers for either judge. | $0.06 |
-| **E3 Contributor mode** | Same model at ~1/18 the price: same quality? | **Identical** (3,971 / 3,975 each). $0.10 vs $1.80 per 1,000 tasks. GO. | $0.40 |
+| **E3 Contributor mode** | Same model at ~1/18 the price: same quality? | **Same pass/fail on every task** (3,971 / 3,975 each; answer text not compared). $0.10 vs $1.80 per 1,000 tasks. GO. | $0.40 |
 
 Details and caveats: [findings/LOG.md](findings/LOG.md). Tables: `experiments/out/`.
 
@@ -87,7 +87,7 @@ Details and caveats: [findings/LOG.md](findings/LOG.md). Tables: `experiments/ou
 3. **Pinned-model drift (canary)** — needs ~8 days of data.
 
 ## Open items
-- [x] E7 real-voice confirmation (confirmed), E4 effort ladder (finding), E2 judge bias (null)
+- [x] E7 real-voice rerun (accuracy drop + blanks; silent-failure rise borderline by item), E4 effort ladder (post-hoc strong trend), E2 judge bias (null)
 - [x] Gate checks silent failures itself, per input type (voice notes: NO-GO); bring-your-own-tasks
 - [x] Real blocked upgrade: PR `upgrade/spark-1.3` → voice-notes ❌, real-voices ❌, text-and-documents ✅, deploy skipped (28 Oct)
 - [x] Council review fixes: audio-only headlines, "wrong, no warning" label, honest E4 wording, synced README/demo/screenshots

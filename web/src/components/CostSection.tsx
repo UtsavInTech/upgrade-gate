@@ -26,14 +26,15 @@ export function CostSection({ e3 }: { e3: E3 }) {
       eyebrow="Contributor mode · 7,950 calls"
       title={
         <>
-          Same answers, <span className="text-go">1/{ratio}</span> of the cost.
+          Same scores, <span className="text-go">1/{ratio}</span> of the cost.
         </>
       }
       lede={
         <>
           Contributor mode serves the same Spark 1.3 at a lower price, in exchange for letting Meta learn from
-          the traffic. On our 1,325 tasks it gave exactly the same results. For synthetic or public data that
-          is a free saving; for customer data it is a policy decision.
+          the traffic. On our 1,325 tasks it passed and failed exactly the same tasks (we compared scores, not
+          answer text). For synthetic or public data that is a free saving; for customer data it is a policy
+          decision.
         </>
       }
     >

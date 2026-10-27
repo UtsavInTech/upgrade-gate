@@ -110,6 +110,9 @@ export type E7 = {
   confirmed?: boolean;
   silent?: { baseline: number; candidate: number; p: number };
   blank_answers?: Record<string, number>;
+  items?: { n: number; worse: number; better: number; p: number };
+  blank_clips?: { baseline: number; candidate: number; p: number };
+  wrong_only_clips?: { baseline: number; candidate: number };
   accuracy?: Comparison | null;
   decision?: string;
   fresh_cost_usd?: number;

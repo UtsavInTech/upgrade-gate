@@ -111,36 +111,16 @@ export function AudioSection({ e6, e7 }: { e6: E6; e7?: E7 }) {
       {e7?.status === "done" && e7.silent && (
         <div className="mt-16 grid gap-8 border-t-2 border-fg pt-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
           <div>
-            <p className="text-sm font-medium text-muted">Confirmation with a real voice</p>
+            <p className="text-sm font-medium text-muted">Rerun with a real voice</p>
             <h3 className="mt-2 text-2xl font-semibold tracking-tight text-balance">
-              {e7.confirmed
-                ? "The same thing happens with a human voice."
-                : "A human voice did not confirm it."}
+              With a human voice, 1.3 got fewer right and started returning blanks.
             </h3>
             <p className="mt-3 text-muted">
               Before recording, we wrote down the prediction and froze the rules. Then a person read{" "}
-              {e7.clips} of the same lines into a microphone, in English, Hindi and Hinglish.
+              {e7.clips} of the same lines (15 items, each in English, Hindi and Hinglish) into a microphone.
             </p>
           </div>
           <dl className="grid grid-cols-2 gap-6 sm:grid-cols-3">
-            <div>
-              <dt className="text-sm text-muted">Wrong or blank, no warning</dt>
-              <dd className="mt-1 text-3xl font-semibold tracking-tight">
-                {e7.silent.baseline} <span className="text-faint">→</span>{" "}
-                <span className="text-risk">{e7.silent.candidate}</span>
-              </dd>
-              <dd className="text-sm text-muted">
-                of {e7.clips} clips, p = {pval(e7.silent.p)}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-sm text-muted">Answers with every field blank</dt>
-              <dd className="mt-1 text-3xl font-semibold tracking-tight">
-                {e7.blank_answers?.[BASE] ?? 0} <span className="text-faint">→</span>{" "}
-                <span className="text-risk">{e7.blank_answers?.[CAND] ?? 0}</span>
-              </dd>
-              <dd className="text-sm text-muted">of {(e7.clips ?? 0) * 3} answers</dd>
-            </div>
             {e7.accuracy && (
               <div>
                 <dt className="text-sm text-muted">Correct answers</dt>
@@ -148,16 +128,40 @@ export function AudioSection({ e6, e7 }: { e6: E6; e7?: E7 }) {
                   {pts(e7.accuracy.delta)} pts
                 </dd>
                 <dd className="text-sm text-muted">
-                  95% range {pts(e7.accuracy.ci[0])} to {pts(e7.accuracy.ci[1])}
+                  95% range {pts(e7.accuracy.ci[0])} to {pts(e7.accuracy.ci[1])}. This is why the gate says
+                  NO-GO.
                 </dd>
               </div>
             )}
+            <div>
+              <dt className="text-sm text-muted">Clips answered blank</dt>
+              <dd className="mt-1 text-3xl font-semibold tracking-tight">
+                {e7.blank_clips?.baseline ?? 0} <span className="text-faint">→</span>{" "}
+                <span className="text-risk">{e7.blank_clips?.candidate ?? 0}</span>
+              </dd>
+              <dd className="text-sm text-muted">
+                of {e7.clips} (in 2 of 3 tries); {e7.blank_answers?.[BASE] ?? 0} →{" "}
+                {e7.blank_answers?.[CAND] ?? 0} of {(e7.clips ?? 0) * 3} answers
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-muted">Wrong or blank, no warning</dt>
+              <dd className="mt-1 text-3xl font-semibold tracking-tight">
+                {e7.silent.baseline} <span className="text-faint">→</span> {e7.silent.candidate}
+              </dd>
+              <dd className="text-sm text-muted">
+                per clip p = {pval(e7.silent.p)}; grouped by item {e7.items?.worse} worse, {e7.items?.better}{" "}
+                better, p = {e7.items?.p != null ? pval(e7.items.p) : "–"}: borderline
+              </dd>
+            </div>
           </dl>
           <p className="text-sm text-faint lg:col-span-2">
-            One speaker, 45 clips, 3 tries each, so this is a small sample. Some numbers were misheard the
-            same way by both versions, which may be reading slips; those count against both equally. Gate
-            decision on this run: <Verdict decision={e7.decision ?? "inconclusive"} />. The recordings stay
-            private; the answers are in the report.
+            What holds and what doesn’t: accuracy fell past the limit, and blank answers appeared only on 1.3.
+            The filled-in wrong answers did not rise ({e7.wrong_only_clips?.baseline} →{" "}
+            {e7.wrong_only_clips?.candidate} clips), and the combined rise is not significant once the three
+            language versions of each item are grouped. One speaker, 45 clips, so a small sample. Gate
+            decision on this run: <Verdict decision={e7.decision ?? "inconclusive"} /> (accuracy). The
+            recordings stay private; the answers are in the report.
           </p>
         </div>
       )}

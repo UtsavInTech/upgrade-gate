@@ -2,3 +2,10 @@ __pycache__/
 *.pyc
 .env
 .DS_Store
+.venv/
+results/*/
+!results/.gitkeep
+.cache/
+*.egg-info/
+ui/node_modules/
+ui/dist/

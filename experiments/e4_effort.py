@@ -18,7 +18,9 @@ import os
 from common import base_args, compare, majority, pairs, run_and_score, table, tasks_by_id, write_result
 from upgrade_gate.schema import read_jsonl
 
-PACKS = ["math-pairs", "ifeval", "extract-pairs"]
+# The text packs sit at 100% at every effort level (pilot, 28 Oct), so the ladder runs where the
+# model actually struggles: the 135 spoken clips. Pass --packs to change it.
+PACKS = ["audio-clips"]
 LEVELS = ["minimal", "low", "medium", "high", "xhigh"]
 LIMIT = 16000
 CANDS = ["spark-1.3-c@%s/%d" % (l, LIMIT) for l in LEVELS]
@@ -61,7 +63,7 @@ def analyse(run_dir: str) -> None:
     for lo, hi in zip(CANDS, CANDS[1:]):
         for cat in sorted({t["category"] for t in tasks.values()}):
             ps = pairs(maj, [i for i, t in tasks.items() if t["category"] == cat], lo, hi)
-            if len(ps) >= 10:
+            if len(ps) >= 10 or (len(ps) >= 5 and len(tasks) < 200):
                 rows.append(compare(ps, "%s→%s %s" % (_level(lo), _level(hi), cat)))
     lines += ["", "## Step-ups (negative Δ = more effort was worse; cut-offs excluded)", "", table(rows)]
     write_result("e4_effort", "\n".join(lines), {"run_dir": run_dir, "steps": rows,
@@ -69,6 +71,10 @@ def analyse(run_dir: str) -> None:
 
 
 if __name__ == "__main__":
-    args = base_args(__doc__).parse_args()
-    rd = args.run_dir or run_and_score(PACKS, CANDS, args.n, args.repeats, args.budget, args.yes, "e4-effort")
+    ap = base_args(__doc__)
+    ap.add_argument("--packs", default=",".join(PACKS))
+    args = ap.parse_args()
+    packs = [p for p in args.packs.split(",") if p]
+    run_id = "e4-effort" if packs == PACKS else "e4-effort-" + "-".join(packs)
+    rd = args.run_dir or run_and_score(packs, CANDS, args.n, args.repeats, args.budget, args.yes, run_id)
     analyse(rd)

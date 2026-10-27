@@ -251,9 +251,22 @@ function RunHeader({ data }: { data: RunData }) {
           <p className="mt-1 text-2xl">
             <Verdict decision={m.decision} />
           </p>
+          {m.accuracy_decision && m.accuracy_decision !== m.decision && (
+            <p className="mt-1 text-xs text-muted">
+              Accuracy alone: <Verdict decision={m.accuracy_decision} />
+            </p>
+          )}
         </div>
       </div>
-      {m.reasons[0] && <p className="mt-4 max-w-3xl text-sm text-muted">{m.reasons[0]}</p>}
+      {m.reasons.length > 0 && (
+        <ul className="mt-4 max-w-3xl space-y-1 text-sm text-muted">
+          {m.reasons.map((r) => (
+            <li key={r} className={r.startsWith("Silent failures") ? "font-medium text-risk" : ""}>
+              {r}
+            </li>
+          ))}
+        </ul>
+      )}
 
       <dl className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-4">
         <Metric label="Pass rate">

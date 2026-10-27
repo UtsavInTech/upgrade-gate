@@ -154,7 +154,9 @@ def e6() -> dict:
         a["correct"] += s["passed"] is True
     out = {
         "run": run, "baseline": A, "candidate": B, **_run_cost(run),
-        "decision": gate.get("decision"), "gate_reason": (gate.get("reasons") or [""])[0],
+        "decision": gate.get("accuracy_decision", gate.get("decision")),
+        "gate_decision": gate.get("decision"), "behaviour": gate.get("behaviour"),
+        "gate_reason": next((r for r in gate.get("reasons") or [] if r.startswith("CI ")), ""),
         "tasks_needed": need, "accuracy": dict(acc),
         "modes": ex.MODES,
         "mode_counts": {"%s|%s|%s" % k: v for k, v in counts.items()},
@@ -375,6 +377,7 @@ def run_detail(run: str, title: str, blurb: str):
     meta = {"run": run, "title": title, "blurb": blurb, "baseline": base, "candidate": cand,
             "decision": gate["decision"], "reasons": gate.get("reasons") or [], "created_utc": info.get("created_utc"),
             "overall": gate.get("overall"), "slices": gate.get("slices") or [], **_run_cost(run),
+            "accuracy_decision": gate.get("accuracy_decision", gate["decision"]), "behaviour": gate.get("behaviour"),
             "counts": dict(collections.Counter(r["status"] for r in rows))}
     path = os.path.join(OUT_DIR, "data", "runs", run + ".json")
     os.makedirs(os.path.dirname(path), exist_ok=True)

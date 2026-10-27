@@ -10,6 +10,7 @@ Packs (category, langs):
     ifeval         instruction     en + hi (hi paired to an English twin)
     docs-synth     doc-image       en + hi, modality image (PNG) and pdf; needs data/docs-synth/
     audio-synth    math/extraction/classification  en / hi / hinglish, modality audio (WAV) + text twin
+    audio-clips    audio-synth without the text twins
     audio-real     the same lines read by real people (web/#/record); empty until recorded
     canary         mixed           canary/prompts.json wrapped as Tasks
 
@@ -89,6 +90,7 @@ PACKS: Dict[str, Callable[..., List[Task]]] = {
     "docs-synth": docs_synth.build,
     "audio-synth": audio_synth.build,
     "audio-real": audio_real.build,
+    "audio-clips": audio_synth.build_audio_only,
     "canary": canary_pack.build,
 }
 

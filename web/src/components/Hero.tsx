@@ -1,10 +1,10 @@
-import { CircleAlert, CircleCheck } from "lucide-react";
+import { CircleAlert, CircleCheck, CircleX } from "lucide-react";
 import type { Site } from "../data";
 import { BASE, CAND } from "../data";
 
 type Check = {
   name: string;
-  state: "pass" | "review";
+  state: "pass" | "review" | "fail";
   summary: string;
   href: string;
 };
@@ -15,13 +15,15 @@ export function Hero({ site }: { site: Site }) {
   const std = e3.cost_per_1000 && e3.standard ? e3.cost_per_1000[e3.standard] : null;
   const con = e3.cost_per_1000 && e3.contributor ? e3.cost_per_1000[e3.contributor] : null;
 
-  // Accuracy alone is inconclusive for voice notes; the failure-type shift is why a person must look.
+  // Accuracy alone is inconclusive for voice notes; the gate's silent-failure check blocks it.
+  const voiceState: Check["state"] =
+    e6.gate_decision === "no-go" ? "fail" : e6.gate_decision === "go" ? "pass" : "review";
   const checks: Check[] = [
     {
       name: "upgrade-gate / voice-notes",
-      state: "review",
+      state: voiceState,
       summary: silent
-        ? `Accuracy inconclusive. Wrong or blank with no warning: ${silent[BASE]} → ${silent[CAND]} of ${silent.tasks} clips.`
+        ? `Wrong or blank with no warning: ${silent[BASE]} → ${silent[CAND]} of ${silent.tasks} clips. Accuracy alone was inconclusive.`
         : "Accuracy inconclusive.",
       href: "#/report/e6-audio",
     },
@@ -41,6 +43,7 @@ export function Hero({ site }: { site: Site }) {
       href: "#/report/e3-contributor",
     },
   ];
+  const failing = checks.filter((c) => c.state === "fail").length;
   const review = checks.filter((c) => c.state === "review").length;
 
   return (
@@ -88,6 +91,8 @@ export function Hero({ site }: { site: Site }) {
                   <a href={c.href} className="flex gap-3 px-4 py-3.5 transition-colors hover:bg-surface">
                     {c.state === "pass" ? (
                       <CircleCheck aria-label="Passed" className="mt-0.5 size-[18px] shrink-0 text-go" />
+                    ) : c.state === "fail" ? (
+                      <CircleX aria-label="Failed" className="mt-0.5 size-[18px] shrink-0 text-risk" />
                     ) : (
                       <CircleAlert
                         aria-label="Review required"
@@ -107,14 +112,19 @@ export function Hero({ site }: { site: Site }) {
             </ul>
             <div
               className={`border-t border-line px-4 py-3 text-sm ${
-                review ? "bg-hold-soft text-hold" : "bg-go-soft text-go"
+                failing ? "bg-risk-soft text-risk" : review ? "bg-hold-soft text-hold" : "bg-go-soft text-go"
               }`}
             >
-              <span className="font-semibold">{review ? "Review required" : "All checks passed"}</span>
-              {review > 0 && (
+              <span className="font-semibold">
+                {failing ? "Merging is blocked" : review ? "Review required" : "All checks passed"}
+              </span>
+              {(failing || review) > 0 && (
                 <span className="opacity-80">
                   {" "}
-                  · {review} check needs someone to read the failing answers
+                  ·{" "}
+                  {failing
+                    ? `${failing} failing check`
+                    : `${review} check needs a person to read the answers`}
                 </span>
               )}
             </div>

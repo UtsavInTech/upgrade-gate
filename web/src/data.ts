@@ -66,6 +66,14 @@ export type FailureTest = {
   [model: string]: string | number;
 };
 
+export type Behaviour = {
+  tasks: number;
+  flagged: boolean;
+  reason?: string;
+  silent: { baseline: number; candidate: number; p: number };
+  abstain: { baseline: number; candidate: number; p: number };
+};
+
 export type E6 = {
   calls: number;
   fresh_cost_usd: number;
@@ -78,6 +86,8 @@ export type E6 = {
   deny_with_answer: Record<string, number>;
   tests: FailureTest[];
   examples: AudioExample[];
+  gate_decision?: string;
+  behaviour?: Behaviour;
   clips: ({ id: string; lang: string; kind: string } & Record<string, string>)[];
 };
 

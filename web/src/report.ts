@@ -58,6 +58,8 @@ export type RunMeta = {
   fresh_cost_usd: number;
   reused_answers: number;
   counts: Partial<Record<Status, number>>;
+  accuracy_decision?: string;
+  behaviour?: import("./data").Behaviour | null;
 };
 
 export type RunIndex = Pick<

@@ -180,6 +180,13 @@ def cmd_gate(args) -> int:
     candidate = (_split(args.candidate) or others)[0]
     res = evaluate_run(args.run_dir, baseline=args.baseline or baseline, candidate=candidate,
                        max_drop=args.max_drop, alpha=args.alpha)
+    if not getattr(args, "accuracy_only", False):
+        from .behaviour import apply_to_gate
+        res = apply_to_gate(args.run_dir, alpha=args.alpha, max_rise=args.max_drop)
+        b = res["behaviour"]
+        print("Failure types: silent %d -> %d, says it can't %d -> %d of %d tasks" % (
+            b["silent"]["baseline"], b["silent"]["candidate"], b["abstain"]["baseline"],
+            b["abstain"]["candidate"], b["tasks"]))
     print("%s  (%s -> %s)" % (res["decision"].upper(), res["baseline"], res["candidate"]))
     for r in res.get("reasons", []):
         print("  -", r)
@@ -249,6 +256,7 @@ def build_parser() -> argparse.ArgumentParser:
             sp.add_argument("--judges", default="")
             sp.add_argument("--max-drop", type=float, default=0.02)
             sp.add_argument("--alpha", type=float, default=0.05)
+            sp.add_argument("--accuracy-only", action="store_true", help="skip the silent-failure check")
         sp.set_defaults(fn=fn)
 
     sp = sub.add_parser("score")
@@ -263,6 +271,7 @@ def build_parser() -> argparse.ArgumentParser:
     sp.add_argument("--candidate", default=None)
     sp.add_argument("--max-drop", type=float, default=0.02)
     sp.add_argument("--alpha", type=float, default=0.05)
+    sp.add_argument("--accuracy-only", action="store_true", help="skip the silent-failure check")
     sp.set_defaults(fn=cmd_gate)
 
     for name, fn in (("report", cmd_report), ("export", cmd_export)):

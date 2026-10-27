@@ -93,12 +93,13 @@ export function AudioSection({ e6 }: { e6: E6 }) {
         <div className="border-t-2 border-risk pt-5">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold">Checking how it fails</h3>
-            <Verdict decision="risk" />
+            <Verdict decision={e6.gate_decision ?? "risk"} />
           </div>
           <p className="mt-3 text-muted">
             With the same 135 clips, the switch from “I can’t hear” to silent wrong answers is clear (
             <span className="font-semibold text-fg">p = {silent ? pval(silent.p) : "–"}</span>). A voice bot
-            on 1.3 would store wrong or empty order numbers without flagging them.
+            on 1.3 would store wrong or empty order numbers without flagging them. The gate runs this check on
+            every upgrade, so it blocks this one on its own.
           </p>
         </div>
       </Reveal>

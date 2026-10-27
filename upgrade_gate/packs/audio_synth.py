@@ -67,3 +67,11 @@ def build() -> List[Task]:
                 meta={"group": "%s-%s" % (PACK, r["item"]), "kind": kind, "item": r["item"], "voice": r["voice"],
                       "transcript": r["transcript"], "twin": base + "-text" if modality == "audio" else base}))
     return tasks
+
+
+def build_audio_only() -> List[Task]:
+    """Just the spoken clips, without text twins (for experiments where the twins add nothing)."""
+    out = [t for t in build() if t.modality == "audio"]
+    for t in out:
+        t.pack = "audio-clips"
+    return out

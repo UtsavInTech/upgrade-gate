@@ -52,7 +52,8 @@ class TestPacks(unittest.TestCase):
                         self.assertIn(rule["type"], IFEVAL_RULES)
 
     def test_ids_unique_across_packs(self):
-        ids = [t.id for ts in self.packs.values() for t in ts]
+        # audio-clips is a filtered view of audio-synth and keeps its ids on purpose
+        ids = [t.id for name, ts in self.packs.items() if name != "audio-clips" for t in ts]
         dup = [i for i, c in Counter(ids).items() if c > 1]
         self.assertEqual(dup, [])
 

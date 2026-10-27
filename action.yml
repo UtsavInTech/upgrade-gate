@@ -1,0 +1,75 @@
+name: Upgrade Gate
+description: >-
+  Block a model upgrade when the new version gets less accurate or starts failing silently
+  (wrong or blank answers with no warning). Replays saved answers, or runs a small capped live sample.
+branding:
+  icon: shield
+  color: blue
+
+inputs:
+  baseline:
+    description: Model before the change, e.g. spark-1.2@low
+    required: true
+  candidate:
+    description: Model after the change, e.g. spark-1.3@low
+    required: true
+  name:
+    description: Check name shown in the summary
+    default: upgrade
+  mode:
+    description: "replay (saved answers in `evidence`) or live (fresh calls; needs `api-key`)"
+    default: replay
+  evidence:
+    description: "replay: path to a saved, scored run (run.json, tasks.jsonl, responses.jsonl, scores.jsonl)"
+    default: ""
+  tasks:
+    description: "live: task packs or a .jsonl file of your own tasks (see docs/BRING_YOUR_OWN_TASKS.md)"
+    default: ""
+  n:
+    description: "live: tasks per pack"
+    default: "20"
+  budget:
+    description: "live: strict spending cap in USD for this run"
+    default: "1"
+  policy:
+    description: Path to a release policy JSON; empty uses the built-in default
+    default: ""
+  api-key:
+    description: "live: Meta Model API key (pass a secret)"
+    default: ""
+
+outputs:
+  exit-code:
+    description: 0 GO, 2 NO-GO, 3 inconclusive (live mode reports inconclusive as 0)
+    value: ${{ steps.gate.outputs.code }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+    - name: Install Upgrade Gate
+      shell: bash
+      run: pip install --quiet "${{ github.action_path }}"
+    - name: Gate the upgrade
+      id: gate
+      shell: bash
+      env:
+        MODEL_API_KEY: ${{ inputs.api-key }}
+      run: |
+        set +e
+        args=("${{ inputs.name }}" --baseline "${{ inputs.baseline }}" --candidate "${{ inputs.candidate }}")
+        if [ -n "${{ inputs.policy }}" ]; then args+=(--policy "$GITHUB_WORKSPACE/${{ inputs.policy }}"); else args+=(--policy default); fi
+        if [ "${{ inputs.mode }}" = "live" ]; then
+          args+=(--live --n "${{ inputs.n }}" --budget "${{ inputs.budget }}")
+          if [ -n "${{ inputs.tasks }}" ]; then
+            case "${{ inputs.tasks }}" in *.jsonl) args+=(--packs "$GITHUB_WORKSPACE/${{ inputs.tasks }}");; *) args+=(--packs "${{ inputs.tasks }}");; esac
+          fi
+        else
+          args+=(--evidence "$GITHUB_WORKSPACE/${{ inputs.evidence }}")
+        fi
+        python "${{ github.action_path }}/scripts/ci_gate.py" "${args[@]}"
+        code=$?
+        echo "code=$code" >> "$GITHUB_OUTPUT"
+        exit $code

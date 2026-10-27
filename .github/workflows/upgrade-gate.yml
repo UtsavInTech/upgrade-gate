@@ -13,6 +13,7 @@ on:
       - "upgrade_gate/**"
       - "scripts/ci_gate.py"
       - ".github/workflows/upgrade-gate.yml"
+      - "action.yml"
   workflow_dispatch: {}
 
 permissions:
@@ -47,9 +48,36 @@ jobs:
           path: ${{ runner.temp }}/upgrade-gate-${{ matrix.suite }}/
           if-no-files-found: ignore
 
+  live:
+    # A small fresh sample on both models through the reusable Action (action.yml at the repo root),
+    # capped at $1. Skipped (passes) when the repo has no MODEL_API_KEY secret. Only NO-GO fails it.
+    name: upgrade-gate / voice-notes (live sample)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Read the model change
+        id: models
+        run: |
+          echo "candidate=$(python3 -c 'import json;print(json.load(open("release/model.json"))["model"])')" >> "$GITHUB_OUTPUT"
+          echo "baseline=$(git show origin/${{ github.base_ref || 'main' }}:release/model.json | python3 -c 'import json,sys;print(json.load(sys.stdin)["model"])')" >> "$GITHUB_OUTPUT"
+      - uses: ./
+        with:
+          name: voice-notes
+          mode: live
+          tasks: audio-clips
+          n: "10"
+          budget: "1"
+          policy: release/policy.json
+          baseline: ${{ steps.models.outputs.baseline }}
+          candidate: ${{ steps.models.outputs.candidate }}
+          api-key: ${{ secrets.MODEL_API_KEY }}
+
   deploy:
     name: deploy model
-    needs: gate
+    needs: [gate, live]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

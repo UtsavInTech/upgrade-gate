@@ -22,7 +22,8 @@ class TestNumber(unittest.TestCase):
         self.assertTrue(P(s, "1786"))
         self.assertTrue(P(s, "1,786."))
         self.assertFalse(P(s, "1787"))
-        self.assertFalse(P(s, "The answer is 1786"))
+        self.assertTrue(P(s, "The answer is 1786"))  # content score: last number
+        self.assertFalse(P(dict(s, strict_only=True), "The answer is 1786"))
 
     def test_indian_grouping_and_rupee(self):
         s = {"type": "number", "value": 123456}
@@ -297,7 +298,7 @@ class TestGeneral(unittest.TestCase):
             if not p["check"]["type"].startswith("json"):  # json types extract leniently by design
                 texts.append(gold + " extra words")
             for text in texts:
-                ours = P(p["check"], text)
+                ours = P(dict(p["check"], strict_only=True), text)
                 theirs = checks.check(text, p["check"])[0]
                 self.assertEqual(ours, theirs, (p["id"], text))
 
@@ -311,3 +312,46 @@ class TestGeneral(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestHindiContentVsStrict(unittest.TestCase):
+    """Content score folds spelling variants; strict_passed also needs the exact format."""
+    DAY = {"type": "one_of", "values": ["Monday", "सोमवार", "Somvar", "Somvaar"]}
+
+    def full(self, spec, text):
+        from upgrade_gate.scorers import is_strict
+        p, _, d = score_text(T(spec, None), text)
+        return p, is_strict(p, d)
+
+    def test_spelling_variants_are_correct_and_strict(self):
+        for t in ("Somwar", "somvaar", "**सोमवार**", "सोमवार।"):
+            self.assertEqual(self.full(self.DAY, t), (True, True), t)
+
+    def test_wrapped_answer_is_correct_but_not_strict(self):
+        for t in ("Somvar (Monday)", "356 = 50*7 + 6\nइसलिए मंगलवार + 6 = **सोमवार**", "उत्तर: सोमवार"):
+            self.assertEqual(self.full(self.DAY, t), (True, False), t)
+
+    def test_wrong_day_still_fails(self):
+        self.assertEqual(self.full(self.DAY, "Mangalvar"), (False, False))
+        self.assertEqual(self.full(self.DAY, "**मंगलवार**"), (False, False))
+
+    def test_number_in_explanation_is_correct_but_not_strict(self):
+        s = {"type": "number", "value": 1293.3}
+        self.assertEqual(self.full(s, "देय राशि = 1437 x 90/100 = 1293.3 रुपये"), (True, False))
+        self.assertEqual(self.full(s, "1293.3"), (True, True))
+
+    def test_vendor_nasal_mark_folds_but_dropped_letter_does_not(self):
+        s = {"type": "json_fields", "fields": {"vendor": ["साईं किराना भंडार"]}}
+        self.assertEqual(self.full(s, '{"vendor": "साई किराना भंडार"}'), (True, True))
+        s = {"type": "json_fields", "fields": {"vendor": ["अन्नपूर्णा केटरर्स"]}}
+        self.assertEqual(self.full(s, '{"vendor": "अन्नपूर्णा केटर्स"}')[0], False)
+
+    def test_strict_only_keeps_old_behaviour(self):
+        self.assertFalse(P(dict(self.DAY, strict_only=True), "Somwar"))
+
+
+class TestBoldWithTranslation(unittest.TestCase):
+    def test_bold_plus_parenthetical(self):
+        from upgrade_gate.scorers import is_strict
+        p, _, d = score_text(T({"type": "one_of", "values": ["Monday", "Somvar"]}, None), "**Somvaar (Monday)**")
+        self.assertEqual((p, is_strict(p, d)), (True, False))

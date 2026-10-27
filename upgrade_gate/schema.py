@@ -89,6 +89,7 @@ class ScoreRecord:
     detail: str = ""             # short human-readable reason
     judge_votes: List[Dict[str, Any]] = field(default_factory=list)  # [{"judge", "passed", "confidence", "rationale"}]
     cost_usd: float = 0.0        # judge cost for this score
+    strict_passed: Optional[bool] = None  # deterministic only: passed AND exact format (no lenient extraction)
 
 
 # ---------------------------------------------------------------- gate output (written by Codex-side stats)

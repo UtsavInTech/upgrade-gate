@@ -11,8 +11,9 @@ in one place.
 
 Types (canary types keep the exact semantics of canary/checks.py):
 
-  number {value, tol?, lenient?}      bare number; commas / Indian grouping, ₹, Rs,
-                                      Devanagari digits accepted. lenient: last number.
+  number {value, tol?, strict_only?} bare number; commas / Indian grouping, ₹, Rs,
+                                      Devanagari digits accepted. Else last number, marked lenient
+                                      (is_strict -> False) unless strict_only.
   exact {value} / exact_cs {value}
   one_of {values}
   label {value, labels?}              bare label or {"label": ...}; case/space/_/-
@@ -89,6 +90,30 @@ def clean(text: str) -> str:
 
 def norm_digits(s: str) -> str:
     return s.translate(_DEV_DIGITS)
+
+
+_NASAL_NUKTA = {ord("ँ"): None, ord("ं"): None, ord("़"): None}  # ँ ं ़
+
+
+def fold_spelling(s: str) -> str:
+    """Fold spelling variants of the same word, used only after an exact match fails:
+    markdown emphasis, case, Devanagari nasal marks and nukta (साई = साईं, ज़ = ज),
+    romanised Hindi w/v and doubled vowels (Somwar = Somvar = Somvaar)."""
+    t = unicodedata.normalize("NFC", s).casefold().translate(_NASAL_NUKTA)
+    t = re.sub(r"[*_`#]", "", t).replace("w", "v")
+    t = re.sub(r"([aeiou])\1+", r"\1", t)
+    return re.sub(r"[^\wऀ-ॿ]+", " ", t).strip()
+
+
+STRICT_MARKERS = ("lenient",)
+
+
+def is_strict(passed: Optional[bool], detail: str) -> Optional[bool]:
+    """Strict format score: passed with no lenient extraction (no extra text, fences, bold
+    final answer inside an explanation, etc.). Spelling variants still count as strict."""
+    if passed is None:
+        return None
+    return bool(passed) and not any(m in (detail or "") for m in STRICT_MARKERS)
 
 
 def _norm_value(v: Any) -> Any:
@@ -221,7 +246,8 @@ def _number(task, text, spec):
     tol = float(spec.get("tol", 0.0))
     got = parse_number(strip_wrapping(text))
     lenient = False
-    if got is None and spec.get("lenient"):
+    if got is None and spec.get("strict_only") is not True:
+        # content score: take the last number; is_strict() marks it as a format miss
         got, lenient = _last_number(text), True
     if got is None:
         return False, 0.0, "not a bare number"
@@ -249,8 +275,24 @@ def _one_of(task, text, spec):
     if not isinstance(values, list):
         values = [values]
     got = strip_wrapping(text)
-    ok = any(_same(got, str(v)) for v in values)
-    return _b(ok, "got %r" % got[:80])
+    if any(_same(got, str(v)) for v in values):
+        return True, 1.0, ""
+    folded = {fold_spelling(str(v)) for v in values}
+    if spec.get("strict_only"):  # canary: keep canary/checks.py semantics
+        return False, 0.0, "got %r" % got[:80]
+    if fold_spelling(got) in folded:
+        return True, 1.0, "spelling variant: %r" % got[:80]
+    # content score: the answer is there but wrapped (bold final answer, "X (Sunday)", "... = X")
+    lines = _lines(got) or [got]
+    cands = [re.sub(r"\s*\([^)]*\)\s*$", "", got)]
+    bold = re.findall(r"\*\*(.+?)\*\*", got)
+    if bold:
+        cands.append(bold[-1])
+    cands.append(re.split(r"[=:]", lines[-1])[-1])
+    for c in cands + [re.sub(r"\s*\([^)]*\)\s*$", "", c) for c in cands]:
+        if fold_spelling(strip_wrapping(c)) in folded:
+            return True, 1.0, "lenient: found %r in %r" % (c.strip()[:40], got[:60])
+    return False, 0.0, "got %r" % got[:80]
 
 
 def _lab_key(s: str) -> str:
@@ -305,8 +347,10 @@ def _fields_spec(task, spec) -> Dict[str, List[Any]]:
     return {k: [v] for k, v in ref.items()}
 
 
-def _field_ok(got: Any, accepted: Any, tol: Optional[float]) -> bool:
+def _field_ok(got: Any, accepted: Any, tol: Optional[float], fold: bool = True) -> bool:
     if _same(got, accepted):
+        return True
+    if fold and isinstance(got, str) and isinstance(accepted, str) and fold_spelling(got) == fold_spelling(accepted):
         return True
     if isinstance(accepted, (int, float)) and not isinstance(accepted, bool):
         g = got
@@ -330,7 +374,7 @@ def _json_fields(task, text, spec):
             bad.append("missing %s" % key)
             continue
         got = lower[key.casefold()]
-        if not any(_field_ok(got, a, tol) for a in accepted):
+        if not any(_field_ok(got, a, tol, not spec.get("strict_only")) for a in accepted):
             bad.append("%s=%r" % (key, got))
     n = len(fields)
     score = (n - len(bad)) / n if n else 1.0

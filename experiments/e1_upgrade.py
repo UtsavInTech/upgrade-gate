@@ -13,9 +13,7 @@ PACKS = ["math-pairs", "extract-pairs", "intent", "ifeval", "docs-synth"]
 A, B = "spark-1.2@low", "spark-1.3@low"
 
 
-def analyse(run_dir: str) -> None:
-    maj = majority(os.path.join(run_dir, "scores.jsonl"))
-    tasks = tasks_by_id(run_dir)
+def _rows(maj, tasks):
     rows = [compare(pairs(maj, tasks, A, B), "overall")]
     for key in ("category", "lang", "modality"):
         for val in sorted({t[key] for t in tasks.values()}):
@@ -23,8 +21,21 @@ def analyse(run_dir: str) -> None:
             ps = pairs(maj, ids, A, B)
             if len(ps) >= 10:
                 rows.append(compare(ps, "%s=%s" % (key, val)))
-    text = "# E1 — %s vs %s\n\nRun: `%s`\n\n%s" % (A, B, run_dir, table(rows))
-    write_result("e1_upgrade", text, {"run_dir": run_dir, "rows": rows})
+    return rows
+
+
+def analyse(run_dir: str) -> None:
+    path = os.path.join(run_dir, "scores.jsonl")
+    tasks = tasks_by_id(run_dir)
+    content = _rows(majority(path), tasks)
+    strict = _rows(majority(path, "strict_passed"), tasks)
+    text = ("# E1 — %s vs %s\n\nRun: `%s`\n\n"
+            "## Correct answer (content score)\n\nSpelling variants count (Somwar = Somvar, साई = साईं); "
+            "a clear answer inside extra text counts.\n\n%s\n\n"
+            "## Correct answer in the exact format asked (strict score)\n\nNo extra words, bold, "
+            "explanations or code fences around the answer.\n\n%s"
+            % (A, B, run_dir, table(content), table(strict)))
+    write_result("e1_upgrade", text, {"run_dir": run_dir, "rows": content, "strict_rows": strict})
 
 
 if __name__ == "__main__":

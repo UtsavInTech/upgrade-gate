@@ -28,7 +28,7 @@ def build() -> List[Task]:
         pair = row.get("pair")
         tasks.append(Task(
             id=_tid(row["id"]), pack=PACK, category=row["category"], lang=row["lang"], modality="text",
-            prompt=row["prompt"], reference=row.get("gold"), scorer=dict(row["check"]),
+            prompt=row["prompt"], reference=row.get("gold"), scorer=dict(row["check"], strict_only=True),
             pair_id=_tid(pair) if pair else None,
             meta={"group": _tid(pair) if pair else _tid(row["id"]), "canary_id": row["id"]},
         ))

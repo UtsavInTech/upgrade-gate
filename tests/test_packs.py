@@ -348,7 +348,7 @@ class TestCanary(unittest.TestCase):
             rows = {r["id"]: r for r in json.load(f)}
         for t in load_pack("canary"):
             row = rows[t.meta["canary_id"]]
-            self.assertEqual(t.scorer, row["check"])
+            self.assertEqual(t.scorer, dict(row["check"], strict_only=True))
             self.assertEqual(t.prompt, row["prompt"])
 
     def test_gold_passes_canary_checks(self):

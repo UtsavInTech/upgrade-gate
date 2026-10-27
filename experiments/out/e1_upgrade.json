@@ -4,14 +4,14 @@
     {
       "slice": "overall",
       "n": 1325,
-      "delta": 0.011320754716981131,
+      "delta": 0.0,
       "ci": [
-        0.0060377358490566035,
-        0.017358490566037735
+        0.0,
+        0.0
       ],
       "regressions": 0,
-      "improvements": 15,
-      "p": 6.103515625e-05
+      "improvements": 0,
+      "p": 1.0
     },
     {
       "slice": "category=classification",
@@ -28,13 +28,13 @@
     {
       "slice": "category=doc-image",
       "n": 200,
-      "delta": 0.005,
+      "delta": 0.0,
       "ci": [
         0.0,
-        0.015
+        0.0
       ],
       "regressions": 0,
-      "improvements": 1,
+      "improvements": 0,
       "p": 1.0
     },
     {
@@ -64,14 +64,14 @@
     {
       "slice": "category=math",
       "n": 360,
-      "delta": 0.03888888888888889,
+      "delta": 0.0,
       "ci": [
-        0.019444444444444445,
-        0.06111111111111111
+        0.0,
+        0.0
       ],
       "regressions": 0,
-      "improvements": 14,
-      "p": 0.0001220703125
+      "improvements": 0,
+      "p": 1.0
     },
     {
       "slice": "lang=en",
@@ -88,26 +88,26 @@
     {
       "slice": "lang=hi",
       "n": 330,
-      "delta": 0.01818181818181818,
+      "delta": 0.0,
       "ci": [
-        0.006060606060606061,
-        0.03333333333333333
+        0.0,
+        0.0
       ],
       "regressions": 0,
-      "improvements": 6,
-      "p": 0.03125
+      "improvements": 0,
+      "p": 1.0
     },
     {
       "slice": "lang=hinglish",
       "n": 320,
-      "delta": 0.028125,
+      "delta": 0.0,
       "ci": [
-        0.0125,
-        0.046875
+        0.0,
+        0.0
       ],
       "regressions": 0,
-      "improvements": 9,
-      "p": 0.00390625
+      "improvements": 0,
+      "p": 1.0
     },
     {
       "slice": "modality=image",
@@ -124,26 +124,172 @@
     {
       "slice": "modality=pdf",
       "n": 100,
-      "delta": 0.01,
+      "delta": 0.0,
       "ci": [
         0.0,
-        0.03
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "modality=text",
+      "n": 1125,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    }
+  ],
+  "strict_rows": [
+    {
+      "slice": "overall",
+      "n": 1325,
+      "delta": 0.0015094339622641509,
+      "ci": [
+        0.0,
+        0.0037735849056603774
+      ],
+      "regressions": 0,
+      "improvements": 2,
+      "p": 0.5
+    },
+    {
+      "slice": "category=classification",
+      "n": 375,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "category=doc-image",
+      "n": 200,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "category=extraction",
+      "n": 240,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "category=instruction",
+      "n": 150,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "category=math",
+      "n": 360,
+      "delta": 0.005555555555555556,
+      "ci": [
+        0.0,
+        0.013888888888888888
+      ],
+      "regressions": 0,
+      "improvements": 2,
+      "p": 0.5
+    },
+    {
+      "slice": "lang=en",
+      "n": 675,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "lang=hi",
+      "n": 330,
+      "delta": 0.0030303030303030303,
+      "ci": [
+        0.0,
+        0.00909090909090909
       ],
       "regressions": 0,
       "improvements": 1,
       "p": 1.0
     },
     {
-      "slice": "modality=text",
-      "n": 1125,
-      "delta": 0.012444444444444444,
+      "slice": "lang=hinglish",
+      "n": 320,
+      "delta": 0.003125,
       "ci": [
-        0.006222222222222222,
-        0.019555555555555555
+        0.0,
+        0.009375
       ],
       "regressions": 0,
-      "improvements": 14,
-      "p": 0.0001220703125
+      "improvements": 1,
+      "p": 1.0
+    },
+    {
+      "slice": "modality=image",
+      "n": 100,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "modality=pdf",
+      "n": 100,
+      "delta": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "modality=text",
+      "n": 1125,
+      "delta": 0.0017777777777777779,
+      "ci": [
+        0.0,
+        0.0044444444444444444
+      ],
+      "regressions": 0,
+      "improvements": 2,
+      "p": 0.5
     }
   ]
 }

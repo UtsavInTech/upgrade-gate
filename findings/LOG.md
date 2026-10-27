@@ -16,6 +16,24 @@ Artificial Analysis marks **Muse Spark 1.1 as deprecated** ("This model is depre
 - **Action on first API call:** check whether 1.1 is still callable and whether Meta's docs give a shutdown date. If it's going away, run the 1.1 baseline **first** and save every output.
 - **Opportunity:** "Your pinned model is being retired. Here's what changes when you move" is itself a strong, timely demo story.
 
+- **Oct 27 first call:** 1.1 still answers. Note: at `max_completion_tokens=200`, 1.1 and 1.3 returned *empty* answers because reasoning used 190–198 of the 200 tokens. Token limits must leave room for reasoning.
+
+---
+
+## E1 result: Spark 1.2 → 1.3, and a scorer that invented an improvement
+
+- **Run:** Oct 27, 1,325 tasks × 2 versions × 3 repeats = 7,950 calls, reasoning effort low, $14.55, 0 API errors. Run dir `results/e1-upgrade`, tables in [../experiments/out/e1_upgrade.md](../experiments/out/e1_upgrade.md).
+- **First scoring said:** 1.3 is **+1.1 pts** overall (p = 6e-5), driven by Hindi (+1.8) and Hinglish (+2.8) math. That looked like a clean "1.3 fixes Hindi" story.
+- **Reading the failed answers showed it was mostly the scorer.** 1.2 wrote correct answers in other spellings (`Somwar` vs key `Somvar`, `Budhwar` vs `Budhvar`, `साई` vs `साईं`) or wrapped a correct answer (`**बुधवार**`, `Ravivar (Sunday)`, working shown then `= **रविवार**`).
+- **Fix:** two scores. *Content* = correct answer; spelling variants fold (case, bold, nasal marks/nukta, w/v, doubled vowels), and a clear answer inside extra text counts. *Strict* = correct **and** in the exact format asked. The canary keeps its original strict rules. Rescoring needed no new API calls.
+- **After the fix:** content score is **identical** (Δ +0.0 on every slice; per answer 3,968 vs 3,971 of 3,975 correct). Strict format: 1.2 slipped 16 more times than 1.3, all on Hindi/Hinglish math (bold, explanation, "(Monday)" after "only write the day"); after majority vote over 3 repeats that is +0.6 pts on math, p = 0.5, not significant. Gate: **GO**.
+- **Checked against the images:** the answer key was right. Both models read `केटरर्स` as `केटर्स` (a dropped letter, still scored wrong) and one invoice number as `RS11996`; these misses are shared, so they don't affect the comparison.
+- **Other observation:** once, 1.2 refused to copy a phone number and email from the Hindi message it was given ("privacy"), returning masked values. 1.3 never did. n = 1, so it's only a lead for an over-refusal check.
+- **What this means:**
+  1. At low effort on these packs, 1.2 → 1.3 is a safe upgrade with no measurable quality change; English is at ceiling (100%) for both.
+  2. **The headline lesson is about evaluation itself:** a strict exact-match scorer turned format and spelling habits in Hindi into a significant-looking "+1.1 pt" model improvement. Upgrade gates that score non-English output strictly can report changes that aren't there. This is a demo point: show the before/after table.
+  3. The packs are too easy to separate the versions. Next: harder tasks, lower effort (`minimal`), Contributor mode (E2–E4).
+
 ---
 
 ## H1: Judge-version bias in upgrade gates

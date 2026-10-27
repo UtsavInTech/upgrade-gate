@@ -19,7 +19,7 @@ from dataclasses import asdict, fields
 from typing import Any, Dict, List, Optional, Sequence
 
 from upgrade_gate.schema import ScoreRecord, Task, read_jsonl, write_jsonl
-from upgrade_gate.scorers import has_scorer, score_text
+from upgrade_gate.scorers import has_scorer, is_strict, score_text
 
 MODES = ("deterministic", "judge", "both")
 _TASK_FIELDS = {f.name for f in fields(Task)}
@@ -135,7 +135,8 @@ def score_run(run_dir: str, judges: Optional[Sequence[Any]] = None, mode: str = 
                                            detail="no scorer", judge_votes=flat, cost_usd=cost, **base))
             else:
                 records.append(ScoreRecord(passed=d[0], score=d[1], method="deterministic",
-                                           detail=d[2], judge_votes=flat, cost_usd=cost, **base))
+                                           detail=d[2], judge_votes=flat, cost_usd=cost,
+                                           strict_passed=is_strict(d[0], d[2]), **base))
 
     path = os.path.join(run_dir, out_name)
     write_jsonl(path, [asdict(x) for x in records])

@@ -21,12 +21,13 @@ from upgrade_gate.schema import read_jsonl  # noqa: E402
 OUT = os.path.join(ROOT, "experiments", "out")
 
 
-def majority(scores_path: str) -> Dict[Tuple[str, str], Optional[bool]]:
-    """(task_id, candidate) -> majority pass over repeats. Ties = fail. None rows ignored."""
+def majority(scores_path: str, field: str = "passed") -> Dict[Tuple[str, str], Optional[bool]]:
+    """(task_id, candidate) -> majority pass over repeats. Ties = fail. None rows ignored.
+    field="strict_passed" gives the strict-format score instead of the content score."""
     votes: Dict[Tuple[str, str], List[bool]] = collections.defaultdict(list)
     for r in read_jsonl(scores_path):
-        if r.get("passed") is not None:
-            votes[(r["task_id"], r["candidate"])].append(bool(r["passed"]))
+        if r.get(field) is not None:
+            votes[(r["task_id"], r["candidate"])].append(bool(r[field]))
     return {k: (sum(v) * 2 > len(v)) for k, v in votes.items() if v}
 
 

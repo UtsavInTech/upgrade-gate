@@ -98,3 +98,66 @@ class PerInputType(unittest.TestCase):
             self.assertIn("Audio input", res["reason"])
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
+
+
+class PolicyAndItems(unittest.TestCase):
+    def _run(self, tmp, n_items, worse_items, langs=("en", "hi", "hinglish")):
+        rows, tasks = [], []
+        for i in range(n_items):
+            for lang in langs:
+                tid = "item%d-%s" % (i, lang)
+                tasks.append({"id": tid, "modality": "audio", "meta": {"item": "item%d" % i}})
+                bad = i < worse_items
+                for r in range(3):
+                    rows.append((tid, "old", r, "ok", True))
+                    rows.append((tid, "new", r, '{"pincode": "380015"}' if bad else "ok", not bad))
+        _write_run(tmp, rows)
+        with open(os.path.join(tmp, "tasks.jsonl"), "w") as f:
+            for t in tasks:
+                f.write(json.dumps(t) + "\n")
+
+    def test_item_level_needs_enough_independent_items(self):
+        tmp = tempfile.mkdtemp()
+        try:
+            self._run(tmp, n_items=15, worse_items=3)  # 9 tasks worse, but only 3 independent items
+            per_task = check(tmp, "old", "new", unit="task")
+            per_item = check(tmp, "old", "new", unit="item")
+            self.assertTrue(per_task["flagged"])
+            self.assertFalse(per_item["flagged"])
+            self.assertIn("Not robust", per_item["note"])
+            self._run(tmp, n_items=15, worse_items=8)  # 8 of 15 items worse
+            self.assertTrue(check(tmp, "old", "new", unit="item")["flagged"])
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_policy_loads_and_validates(self):
+        from upgrade_gate.behaviour import load_policy
+        self.assertEqual(load_policy(None)["silent_failures"]["unit"], "item")
+        tmp = tempfile.mkdtemp()
+        try:
+            p = os.path.join(tmp, "policy.json")
+            with open(p, "w") as f:
+                json.dump({"silent_failures": {"count": ["wrong"]}, "why": "blanks are caught by our schema"}, f)
+            pol = load_policy(p)
+            self.assertEqual(pol["silent_failures"]["count"], ["wrong"])
+            self.assertEqual(pol["silent_failures"]["max_rise"], 0.02)  # default kept
+            with open(p, "w") as f:
+                json.dump({"silent_failures": {"count": ["confident"]}}, f)
+            with self.assertRaises(ValueError):
+                load_policy(p)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_blank_only_rise_is_ignored_when_policy_counts_wrong_only(self):
+        tmp = tempfile.mkdtemp()
+        try:
+            rows = []
+            for i in range(30):
+                for r in range(3):
+                    rows.append(("t%d" % i, "old", r, "ok", True))
+                    rows.append(("t%d" % i, "new", r, '{"pincode": ""}' if i < 12 else "ok", i >= 12))
+            _write_run(tmp, rows)
+            self.assertTrue(check(tmp, "old", "new", count=("wrong", "blank"))["flagged"])
+            self.assertFalse(check(tmp, "old", "new", count=("wrong",))["flagged"])
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)

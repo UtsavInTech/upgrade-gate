@@ -100,7 +100,11 @@ def main() -> int:
     run_dir = os.path.join(os.environ.get("RUNNER_TEMP") or tempfile.gettempdir(), "upgrade-gate-" + args.suite)
     shutil.rmtree(run_dir, ignore_errors=True)
     shutil.copytree(evidence, run_dir)
-    code = cli.main(["gate", run_dir, "--baseline", baseline, "--candidate", candidate])
+    policy = os.path.join(ROOT, "release", "policy.json")
+    gate_args = ["gate", run_dir, "--baseline", baseline, "--candidate", candidate]
+    if os.path.exists(policy):
+        gate_args += ["--policy", policy]
+    code = cli.main(gate_args)
     with open(os.path.join(run_dir, "gate.json"), encoding="utf-8") as f:
         gate = json.load(f)
     try:
@@ -118,11 +122,17 @@ def main() -> int:
     lines += ["- " + r for r in gate.get("reasons", [])]
     beh = (gate.get("behaviour") or {}).get("by_input") or {}
     if beh:
-        lines += ["", "| Input | Tasks | Wrong or blank, no warning | Says it can't answer |", "|---|---|---|---|"]
+        lines += ["", "| Input | Tasks | Wrong or blank, no warning | Grouped by item | Says it can't answer |",
+                  "|---|---|---|---|---|"]
         for m, g in sorted(beh.items()):
-            lines.append("| %s | %d | %d → %d%s | %d → %d |" % (
+            it = g["silent"].get("items")
+            lines.append("| %s | %d | %d → %d%s | %s | %d → %d |" % (
                 g["label"], g["tasks"], g["silent"]["baseline"], g["silent"]["candidate"],
-                " ⚠" if g.get("flagged") else "", g["abstain"]["baseline"], g["abstain"]["candidate"]))
+                " ⚠" if g.get("flagged") else "",
+                "%d of %d items worse, %d better (p = %.2g)" % (it["worse"], it["n"], it["better"], it["p"]) if it else "–",
+                g["abstain"]["baseline"], g["abstain"]["candidate"]))
+    if gate.get("policy_why"):
+        lines += ["", "**Release policy** (`release/policy.json`): %s" % gate["policy_why"]]
     if code != 0:
         ex = failing_example(run_dir, baseline, candidate)
         if ex:

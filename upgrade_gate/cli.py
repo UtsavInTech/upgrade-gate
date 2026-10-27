@@ -215,16 +215,25 @@ def cmd_gate(args) -> int:
     from .gate import evaluate_run
     baseline, others = _run_names(args.run_dir)
     candidate = (_split(args.candidate) or others)[0]
+    from .behaviour import load_policy
+    policy = load_policy(getattr(args, "policy", None))
+    acc = policy["accuracy"]
+    max_drop = args.max_drop if args.max_drop is not None else acc["max_drop"]
+    alpha = args.alpha if args.alpha is not None else acc["alpha"]
     res = evaluate_run(args.run_dir, baseline=args.baseline or baseline, candidate=candidate,
-                       max_drop=args.max_drop, alpha=args.alpha)
+                       max_drop=max_drop, alpha=alpha)
     if not getattr(args, "accuracy_only", False):
         from .behaviour import apply_to_gate
-        res = apply_to_gate(args.run_dir, alpha=args.alpha, max_rise=args.max_drop)
+        res = apply_to_gate(args.run_dir, alpha=alpha, max_rise=max_drop, policy=policy)
         for m, g in sorted(res["behaviour"].get("by_input", {}).items()):
             print("Failure types, %s (%d tasks): wrong or blank with no warning %d -> %d, "
                   "says it can't answer %d -> %d%s" % (
                       g["label"], g["tasks"], g["silent"]["baseline"], g["silent"]["candidate"],
                       g["abstain"]["baseline"], g["abstain"]["candidate"], "  << flagged" if g["flagged"] else ""))
+            it = g["silent"].get("items")
+            if it:
+                print("    grouped into %d items: %d worse, %d better, p = %.2g; tested per %s" % (
+                    it["n"], it["worse"], it["better"], it["p"], g["test_unit"]))
     print("%s  (%s -> %s)" % (res["decision"].upper(), res["baseline"], res["candidate"]))
     for r in res.get("reasons", []):
         print("  -", r)
@@ -292,8 +301,9 @@ def build_parser() -> argparse.ArgumentParser:
         if name == "all":
             sp.add_argument("--mode", default="deterministic", choices=["deterministic", "judge", "both"])
             sp.add_argument("--judges", default="")
-            sp.add_argument("--max-drop", type=float, default=0.02)
-            sp.add_argument("--alpha", type=float, default=0.05)
+            sp.add_argument("--policy", default=None, help="release policy JSON")
+            sp.add_argument("--max-drop", type=float, default=None)
+            sp.add_argument("--alpha", type=float, default=None)
             sp.add_argument("--accuracy-only", action="store_true", help="skip the silent-failure check")
         sp.set_defaults(fn=fn)
 
@@ -307,8 +317,9 @@ def build_parser() -> argparse.ArgumentParser:
     sp.add_argument("run_dir")
     sp.add_argument("--baseline", default=None)
     sp.add_argument("--candidate", default=None)
-    sp.add_argument("--max-drop", type=float, default=0.02)
-    sp.add_argument("--alpha", type=float, default=0.05)
+    sp.add_argument("--policy", default=None, help="release policy JSON (e.g. release/policy.json)")
+    sp.add_argument("--max-drop", type=float, default=None, help="overrides the policy (default 0.02)")
+    sp.add_argument("--alpha", type=float, default=None, help="overrides the policy (default 0.05)")
     sp.add_argument("--accuracy-only", action="store_true", help="skip the silent-failure check")
     sp.set_defaults(fn=cmd_gate)
 

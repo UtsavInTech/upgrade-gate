@@ -1,0 +1,29 @@
+[
+  {
+    "suite": "voice-notes",
+    "branch_commit": "92f04d8ede349843172c8ecb96ad9b8d92131708",
+    "command": "PYTHONPATH=<isolated branch> .venv/bin/python scripts/ci_gate.py voice-notes --baseline spark-1.2@low",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"/var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-branch-audit-l7lgjri8/scripts/ci_gate.py\", line 139, in <module>\n    sys.exit(main())\n  File \"/var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-branch-audit-l7lgjri8/scripts/ci_gate.py\", line 103, in main\n    code = cli.main([\"gate\", run_dir, \"--baseline\", baseline, \"--candidate\", candidate])\n  File \"/var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-branch-audit-l7lgjri8/upgrade_gate/cli.py\", line 324, in main\n    rv = args.fn(args)\n  File \"/var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-branch-audit-l7lgjri8/upgrade_gate/cli.py\", line 215, in cmd_gate\n    from .gate import evaluate_run\n  File \"/var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-branch-audit-l7lgjri8/upgrade_gate/gate.py\", line 10, in <module>\n    import numpy as np\nModuleNotFoundError: No module named 'numpy'\n",
+    "generated_outputs_discarded": true
+  },
+  {
+    "suite": "real-voices",
+    "branch_commit": "92f04d8ede349843172c8ecb96ad9b8d92131708",
+    "command": "PYTHONPATH=<isolated branch> .venv/bin/python scripts/ci_gate.py real-voices --baseline spark-1.2@low",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"/var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-branch-audit-l7lgjri8/scripts/ci_gate.py\", line 139, in <module>\n    sys.exit(main())\n  File \"/var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-branch-audit-l7lgjri8/scripts/ci_gate.py\", line 103, in main\n    code = cli.main([\"gate\", run_dir, \"--baseline\", baseline, \"--candidate\", candidate])\n  File \"/var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-branch-audit-l7lgjri8/upgrade_gate/cli.py\", line 324, in main\n    rv = args.fn(args)\n  File \"/var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-branch-audit-l7lgjri8/upgrade_gate/cli.py\", line 215, in cmd_gate\n    from .gate import evaluate_run\n  File \"/var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-branch-audit-l7lgjri8/upgrade_gate/gate.py\", line 10, in <module>\n    import numpy as np\nModuleNotFoundError: No module named 'numpy'\n",
+    "generated_outputs_discarded": true
+  },
+  {
+    "suite": "text-and-documents",
+    "branch_commit": "92f04d8ede349843172c8ecb96ad9b8d92131708",
+    "command": "PYTHONPATH=<isolated branch> .venv/bin/python scripts/ci_gate.py text-and-documents --baseline spark-1.2@low",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"/var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-branch-audit-l7lgjri8/scripts/ci_gate.py\", line 139, in <module>\n    sys.exit(main())\n  File \"/var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-branch-audit-l7lgjri8/scripts/ci_gate.py\", line 103, in main\n    code = cli.main([\"gate\", run_dir, \"--baseline\", baseline, \"--candidate\", candidate])\n  File \"/var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-branch-audit-l7lgjri8/upgrade_gate/cli.py\", line 324, in main\n    rv = args.fn(args)\n  File \"/var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-branch-audit-l7lgjri8/upgrade_gate/cli.py\", line 215, in cmd_gate\n    from .gate import evaluate_run\n  File \"/var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-branch-audit-l7lgjri8/upgrade_gate/gate.py\", line 10, in <module>\n    import numpy as np\nModuleNotFoundError: No module named 'numpy'\n",
+    "generated_outputs_discarded": true
+  }
+]

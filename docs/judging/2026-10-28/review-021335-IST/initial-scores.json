@@ -1,0 +1,117 @@
+{
+  "contrarian": {
+    "a": [
+      7.4,
+      7.8,
+      8.5,
+      8.0
+    ],
+    "b_low": [
+      7.2,
+      8.4,
+      8.5,
+      7.8
+    ],
+    "b_high": [
+      8.2,
+      8.9,
+      9,
+      8.8
+    ],
+    "a_weighted_recomputed": 78.95,
+    "b_low_weighted_recomputed": 79.45,
+    "b_high_weighted_recomputed": 86.95
+  },
+  "first-principles": {
+    "a": [
+      7.7,
+      7.7,
+      8.3,
+      8.2
+    ],
+    "b_low": [
+      8,
+      8.6,
+      8.6,
+      8.4
+    ],
+    "b_high": [
+      8.7,
+      9,
+      9,
+      9
+    ],
+    "a_weighted_recomputed": 79.5,
+    "b_low_weighted_recomputed": 83.8,
+    "b_high_weighted_recomputed": 89.1
+  },
+  "outsider": {
+    "a": [
+      7.6,
+      8.1,
+      8.5,
+      8.2
+    ],
+    "b_low": [
+      7.9,
+      8.5,
+      8.6,
+      8.4
+    ],
+    "b_high": [
+      8.6,
+      8.7,
+      8.9,
+      9
+    ],
+    "a_weighted_recomputed": 80.7,
+    "b_low_weighted_recomputed": 83.25,
+    "b_high_weighted_recomputed": 87.8
+  },
+  "opportunity": {
+    "a": [
+      7.1,
+      8,
+      8.5,
+      8
+    ],
+    "b_low": [
+      7.5,
+      8.5,
+      8.7,
+      8.4
+    ],
+    "b_high": [
+      8.2,
+      9,
+      9.2,
+      9
+    ],
+    "a_weighted_recomputed": 78.55,
+    "b_low_weighted_recomputed": 82.3,
+    "b_high_weighted_recomputed": 88.1
+  },
+  "executor": {
+    "a": [
+      7.4,
+      7.8,
+      8.3,
+      8.2
+    ],
+    "b_low": [
+      7.9,
+      8.7,
+      8.6,
+      8.7
+    ],
+    "b_high": [
+      8.4,
+      9,
+      9,
+      9.1
+    ],
+    "a_weighted_recomputed": 78.85,
+    "b_low_weighted_recomputed": 84.35,
+    "b_high_weighted_recomputed": 88.4
+  }
+}

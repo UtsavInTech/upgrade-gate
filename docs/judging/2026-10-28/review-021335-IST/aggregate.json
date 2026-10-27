@@ -1,0 +1,243 @@
+{
+  "judges": [
+    {
+      "lens": "contrarian",
+      "reviewed": [
+        "B",
+        "E"
+      ],
+      "a": {
+        "impact": 7.4,
+        "demo": 7.6,
+        "meta_tooling": 8.5,
+        "technical_depth": 8.1,
+        "weighted": 78.65,
+        "stage1_pass": true,
+        "top5": "no",
+        "top10": "yes"
+      },
+      "b": {
+        "low": {
+          "impact": 7.2,
+          "demo": 8.4,
+          "meta_tooling": 8.5,
+          "technical_depth": 7.8,
+          "weighted": 79.45,
+          "stage1_pass": true,
+          "top5": "no",
+          "top10": "shortlist"
+        },
+        "high": {
+          "impact": 8.2,
+          "demo": 8.9,
+          "meta_tooling": 9.0,
+          "technical_depth": 8.8,
+          "weighted": 86.95,
+          "stage1_pass": true,
+          "top5": "yes",
+          "top10": "yes"
+        }
+      },
+      "revision_summary": "One revision: A Demo7.8 to7.6 because available authenticated API evidence did not verify a hosted upgrade PR/check/deploy-skipped/merge-blocking demonstration and confirmed repository privacy (verified-facts.md:7); A Technical8.0 to8.1 because executor independently confirmed178tests, web build and replay exits2/2/0 with model restored (verified-facts.md:5). A weighted78.95 to78.65. Other A scores/votes and all B scores/votes unchanged. Clarified three-dot PR diff is only release/model.json, not apparent deletions from comparing current main to older branch (verified-facts.md:3)."
+    },
+    {
+      "lens": "first-principles",
+      "reviewed": [
+        "A",
+        "B"
+      ],
+      "a": {
+        "impact": 7.7,
+        "demo": 7.7,
+        "meta_tooling": 8.3,
+        "technical_depth": 8.2,
+        "weighted": 79.5,
+        "stage1_pass": true,
+        "top5": "no",
+        "top10": "yes"
+      },
+      "b": {
+        "low": {
+          "impact": 8.0,
+          "demo": 8.4,
+          "meta_tooling": 8.6,
+          "technical_depth": 8.4,
+          "weighted": 83.3,
+          "stage1_pass": true,
+          "top5": "no",
+          "top10": "yes"
+        },
+        "high": {
+          "impact": 8.7,
+          "demo": 8.8,
+          "meta_tooling": 9.0,
+          "technical_depth": 9.0,
+          "weighted": 88.6,
+          "stage1_pass": true,
+          "top5": "yes",
+          "top10": "yes"
+        }
+      },
+      "revision_summary": "One revision after anonymous A/B and verified facts: A scores unchanged at 79.5. B Demo reduced 8.6\u20139.0 to 8.4\u20138.8 because B1 repairs only README/site whereas B7 records the existing overclaiming script; no inferred script repair. Recalculated B weighted totals 83.3\u201388.6; initial low arithmetic 83.75 was erroneous (original components sum to 83.8). Clarified blank-count description is not grouped confirmation and a fresh null is not disproof. No added B work or traction."
+    },
+    {
+      "lens": "outsider",
+      "reviewed": [
+        "C",
+        "D"
+      ],
+      "a": {
+        "impact": 7.6,
+        "demo": 7.8,
+        "meta_tooling": 8.5,
+        "technical_depth": 8.2,
+        "weighted": 79.95,
+        "stage1_pass": true,
+        "top5": "no",
+        "top10": "yes"
+      },
+      "b": {
+        "low": {
+          "impact": 7.7,
+          "demo": 8.4,
+          "meta_tooling": 8.6,
+          "technical_depth": 8.2,
+          "weighted": 82.0,
+          "stage1_pass": true,
+          "top5": "no",
+          "top10": "yes"
+        },
+        "high": {
+          "impact": 8.6,
+          "demo": 8.7,
+          "meta_tooling": 8.9,
+          "technical_depth": 9.0,
+          "weighted": 87.8,
+          "stage1_pass": true,
+          "top5": "yes",
+          "top10": "yes"
+        }
+      },
+      "revision_summary": "One revision: A Demo8.1 to7.8 because hosted PR/checks remain API-unverified despite verified local2/2/0 replay; B low Impact7.9 to7.7, Demo8.5 to8.4, Tech8.4 to8.2 account for consequential audit errors and unchanged exact-script E7 overstatement. Other marks and votes retained. B1 wording is not new clustered blank confirmation; no invented kappa, favorable replication, users or engagement."
+    },
+    {
+      "lens": "opportunity",
+      "reviewed": [
+        "C",
+        "E"
+      ],
+      "a": {
+        "impact": 7.1,
+        "demo": 8,
+        "meta_tooling": 8.5,
+        "technical_depth": 8,
+        "weighted": 78.55,
+        "stage1_pass": true,
+        "top5": "no",
+        "top10": "yes"
+      },
+      "b": {
+        "low": {
+          "impact": 7.4,
+          "demo": 8.5,
+          "meta_tooling": 8.7,
+          "technical_depth": 8,
+          "weighted": 81.2,
+          "stage1_pass": true,
+          "top5": "no",
+          "top10": "yes"
+        },
+        "high": {
+          "impact": 8.2,
+          "demo": 8.7,
+          "meta_tooling": 9.2,
+          "technical_depth": 8.7,
+          "weighted": 86.75,
+          "stage1_pass": true,
+          "top5": "yes",
+          "top10": "yes"
+        }
+      },
+      "revision_summary": "One revision: A unchanged. B-low impact 7.5 to 7.4 and technical 8.4 to 8.0; B-high demo 9.0 to 8.7 and technical 9.0 to 8.7. Exact B1 does not repair B7 video script; B additions do not repair accuracy clustering or ensure strong label agreement. Blank-only confirmation is descriptive/task-level, not clustered statistical significance. Initial preserved."
+    },
+    {
+      "lens": "executor",
+      "reviewed": [
+        "A",
+        "D"
+      ],
+      "a": {
+        "impact": 7.4,
+        "demo": 7.6,
+        "meta_tooling": 8.3,
+        "technical_depth": 8.2,
+        "weighted": 78.35,
+        "stage1_pass": true,
+        "top5": "no",
+        "top10": "yes"
+      },
+      "b": {
+        "low": {
+          "impact": 7.9,
+          "demo": 8.7,
+          "meta_tooling": 8.6,
+          "technical_depth": 8.7,
+          "weighted": 84.35,
+          "stage1_pass": true,
+          "top5": "no",
+          "top10": "yes"
+        },
+        "high": {
+          "impact": 8.4,
+          "demo": 9.0,
+          "meta_tooling": 9.0,
+          "technical_depth": 9.1,
+          "weighted": 88.4,
+          "stage1_pass": true,
+          "top5": "yes",
+          "top10": "yes"
+        }
+      },
+      "revision_summary": "Single revision: A Demo7.8\u21927.6 and weighted78.85\u219278.35 because authenticated API evidence did not verify the hosted PR/check scene; retain verified local replay. Other A/B scores unchanged. B2/B6 stipulated working. Blank-response observations are descriptive; no new grouped significance assumed. See executor-peer.md. Initial prose arithmetic corrected; criteria unchanged except the single Demo revision."
+    }
+  ],
+  "a": {
+    "impact": 7.44,
+    "demo": 7.74,
+    "meta_tooling": 8.42,
+    "technical_depth": 8.14,
+    "weighted": 79.0,
+    "min": 78.35,
+    "max": 79.95,
+    "top5_yes": 0,
+    "top10_yes": 5,
+    "top10_shortlist": 0,
+    "stage1_all_pass": true
+  },
+  "b_low": {
+    "impact": 7.64,
+    "demo": 8.48,
+    "meta_tooling": 8.6,
+    "technical_depth": 8.22,
+    "weighted": 82.06,
+    "min": 79.45,
+    "max": 84.35,
+    "top5_yes": 0,
+    "top10_yes": 4,
+    "top10_shortlist": 1,
+    "stage1_all_pass": true
+  },
+  "b_high": {
+    "impact": 8.42,
+    "demo": 8.82,
+    "meta_tooling": 9.02,
+    "technical_depth": 8.92,
+    "weighted": 87.7,
+    "min": 86.75,
+    "max": 88.6,
+    "top5_yes": 5,
+    "top10_yes": 5,
+    "top10_shortlist": 0,
+    "stage1_all_pass": true
+  }
+}

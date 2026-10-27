@@ -1,0 +1,40 @@
+{
+  "lens": "first-principles",
+  "reviewed": [
+    "A",
+    "B"
+  ],
+  "a": {
+    "impact": 7.7,
+    "demo": 7.7,
+    "meta_tooling": 8.3,
+    "technical_depth": 8.2,
+    "weighted": 79.5,
+    "stage1_pass": true,
+    "top5": "no",
+    "top10": "yes"
+  },
+  "b": {
+    "low": {
+      "impact": 8.0,
+      "demo": 8.4,
+      "meta_tooling": 8.6,
+      "technical_depth": 8.4,
+      "weighted": 83.3,
+      "stage1_pass": true,
+      "top5": "no",
+      "top10": "yes"
+    },
+    "high": {
+      "impact": 8.7,
+      "demo": 8.8,
+      "meta_tooling": 9.0,
+      "technical_depth": 9.0,
+      "weighted": 88.6,
+      "stage1_pass": true,
+      "top5": "yes",
+      "top10": "yes"
+    }
+  },
+  "revision_summary": "One revision after anonymous A/B and verified facts: A scores unchanged at 79.5. B Demo reduced 8.6\u20139.0 to 8.4\u20138.8 because B1 repairs only README/site whereas B7 records the existing overclaiming script; no inferred script repair. Recalculated B weighted totals 83.3\u201388.6; initial low arithmetic 83.75 was erroneous (original components sum to 83.8). Clarified blank-count description is not grouped confirmation and a fresh null is not disproof. No added B work or traction."
+}

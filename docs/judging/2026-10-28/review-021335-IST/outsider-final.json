@@ -1,0 +1,40 @@
+{
+  "lens": "outsider",
+  "reviewed": [
+    "C",
+    "D"
+  ],
+  "a": {
+    "impact": 7.6,
+    "demo": 7.8,
+    "meta_tooling": 8.5,
+    "technical_depth": 8.2,
+    "weighted": 79.95,
+    "stage1_pass": true,
+    "top5": "no",
+    "top10": "yes"
+  },
+  "b": {
+    "low": {
+      "impact": 7.7,
+      "demo": 8.4,
+      "meta_tooling": 8.6,
+      "technical_depth": 8.2,
+      "weighted": 82.0,
+      "stage1_pass": true,
+      "top5": "no",
+      "top10": "yes"
+    },
+    "high": {
+      "impact": 8.6,
+      "demo": 8.7,
+      "meta_tooling": 8.9,
+      "technical_depth": 9.0,
+      "weighted": 87.8,
+      "stage1_pass": true,
+      "top5": "yes",
+      "top10": "yes"
+    }
+  },
+  "revision_summary": "One revision: A Demo8.1 to7.8 because hosted PR/checks remain API-unverified despite verified local2/2/0 replay; B low Impact7.9 to7.7, Demo8.5 to8.4, Tech8.4 to8.2 account for consequential audit errors and unchanged exact-script E7 overstatement. Other marks and votes retained. B1 wording is not new clustered blank confirmation; no invented kappa, favorable replication, users or engagement."
+}

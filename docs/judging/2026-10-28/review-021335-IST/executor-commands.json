@@ -1,0 +1,53 @@
+{
+  "head": "29862c5258f9368fdc828f4c6276546b97467eac",
+  "results": [
+    {
+      "command": "PYTHONPATH=. .venv/bin/python -m pytest -q",
+      "exit_code": 0,
+      "stdout": "........................................................................ [ 40%]\n........................................................................ [ 80%]\n..................................                                       [100%]\n178 passed in 25.76s\n",
+      "artifact_paths": []
+    },
+    {
+      "command": "npm --prefix web run build",
+      "exit_code": 0,
+      "stdout": "\n> upgrade-gate-web@0.1.0 build\n> tsc --noEmit && vite build\n\nvite v7.3.7 building client environment for production...\ntransforming...\n\u2713 1998 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                                                   0.71 kB \u2502 gzip:   0.41 kB\ndist/assets/jetbrains-mono-greek-400-normal-C190GLew.woff2        4.23 kB\ndist/assets/jetbrains-mono-cyrillic-400-normal-BEIGL1Tu.woff2     5.33 kB\ndist/assets/jetbrains-mono-vietnamese-400-normal-CqNFfHCs.woff    5.37 kB\ndist/assets/jetbrains-mono-greek-400-normal-B9oWc5Lo.woff         5.66 kB\ndist/assets/jetbrains-mono-cyrillic-400-normal-ugxPyKxw.woff      6.98 kB\ndist/assets/jetbrains-mono-latin-ext-400-normal-Bc8Ftmh3.woff2    7.34 kB\ndist/assets/jetbrains-mono-latin-ext-400-normal-fXTG6kC5.woff    10.13 kB\ndist/assets/figtree-latin-ext-wght-normal-DCwSJGxG.woff2         10.28 kB\ndist/assets/figtree-latin-wght-normal-D_ZTVpCC.woff2             20.16 kB\ndist/assets/jetbrains-mono-latin-400-normal-V6pRDFza.woff2       21.17 kB\ndist/assets/jetbrains-mono-latin-400-normal-6-qcROiO.woff        27.50 kB\ndist/assets/index-DhwauQeP.css                                   46.18 kB \u2502 gzip:  15.71 kB\ndist/assets/index-w1PqCLrP.js                                   432.11 kB \u2502 gzip: 135.54 kB\n\u2713 built in 1.88s\n",
+      "artifact_paths": []
+    },
+    {
+      "command": "PYTHONPATH=. .venv/bin/python scripts/ci_gate.py voice-notes --baseline spark-1.2@low",
+      "exit_code": 2,
+      "stdout": "Failure types, audio input (135 tasks): wrong or blank with no warning 18 -> 42, says it can't answer 21 -> 0  << flagged\n    grouped into 45 items: 18 worse, 1 better, p = 7.6e-05; tested per item\nFailure types, text input (135 tasks): wrong or blank with no warning 0 -> 0, says it can't answer 0 -> 0\n    grouped into 45 items: 0 worse, 0 better, p = 1; tested per item\nNO-GO  (spark-1.2@low -> spark-1.3@low)\n  - Silent failures rose. Audio input: answers that are wrong or blank with no warning rose from 18 to 42 of 135 tasks (18 items worse, 1 better, p = 8e-05; blank 0 \u2192 7); answers admitting it can't answer fell from 21 to 0.\n  - CI overlaps the drop limit. Approximately 9072 more independent tasks are needed (normal approximation, 80% power; not a guarantee).\nwrote /var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-voice-notes/report.md\nwrote /var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-voice-notes/report.html\n### upgrade-gate / voice-notes: NO-GO\n\n`spark-1.2@low` \u2192 `spark-1.3@low` \u00b7 e6-audio\n\nAccuracy alone: **INCONCLUSIVE**. The failure-type check changed the decision.\n\n- Silent failures rose. Audio input: answers that are wrong or blank with no warning rose from 18 to 42 of 135 tasks (18 items worse, 1 better, p = 8e-05; blank 0 \u2192 7); answers admitting it can't answer fell from 21 to 0.\n- CI overlaps the drop limit. Approximately 9072 more independent tasks are needed (normal approximation, 80% power; not a guarantee).\n\n| Input | Tasks | Wrong or blank, no warning | Grouped by item | Says it can't answer |\n|---|---|---|---|---|\n| audio input | 135 | 18 \u2192 42 \u26a0 | 18 of 45 items worse, 1 better (p = 7.6e-05) | 21 \u2192 0 |\n| text input | 135 | 0 \u2192 0 | 0 of 45 items worse, 0 better (p = 1) | 0 \u2192 0 |\n\n**Release policy** (`release/policy.json`): Voice notes create orders. A wrong order number or pincode is stored and ships to the wrong place; a blank one fails our form but the order is still lost. A model that says it can't hear is fine: we ask the customer to type it. So we block any significant rise in wrong or blank answers, and allow at most a 2-point accuracy drop.\n\n**One failing case** (`audio-synth-extract-03-hi`): the answer is filled in, so a required-fields check passes it.\n\n> \u0928\u092e\u0938\u094d\u0924\u0947, \u092e\u0948\u0902 \u0938\u094d\u0928\u0947\u0939\u093e \u0915\u0941\u0932\u0915\u0930\u094d\u0923\u0940 \u0905\u0939\u092e\u0926\u093e\u092c\u093e\u0926 \u0938\u0947 \u092c\u094b\u0932 \u0930\u0939\u0940 \u0939\u0942\u0901\u0964 \u092e\u0947\u0930\u093e \u0911\u0930\u094d\u0921\u0930 \u0928\u0902\u092c\u0930 9 3 4 3 7 \u0939\u0948\u0964 \u092e\u0947\u0930\u093e \u092a\u093f\u0928\u0915\u094b\u0921 4 5 2 0 8 9 \u0939\u0948\u0964 \u0915\u0943\u092a\u092f\u093e \u092e\u0941\u091d\u0947 \u0935\u093e\u092a\u0938 \u0915\u0949\u0932 \u0915\u0930\u0947\u0902\u0964\n\n- Correct: `{\"order_number\": \"93437\", \"pincode\": \"452089\", \"city\": [\"Ahmedabad\", \"\u0905\u0939\u092e\u0926\u093e\u092c\u093e\u0926\"]}`\n- `spark-1.2@low`: `{\"order_number\":\"93437\",\"pincode\":\"452089\",\"city\":\"Ahmedabad\"}`\n- `spark-1.3@low`: `{\"order_number\":\"93437\",\"pincode\":\"380015\",\"city\":\"Ahmedabad\"}`\n\n",
+      "artifact_paths": [
+        "/var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-voice-notes/report.html",
+        "/var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-voice-notes/report.md"
+      ]
+    },
+    {
+      "command": "PYTHONPATH=. .venv/bin/python scripts/ci_gate.py real-voices --baseline spark-1.2@low",
+      "exit_code": 2,
+      "stdout": "Failure types, audio input (45 tasks): wrong or blank with no warning 6 -> 13, says it can't answer 1 -> 0\n    grouped into 15 items: 5 worse, 0 better, p = 0.062; tested per item\nNO-GO  (spark-1.2@low -> spark-1.3@low)\n  - Overall CI upper bound -2.2 pts is below the allowed drop of 2.0 pts.\n  - Not robust: Audio input: wrong or blank answers rose 6 \u2192 13 per task (p = 0.02), but not when related tasks are grouped into 15 items (5 worse, 0 better, p = 0.062).\nwrote /var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-real-voices/report.md\nwrote /var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-real-voices/report.html\n### upgrade-gate / real-voices: NO-GO\n\n`spark-1.2@low` \u2192 `spark-1.3@low` \u00b7 e7-real-voices\n\n- Overall CI upper bound -2.2 pts is below the allowed drop of 2.0 pts.\n- Not robust: Audio input: wrong or blank answers rose 6 \u2192 13 per task (p = 0.02), but not when related tasks are grouped into 15 items (5 worse, 0 better, p = 0.062).\n\n| Input | Tasks | Wrong or blank, no warning | Grouped by item | Says it can't answer |\n|---|---|---|---|---|\n| audio input | 45 | 6 \u2192 13 | 5 of 15 items worse, 0 better (p = 0.062) | 1 \u2192 0 |\n\n**Release policy** (`release/policy.json`): Voice notes create orders. A wrong order number or pincode is stored and ships to the wrong place; a blank one fails our form but the order is still lost. A model that says it can't hear is fine: we ask the customer to type it. So we block any significant rise in wrong or blank answers, and allow at most a 2-point accuracy drop.\n\n",
+      "artifact_paths": [
+        "/var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-real-voices/report.html",
+        "/var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-real-voices/report.md"
+      ]
+    },
+    {
+      "command": "PYTHONPATH=. .venv/bin/python scripts/ci_gate.py text-and-documents --baseline spark-1.2@low",
+      "exit_code": 0,
+      "stdout": "Failure types, image input (100 tasks): wrong or blank with no warning 1 -> 1, says it can't answer 0 -> 0\n    grouped into 60 items: 0 worse, 0 better, p = 1; tested per item\nFailure types, PDF input (100 tasks): wrong or blank with no warning 0 -> 0, says it can't answer 0 -> 0\n    grouped into 60 items: 0 worse, 0 better, p = 1; tested per item\nFailure types, text input (1125 tasks): wrong or blank with no warning 0 -> 0, says it can't answer 0 -> 0\n    grouped into 555 items: 0 worse, 0 better, p = 1; tested per item\nGO  (spark-1.2@low -> spark-1.3@low)\n  - Overall change +0.0 pts (95% CI +0.0 to +0.0) clears the 2.0 pt drop limit; no tested slice regresses significantly.\nwrote /var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-text-and-documents/report.md\nwrote /var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-text-and-documents/report.html\n### upgrade-gate / text-and-documents: GO\n\n`spark-1.2@low` \u2192 `spark-1.3@low` \u00b7 e1-upgrade\n\n- Overall change +0.0 pts (95% CI +0.0 to +0.0) clears the 2.0 pt drop limit; no tested slice regresses significantly.\n\n| Input | Tasks | Wrong or blank, no warning | Grouped by item | Says it can't answer |\n|---|---|---|---|---|\n| image input | 100 | 1 \u2192 1 | 0 of 60 items worse, 0 better (p = 1) | 0 \u2192 0 |\n| PDF input | 100 | 0 \u2192 0 | 0 of 60 items worse, 0 better (p = 1) | 0 \u2192 0 |\n| text input | 1125 | 0 \u2192 0 | 0 of 555 items worse, 0 better (p = 1) | 0 \u2192 0 |\n\n**Release policy** (`release/policy.json`): Voice notes create orders. A wrong order number or pincode is stored and ships to the wrong place; a blank one fails our form but the order is still lost. A model that says it can't hear is fine: we ask the customer to type it. So we block any significant rise in wrong or blank answers, and allow at most a 2-point accuracy drop.\n\n",
+      "artifact_paths": [
+        "/var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-text-and-documents/report.html",
+        "/var/folders/gy/zlxy5zjj35nbfw0qnfrqzwdm0000gn/T/upgrade-gate-text-and-documents/report.md"
+      ]
+    },
+    {
+      "command": "git diff --exit-code -- release/model.json",
+      "exit_code": 0,
+      "stdout": "",
+      "artifact_paths": []
+    }
+  ],
+  "model_restored_byte_identical": true,
+  "build_artifact_directory": "/Users/utsavintech/Documents/upgrade-gate/web/dist",
+  "tracked_working_tree_divergence": "none; only untracked judging artifacts"
+}

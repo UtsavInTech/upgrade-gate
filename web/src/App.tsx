@@ -1,5 +1,6 @@
 import { MotionConfig } from "motion/react";
 import { useCallback, useEffect, useState } from "react";
+import { Audit } from "./components/Audit";
 import { AudioSection } from "./components/AudioSection";
 import { CostSection } from "./components/CostSection";
 import { EffortSection } from "./components/EffortSection";
@@ -14,7 +15,10 @@ import { loadSite } from "./data";
 
 type Theme = "light" | "dark";
 export type Route =
-  { page: "home" } | { page: "report"; run: string; task: string | null } | { page: "record" };
+  | { page: "home" }
+  | { page: "report"; run: string; task: string | null }
+  | { page: "record" }
+  | { page: "audit" };
 
 function initialTheme(): Theme {
   const set = document.documentElement.dataset.theme;
@@ -29,6 +33,7 @@ function parseRoute(): Route {
   const m = h.match(/^#\/report(?:\/([\w-]+))?(?:\/([\w-]+))?/);
   if (m) return { page: "report", run: m[1] ?? "e6-audio", task: m[2] ?? null };
   if (h.startsWith("#/record")) return { page: "record" };
+  if (h.startsWith("#/audit")) return { page: "audit" };
   return { page: "home" };
 }
 
@@ -78,6 +83,7 @@ export default function App() {
       <main>
         {route.page === "report" && <Report run={route.run} task={route.task} />}
         {route.page === "record" && <Record />}
+        {route.page === "audit" && <Audit />}
         {route.page === "home" && (
           <>
             {error && (

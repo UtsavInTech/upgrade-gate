@@ -125,3 +125,21 @@ class ClientAndRunner(SpendBase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class StrictRunBudget(SpendBase):
+    def test_run_budget_is_never_exceeded(self):
+        usage = {"prompt_tokens": 10, "completion_tokens": 1000}  # a full 1,000-token answer: $0.00425
+        tasks = [Task(id="t%d" % i, pack="unit", category="c", lang="en", modality="text",
+                      prompt="q%d" % i, reference="x", scorer={"type": "exact"}) for i in range(20)]
+        cands = [Candidate("new", "muse-spark-1.3", {"max_completion_tokens": 1000})]
+        os.environ["MAX_TOTAL_SPEND_USD"] = "50"
+        with mock_server(answer="x", usage=usage) as srv:
+            c = ModelClient(base_url=srv.base_url, api_key="k", cache_dir="", rpm={"*": 0}, run_budget_usd=0.01)
+            run_dir = run(tasks, cands, baseline="new", repeats=1, out_root=self.tmp, run_id="strict",
+                          client=c, workers=1, verbose=False, budget_usd=0.01)
+            calls = srv.calls
+        rows = list(read_jsonl(os.path.join(run_dir, "responses.jsonl")))
+        spent = sum(r["cost_usd"] for r in rows)
+        self.assertLessEqual(spent, 0.01)
+        self.assertEqual(calls, 2)  # the third call's worst case would pass $0.01, so it is never sent

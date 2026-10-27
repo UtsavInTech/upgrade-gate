@@ -1,0 +1,422 @@
+[
+ {
+  "id": "a01",
+  "said": "Hello, this is Suresh Kumar calling from Kolkata. My order number is 9 2 1 9 1. My pincode is 4 1 1 9 0 3. Please call me back.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 92191, pincode: 411903, city: Kolkata",
+  "answer": "I can't listen to or process audio attachments, so I'm unable to extract the order_number, pincode and city from a voice note. If you can provide a typed transcript of what was said, I can help format it into the requested JSON structure."
+ },
+ {
+  "id": "a02",
+  "said": "एक कमीज़ की क़ीमत 400 रुपये है और उस पर 10 प्रतिशत की छूट है। छूट के बाद क़ीमत कितनी होगी?",
+  "instruction": "Listen to the attached audio. Answer the question. Reply with only the final number.",
+  "expected": "360",
+  "answer": "360"
+ },
+ {
+  "id": "a03",
+  "said": "Order 2 5 2 8 0 ke liye bata doon, maine ghar badal liya hai. Please ise mere naye address par bhejiye.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Classify it as exactly one of: address_change, cancel_order, delivery_status, payment_failed, refund_request. Reply with only the label.",
+  "expected": "address_change",
+  "answer": "address_change"
+ },
+ {
+  "id": "a04",
+  "said": "एक स्कूल बस दिन में 2 चक्कर लगाती है और हर चक्कर में 21 बच्चे ले जाती है। 6 दिनों में वह कुल कितने बच्चे ले जाती है?",
+  "instruction": "Listen to the attached audio. Answer the question. Reply with only the final number.",
+  "expected": "252",
+  "answer": "252"
+ },
+ {
+  "id": "a05",
+  "said": "Hello, main Suresh Kumar Jaipur se bol raha hoon. Mera order number 6 0 3 6 4 hai. Mera pincode 7 0 5 8 4 2 hai. Please mujhe call back kijiye.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 60364, pincode: 705842, city: Jaipur",
+  "answer": "{\"order_number\":\"\",\"pincode\":\"\",\"city\":\"\"}"
+ },
+ {
+  "id": "a06",
+  "said": "A water tank holds 1120 litres. It fills at 80 litres per minute. How many minutes does it take to fill completely?",
+  "instruction": "Listen to the attached audio. Answer the question. Reply with only the final number.",
+  "expected": "14",
+  "answer": "I don't have the ability to listen to or process audio files, so I couldn't hear the attached audio or determine the water tank capacity and fill rate mentioned. If you can provide a written transcript of the question with the numbers, I can calculate the answer for you."
+ },
+ {
+  "id": "a07",
+  "said": "Hello, this is Deepak Mishra calling from Ahmedabad. My order number is 5 2 2 8 9. My pincode is 7 2 3 5 7 9. Please call me back.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 52289, pincode: 723579, city: Ahmedabad",
+  "answer": "{\"order_number\": \"\", \"pincode\": \"\", \"city\": \"\"}"
+ },
+ {
+  "id": "a08",
+  "said": "Hello, this is Manoj Tiwari calling from Mumbai. My order number is 8 8 0 5 7. My pincode is 6 7 4 2 0 0. Please call me back.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 88057, pincode: 674200, city: Mumbai",
+  "answer": "{\"order_number\": \"\", \"pincode\": \"\", \"city\": \"\"}"
+ },
+ {
+  "id": "a09",
+  "said": "Hello, this is Kavya Iyer calling from Mumbai. My order number is 4 9 9 1 6. My pincode is 2 6 6 6 9 7. Please call me back.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 49916, pincode: 266697, city: Mumbai",
+  "answer": "I am unable to listen to or access audio files, so I cannot extract the order_number, pincode and city from a voice note.\n\nIf you can provide a text transcription of the voice note or type out the order number, pincode and city, I can then return them in the requested JSON format:\n\n```json\n{\n  \"order_number\": \"\",\n  \"pincode\": \"\",\n  \"city\": \"\"\n}\n```\n\nPlease share the details in text and I will format them for you."
+ },
+ {
+  "id": "a10",
+  "said": "Hello, main Suresh Kumar Jaipur se bol raha hoon. Mera order number 6 0 3 6 4 hai. Mera pincode 7 0 5 8 4 2 hai. Please mujhe call back kijiye.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 60364, pincode: 705842, city: Jaipur",
+  "answer": "{\"order_number\":\"\",\"pincode\":\"\",\"city\":\"\"}"
+ },
+ {
+  "id": "a11",
+  "said": "Maine pichhle hafte order 3 9 2 5 1 ke joote wapas kar diye the, lekin paise abhi tak mere account mein nahi aaye. Mujhe mera refund chahiye.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Classify it as exactly one of: address_change, cancel_order, delivery_status, payment_failed, refund_request. Reply with only the label.",
+  "expected": "refund_request",
+  "answer": "refund_request"
+ },
+ {
+  "id": "a12",
+  "said": "नमस्ते, मैं काव्या अय्यर इंदौर से बोल रही हूँ। मेरा ऑर्डर नंबर 7 1 4 1 5 है। मेरा पिनकोड 8 2 9 5 1 2 है। कृपया मुझे वापस कॉल करें।",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 71415, pincode: 829512, city: Indore",
+  "answer": "{\"order_number\":\"71415\",\"pincode\":\"829512\",\"city\":\"Indore\"}"
+ },
+ {
+  "id": "a13",
+  "said": "Hello, this is Harpreet Kaur calling from Lucknow. My order number is 8 1 2 2 8. My pincode is 2 4 4 0 4 0. Please call me back.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 81228, pincode: 244040, city: Lucknow",
+  "answer": "I don't have the ability to listen to audio files. Based only on the text transcript you provided:\n\n```json\n{\n  \"order_number\": null,\n  \"pincode\": \"24040\",\n  \"city\": \"Lhanu\"\n}\n```\n\n* `pincode` \"24040\" and `city` \"Lhanu\" were found in the transcript: \"My pin code is 24040\" / \"calling from Lhanu\"\n* `order_number` was not mentioned in the provided transcript, so it cannot be extracted without hallucination. If you can provide the order number in text form I can include it as a digit string."
+ },
+ {
+  "id": "a14",
+  "said": "Hello, main Meera Kapoor Varanasi se bol rahi hoon. Mera order number 4 9 2 3 2 hai. Mera pincode 3 1 6 7 8 1 hai. Please mujhe call back kijiye.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 49232, pincode: 316781, city: Varanasi",
+  "answer": "{\"order_number\":\"49232\",\"pincode\":\"\",\"city\":\"Patiala\"}"
+ },
+ {
+  "id": "a15",
+  "said": "Ek school bus din mein 5 chakkar lagati hai aur har chakkar mein 34 bachche le jaati hai. 7 dinon mein woh kul kitne bachche le jaati hai?",
+  "instruction": "Listen to the attached audio. Answer the question. Reply with only the final number.",
+  "expected": "1190",
+  "answer": "I don't have the ability to listen to or access audio files, so I can't hear the attached audio to verify the question. If you can provide a transcript of the audio, I can calculate the answer for you."
+ },
+ {
+  "id": "a16",
+  "said": "ऑर्डर 2 5 2 8 0 के लिए बता दूँ, मैंने घर बदल लिया है। कृपया इसे मेरे नए पते पर भेजिए।",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Classify it as exactly one of: address_change, cancel_order, delivery_status, payment_failed, refund_request. Reply with only the label.",
+  "expected": "address_change",
+  "answer": "address_change"
+ },
+ {
+  "id": "a17",
+  "said": "Hello, main Vikram Singh Nagpur se bol raha hoon. Mera order number 8 5 9 9 9 hai. Mera pincode 3 0 8 1 5 7 hai. Please mujhe call back kijiye.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 85999, pincode: 308157, city: Nagpur",
+  "answer": "{\"order_number\":\"859999\",\"pincode\":\"308157\",\"city\":\"Nagpur\"}"
+ },
+ {
+  "id": "a18",
+  "said": "Hello, this is Deepak Mishra calling from Ahmedabad. My order number is 5 2 2 8 9. My pincode is 7 2 3 5 7 9. Please call me back.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 52289, pincode: 723579, city: Ahmedabad",
+  "answer": "{\"order_number\":\"52289\",\"pincode\":\"723579\",\"city\":\"Ahmedabad\"}"
+ },
+ {
+  "id": "a19",
+  "said": "सुनीता ने 88 रुपये प्रति किलो के भाव से 3 किलो चावल ख़रीदे और 500 रुपये का नोट दिया। सुनीता को कितने रुपये वापस मिलने चाहिए?",
+  "instruction": "Listen to the attached audio. Answer the question. Reply with only the final number.",
+  "expected": "236",
+  "answer": "236"
+ },
+ {
+  "id": "a20",
+  "said": "नमस्ते, मैं स्नेहा कुलकर्णी अहमदाबाद से बोल रही हूँ। मेरा ऑर्डर नंबर 9 3 4 3 7 है। मेरा पिनकोड 4 5 2 0 8 9 है। कृपया मुझे वापस कॉल करें।",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 93437, pincode: 452089, city: Ahmedabad",
+  "answer": "{\"order_number\":\"9343437\",\"pincode\":\"452089\",\"city\":\"Ahmedabad\"}"
+ },
+ {
+  "id": "a21",
+  "said": "Ek school bus din mein 2 chakkar lagati hai aur har chakkar mein 23 bachche le jaati hai. 6 dinon mein woh kul kitne bachche le jaati hai?",
+  "instruction": "Listen to the attached audio. Answer the question. Reply with only the final number.",
+  "expected": "276",
+  "answer": "I don't have the ability to listen to or access attached audio files, so I can't hear the question or determine a number to answer with. If you can provide a transcript or type out the question, I'll be happy to help."
+ },
+ {
+  "id": "a22",
+  "said": "नमस्ते, मैं काव्या अय्यर मुंबई से बोल रही हूँ। मेरा ऑर्डर नंबर 4 9 9 1 6 है। मेरा पिनकोड 2 6 6 6 9 7 है। कृपया मुझे वापस कॉल करें।",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 49916, pincode: 266697, city: Mumbai",
+  "answer": "{\"order_number\": null, \"pincode\": null, \"city\": null}"
+ },
+ {
+  "id": "a23",
+  "said": "Hello, main Suresh Kumar Kolkata se bol raha hoon. Mera order number 9 2 1 9 1 hai. Mera pincode 4 1 1 9 0 3 hai. Please mujhe call back kijiye.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 92191, pincode: 411903, city: Kolkata",
+  "answer": "{\"order_number\":\"921919\",\"pincode\":\"411103\",\"city\":\"Kolkata\"}"
+ },
+ {
+  "id": "a24",
+  "said": "A water tank holds 850 litres. It fills at 50 litres per minute. How many minutes does it take to fill completely?",
+  "instruction": "Listen to the attached audio. Answer the question. Reply with only the final number.",
+  "expected": "17",
+  "answer": "I don't have the ability to listen to or access attached audio files, so I can't hear the numbers in your question. Please type out the question with the number of liters and the fill rate and I'll calculate the answer for you."
+ },
+ {
+  "id": "a25",
+  "said": "Hello, this is Vikram Singh calling from Nagpur. My order number is 8 5 9 9 9. My pincode is 3 0 8 1 5 7. Please call me back.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 85999, pincode: 308157, city: Nagpur",
+  "answer": "{\"order_number\": \"\", \"pincode\": \"\", \"city\": \"\"}"
+ },
+ {
+  "id": "a26",
+  "said": "Hello, this is Deepak Mishra calling from Delhi. My order number is 3 8 9 6 4. My pincode is 1 3 5 4 6 2. Please call me back.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 38964, pincode: 135462, city: Delhi",
+  "answer": "{\"order_number\":\"\",\"pincode\":\"\",\"city\":\"\"}"
+ },
+ {
+  "id": "a27",
+  "said": "नमस्ते, मैं दीपक मिश्रा दिल्ली से बोल रहा हूँ। मेरा ऑर्डर नंबर 3 8 9 6 4 है। मेरा पिनकोड 1 3 5 4 6 2 है। कृपया मुझे वापस कॉल करें।",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 38964, pincode: 135462, city: Delhi",
+  "answer": "{\"order_number\":\"38964\",\"pincode\":\"38964\",\"city\":\"Delhi\"}"
+ },
+ {
+  "id": "a28",
+  "said": "Hello, this is Vikram Singh calling from Nagpur. My order number is 8 5 9 9 9. My pincode is 3 0 8 1 5 7. Please call me back.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 85999, pincode: 308157, city: Nagpur",
+  "answer": "{\"order_number\": \"\", \"pincode\": \"\", \"city\": \"\"}"
+ },
+ {
+  "id": "a29",
+  "said": "Hello, this is Kavya Iyer calling from Indore. My order number is 7 1 4 1 5. My pincode is 8 2 9 5 1 2. Please call me back.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 71415, pincode: 829512, city: Indore",
+  "answer": "{\"order_number\":\"\",\"pincode\":\"\",\"city\":\"\"}"
+ },
+ {
+  "id": "a30",
+  "said": "Hello, this is Suresh Kumar calling from Kolkata. My order number is 9 2 1 9 1. My pincode is 4 1 1 9 0 3. Please call me back.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 92191, pincode: 411903, city: Kolkata",
+  "answer": "{\"order_number\": \"\", \"pincode\": \"\", \"city\": \"\"}"
+ },
+ {
+  "id": "a31",
+  "said": "A water tank holds 1120 litres. It fills at 80 litres per minute. How many minutes does it take to fill completely?",
+  "instruction": "Listen to the attached audio. Answer the question. Reply with only the final number.",
+  "expected": "14",
+  "answer": "I don't have the ability to listen to or process audio files, so I can't hear the attached audio or determine the tank size and other details needed to calculate the answer. If you can provide a written transcript of the question including the tank capacity, I can calculate the number of minutes for you."
+ },
+ {
+  "id": "a32",
+  "said": "Sunita bought 3 kilos of rice at 88 rupees per kilo and paid with a 500 rupee note. How much change should Sunita get back?",
+  "instruction": "Listen to the attached audio. Answer the question. Reply with only the final number.",
+  "expected": "236",
+  "answer": "I am unable to listen to or access audio attachments, so I cannot hear the quantity Sunita bought. Please provide the quantity in kg from the audio and I can calculate the change as: Change = 500 - (88 × quantity in kg)."
+ },
+ {
+  "id": "a33",
+  "said": "नमस्ते, मैं स्नेहा कुलकर्णी अहमदाबाद से बोल रही हूँ। मेरा ऑर्डर नंबर 9 3 4 3 7 है। मेरा पिनकोड 4 5 2 0 8 9 है। कृपया मुझे वापस कॉल करें।",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 93437, pincode: 452089, city: Ahmedabad",
+  "answer": "{\"order_number\": \"93437\", \"pincode\": \"5432089\", \"city\": \"Ahmedabad\"}"
+ },
+ {
+  "id": "a34",
+  "said": "नमस्ते, मैं काव्या अय्यर मुंबई से बोल रही हूँ। मेरा ऑर्डर नंबर 4 9 9 1 6 है। मेरा पिनकोड 2 6 6 6 9 7 है। कृपया मुझे वापस कॉल करें।",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 49916, pincode: 266697, city: Mumbai",
+  "answer": "{\"order_number\":\"4991\",\"pincode\":\"266697\",\"city\":\"Mumbai\"}"
+ },
+ {
+  "id": "a35",
+  "said": "Can you tell me when order 7 8 5 8 9 will be delivered? The tracking page is not changing.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Classify it as exactly one of: address_change, cancel_order, delivery_status, payment_failed, refund_request. Reply with only the label.",
+  "expected": "delivery_status",
+  "answer": "I don't have the ability to listen to or access audio attachments, so I can't hear the voice note to classify it. If you can provide a text transcript or description of what the customer says, I can classify it as one of: address_change, cancel_order, delivery_status, payment_failed, or refund_request."
+ },
+ {
+  "id": "a36",
+  "said": "Hello, main Vikram Singh Nagpur se bol raha hoon. Mera order number 8 5 9 9 9 hai. Mera pincode 3 0 8 1 5 7 hai. Please mujhe call back kijiye.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 85999, pincode: 308157, city: Nagpur",
+  "answer": "I am a text-based AI and cannot listen to or access audio files, and no audio was included with your message. Therefore I cannot extract the `order_number`, `pincode` and `city`.\n\nIf you can provide a typed transcript of the voice note or type the details directly, I will be happy to return them in the requested JSON format, for example:\n\n```json\n{\"order_number\": \"123456\", \"pincode\": \"110001\", \"city\": \"Delhi\"}\n```\n\nPlease paste the transcript and I will extract the information for you."
+ },
+ {
+  "id": "a37",
+  "said": "अर्जुन के पास 306 रुपये थे। 51 रुपये खाने पर और 44 रुपये बस टिकट पर ख़र्च हुए। अब कितने रुपये बचे हैं?",
+  "instruction": "Listen to the attached audio. Answer the question. Reply with only the final number.",
+  "expected": "211",
+  "answer": "200"
+ },
+ {
+  "id": "a38",
+  "said": "Lakshmi had 319 rupees, spent 84 rupees on lunch and 51 rupees on a bus ticket. How many rupees are left?",
+  "instruction": "Listen to the attached audio. Answer the question. Reply with only the final number.",
+  "expected": "184",
+  "answer": "184"
+ },
+ {
+  "id": "a39",
+  "said": "नमस्ते, मैं स्नेहा कुलकर्णी लखनऊ से बोल रही हूँ। मेरा ऑर्डर नंबर 1 4 8 9 6 है। मेरा पिनकोड 3 6 5 5 0 0 है। कृपया मुझे वापस कॉल करें।",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 14896, pincode: 365500, city: Lucknow",
+  "answer": "{\"order_number\":\"\",\"pincode\":\"\",\"city\":\"\"}"
+ },
+ {
+  "id": "a40",
+  "said": "नमस्ते, मैं मीरा कपूर वाराणसी से बोल रही हूँ। मेरा ऑर्डर नंबर 4 9 2 3 2 है। मेरा पिनकोड 3 1 6 7 8 1 है। कृपया मुझे वापस कॉल करें।",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 49232, pincode: 316781, city: Varanasi",
+  "answer": "{\"order_number\":\"49232\",\"pincode\":\"3167881\",\"city\":\"Varanasi\"}"
+ },
+ {
+  "id": "a41",
+  "said": "Ek tanki mein 850 litre paani aata hai. Woh har minute 50 litre ki raftaar se bharti hai. Tanki ko poora bharne mein kitne minute lagenge?",
+  "instruction": "Listen to the attached audio. Answer the question. Reply with only the final number.",
+  "expected": "17",
+  "answer": "I cannot listen to or process audio attachments, so I cannot determine the filling rate mentioned in your audio to calculate the exact time. Please type out the question text including the filling rate in litres per minute and I will calculate the answer."
+ },
+ {
+  "id": "a42",
+  "said": "Hello, this is Nikhil Chauhan calling from Ahmedabad. My order number is 5 4 8 3 8. My pincode is 7 9 4 1 0 7. Please call me back.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 54838, pincode: 794107, city: Ahmedabad",
+  "answer": "{\"order_number\":\"\",\"pincode\":\"\",\"city\":\"\"}"
+ },
+ {
+  "id": "a43",
+  "said": "नेहा ने 42 रुपये प्रति किलो के भाव से 3 किलो चावल ख़रीदे और 500 रुपये का नोट दिया। नेहा को कितने रुपये वापस मिलने चाहिए?",
+  "instruction": "Listen to the attached audio. Answer the question. Reply with only the final number.",
+  "expected": "374",
+  "answer": "374"
+ },
+ {
+  "id": "a44",
+  "said": "नमस्ते, मैं सुरेश कुमार कोलकाता से बोल रहा हूँ। मेरा ऑर्डर नंबर 9 2 1 9 1 है। मेरा पिनकोड 4 1 1 9 0 3 है। कृपया मुझे वापस कॉल करें।",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 92191, pincode: 411903, city: Kolkata",
+  "answer": "{\"order_number\":\"92191\",\"pincode\":\"411001\",\"city\":\"Kolkata\"}"
+ },
+ {
+  "id": "a45",
+  "said": "Vikram bought 5 kilos of rice at 42 rupees per kilo and paid with a 500 rupee note. How much change should Vikram get back?",
+  "instruction": "Listen to the attached audio. Answer the question. Reply with only the final number.",
+  "expected": "290",
+  "answer": "290"
+ },
+ {
+  "id": "a46",
+  "said": "Hello, this is Sneha Kulkarni calling from Ahmedabad. My order number is 9 3 4 3 7. My pincode is 4 5 2 0 8 9. Please call me back.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 93437, pincode: 452089, city: Ahmedabad",
+  "answer": "{\"order_number\":\"93437\",\"pincode\":\"2089\",\"city\":\"Ahmedabad\"}"
+ },
+ {
+  "id": "a47",
+  "said": "Ek tanki mein 850 litre paani aata hai. Woh har minute 50 litre ki raftaar se bharti hai. Tanki ko poora bharne mein kitne minute lagenge?",
+  "instruction": "Listen to the attached audio. Answer the question. Reply with only the final number.",
+  "expected": "17",
+  "answer": "17"
+ },
+ {
+  "id": "a48",
+  "said": "Hello, this is Suresh Kumar calling from Jaipur. My order number is 6 0 3 6 4. My pincode is 7 0 5 8 4 2. Please call me back.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 60364, pincode: 705842, city: Jaipur",
+  "answer": "{\"order_number\":\"60364\",\"pincode\":\"705842\",\"city\":\"Jaipur\"}"
+ },
+ {
+  "id": "a49",
+  "said": "नमस्ते, मैं सुरेश कुमार जयपुर से बोल रहा हूँ। मेरा ऑर्डर नंबर 6 0 3 6 4 है। मेरा पिनकोड 7 0 5 8 4 2 है। कृपया मुझे वापस कॉल करें।",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 60364, pincode: 705842, city: Jaipur",
+  "answer": "{\"order_number\": \"\", \"pincode\": \"\", \"city\": \"\"}"
+ },
+ {
+  "id": "a50",
+  "said": "Ek tanki mein 850 litre paani aata hai. Woh har minute 50 litre ki raftaar se bharti hai. Tanki ko poora bharne mein kitne minute lagenge?",
+  "instruction": "Listen to the attached audio. Answer the question. Reply with only the final number.",
+  "expected": "17",
+  "answer": "I don't have the ability to listen to or access attached audio files, so I couldn't hear the filling rate mentioned in your question (\"har minute ___ litre ki raftar se\") - that part was transcribed as \"puff se liter\" and is unclear.\n\nTo calculate the time, please provide the rate in litres per minute:\n\n**Time (in minutes) = 850 ÷ rate per minute**\n\nFor example:\n* If the rate is 5 litre/minute, time = 850/5 = 170 minutes\n* If the rate is 8.5 litre/minute, time = 850/8.5 = 100 minutes\n* If the rate is 17 litre/minute, time = 850/17 = 50 minutes\n\nPlease type the exact rate from the audio and I will give you the final number immediately."
+ },
+ {
+  "id": "a51",
+  "said": "Neha ne 42 rupaye kilo ke bhaav se 3 kilo chawal kharide aur 500 rupaye ka note diya. Neha ko kitne rupaye wapas milne chahiye?",
+  "instruction": "Listen to the attached audio. Answer the question. Reply with only the final number.",
+  "expected": "374",
+  "answer": "8"
+ },
+ {
+  "id": "a52",
+  "said": "Hello, this is Kavya Iyer calling from Mumbai. My order number is 4 9 9 1 6. My pincode is 2 6 6 6 9 7. Please call me back.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 49916, pincode: 266697, city: Mumbai",
+  "answer": "{\"order_number\":\"\",\"pincode\":\"\",\"city\":\"\"}"
+ },
+ {
+  "id": "a53",
+  "said": "Hello, this is Sneha Kulkarni calling from Lucknow. My order number is 1 4 8 9 6. My pincode is 3 6 5 5 0 0. Please call me back.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 14896, pincode: 365500, city: Lucknow",
+  "answer": "{\"order_number\":\"\",\"pincode\":\"365500\",\"city\":\"Lhnu\"}"
+ },
+ {
+  "id": "a54",
+  "said": "Ek school bus din mein 2 chakkar lagati hai aur har chakkar mein 21 bachche le jaati hai. 6 dinon mein woh kul kitne bachche le jaati hai?",
+  "instruction": "Listen to the attached audio. Answer the question. Reply with only the final number.",
+  "expected": "252",
+  "answer": "I don't have the ability to listen to or access audio attachments, so I can't hear the audio you mentioned. If you can provide a written transcript of the question, I can solve it for you.\n\nBased only on the text in your message - *\"Ek school bus din me 2 chakkar lagati hai aur har chakkar me 21 bachche le jati hai, 6 dino me kul kitne bachche le jati hai\"* - the calculation would be 2 * 21 * 6 = **252**.\n\nPlease share the written question to get a confirmed answer."
+ },
+ {
+  "id": "a55",
+  "said": "A shirt costs 400 rupees and there is a 10 percent discount. What is the price after the discount?",
+  "instruction": "Listen to the attached audio. Answer the question. Reply with only the final number.",
+  "expected": "360",
+  "answer": "360"
+ },
+ {
+  "id": "a56",
+  "said": "नमस्ते, मैं काव्या अय्यर मुंबई से बोल रही हूँ। मेरा ऑर्डर नंबर 4 9 9 1 6 है। मेरा पिनकोड 2 6 6 6 9 7 है। कृपया मुझे वापस कॉल करें।",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 49916, pincode: 266697, city: Mumbai",
+  "answer": "{\"order_number\": \"49916\", \"pincode\": \"26697\", \"city\": \"Mumbai\"}"
+ },
+ {
+  "id": "a57",
+  "said": "Hello, this is Harpreet Kaur calling from Lucknow. My order number is 8 1 2 2 8. My pincode is 2 4 4 0 4 0. Please call me back.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 81228, pincode: 244040, city: Lucknow",
+  "answer": "I don't have the ability to listen to or access audio attachments, so I can't verify the contents of the voice note directly.\n\nIf you provide a written transcript I can help extract the details. Based only on the text you included in your message:\n\n* **pincode** mentioned: 244040\n* **city** mentioned: Lhanu\n* **order_number** was not mentioned in the text provided\n\nIf you can type out the order number and confirm the pincode and city, I can return it in the JSON format you requested:\n\n```json\n{\n  \"order_number\": null,\n  \"pincode\": null,\n  \"city\": null\n}\n```\n\nPlease share the order number and confirm the details in text form and I will format them as digit strings as requested."
+ },
+ {
+  "id": "a58",
+  "said": "Hello, this is Sneha Kulkarni calling from Ahmedabad. My order number is 9 3 4 3 7. My pincode is 4 5 2 0 8 9. Please call me back.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 93437, pincode: 452089, city: Ahmedabad",
+  "answer": "{\"order_number\":\"93437\",\"pincode\":\"2089\",\"city\":\"Ahmedabad\"}"
+ },
+ {
+  "id": "a59",
+  "said": "Hello, this is Sneha Kulkarni calling from Ahmedabad. My order number is 9 3 4 3 7. My pincode is 4 5 2 0 8 9. Please call me back.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 93437, pincode: 452089, city: Ahmedabad",
+  "answer": "{\"order_number\": \"\", \"pincode\": \"\", \"city\": \"\"}"
+ },
+ {
+  "id": "a60",
+  "said": "Hello, this is Suresh Kumar calling from Jaipur. My order number is 6 0 3 6 4. My pincode is 7 0 5 8 4 2. Please call me back.",
+  "instruction": "Listen to the attached audio. This is a customer's voice note. Reply with only a JSON object with keys order_number, pincode and city. Write order_number and pincode as digit strings and city in English.",
+  "expected": "order_number: 60364, pincode: 705842, city: Jaipur",
+  "answer": "I’m unable to listen to audio attachments, so I can’t hear the customer’s voice note to get the order_number, pincode and city.\n\nCould you please provide a written transcript or type out those details?"
+ }
+]

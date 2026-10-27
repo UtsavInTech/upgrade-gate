@@ -51,6 +51,55 @@ function recorder(): Plugin {
           res.end(JSON.stringify({ ok: true }));
         });
       });
+      // Label audit: POST /api/audit?labeler=<id> {id, label, note} appends to data/audit/labels-<id>.jsonl;
+      // GET returns the latest label per item.
+      server.middlewares.use("/api/audit", (req, res) => {
+        const url = new URL(req.url ?? "", "http://x");
+        const labeler = (url.searchParams.get("labeler") ?? "").toLowerCase();
+        if (!/^[a-z0-9-]{1,32}$/.test(labeler)) {
+          res.statusCode = 400;
+          res.end("bad labeler");
+          return;
+        }
+        const file = path.join(REPO, "data", "audit", `labels-${labeler}.jsonl`);
+        if (req.method === "GET") {
+          const out: Record<string, string> = {};
+          if (fs.existsSync(file)) {
+            for (const line of fs.readFileSync(file, "utf8").split("\n")) {
+              if (!line.trim()) continue;
+              const r = JSON.parse(line);
+              out[r.id] = r.label;
+            }
+          }
+          res.setHeader("Content-Type", "application/json");
+          res.end(JSON.stringify(out));
+          return;
+        }
+        const chunks: Buffer[] = [];
+        req.on("data", (c: Buffer) => chunks.push(c));
+        req.on("end", () => {
+          try {
+            const r = JSON.parse(Buffer.concat(chunks).toString("utf8"));
+            const ok = ["correct", "abstain", "blank", "wrong", "unsure"];
+            if (!/^a\d{2}$/.test(r.id) || !ok.includes(r.label)) throw new Error("bad label");
+            fs.mkdirSync(path.dirname(file), { recursive: true });
+            fs.appendFileSync(
+              file,
+              JSON.stringify({
+                id: r.id,
+                label: r.label,
+                note: String(r.note ?? "").slice(0, 300),
+                ts: new Date().toISOString(),
+              }) + "\n",
+            );
+            res.setHeader("Content-Type", "application/json");
+            res.end(JSON.stringify({ ok: true }));
+          } catch {
+            res.statusCode = 400;
+            res.end("bad request");
+          }
+        });
+      });
       server.middlewares.use("/api/recorded", (req, res) => {
         const url = new URL(req.url ?? "", "http://x");
         const speaker = (url.searchParams.get("speaker") ?? "").toLowerCase();

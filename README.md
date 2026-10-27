@@ -54,6 +54,27 @@ Each failed check's summary shows one filled-in wrong answer, e.g. a Hindi voice
 branch protection requiring these checks, GitHub also blocks the merge. In a live setup the same step runs
 `upgrade-gate all` with `MODEL_API_KEY` instead of replaying saved answers.
 
+## Use it in your repo
+
+Add the Action to any workflow that runs on a model change. Replay mode gates saved, scored answers; live mode runs a
+small fresh sample on both models with a strict spending cap (an inconclusive small sample doesn't fail the check;
+a NO-GO does).
+
+```yaml
+- uses: UtsavInTech/upgrade-gate@main
+  with:
+    baseline: spark-1.2@low
+    candidate: spark-1.3@low
+    mode: live                      # or: replay, with evidence: path/to/saved-run
+    tasks: my_tasks.jsonl           # your own tasks (docs/BRING_YOUR_OWN_TASKS.md) or a built-in pack
+    n: "20"
+    budget: "1"                     # USD, reserved per call before it is sent
+    policy: release/policy.json     # what counts as a harmful failure, and why
+    api-key: ${{ secrets.MODEL_API_KEY }}
+```
+
+This repo's own [workflow](.github/workflows/upgrade-gate.yml) uses it (`uses: ./`) for its live-sample check.
+
 ## Try it without spending money
 
 ```sh

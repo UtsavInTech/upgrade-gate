@@ -27,6 +27,10 @@ from upgrade_gate.behaviour import answer_type  # noqa: E402
 from upgrade_gate.schema import read_jsonl  # noqa: E402
 
 
+# Small fresh samples for live mode (real-voices has no public clips, so it stays replay-only).
+LIVE_PACKS = {"voice-notes": "audio-clips", "text-and-documents": "math-pairs,extract-pairs,intent"}
+
+
 def model_at(ref: str = None) -> str:
     path = os.path.join(ROOT, "release", "model.json")
     if ref:
@@ -80,37 +84,75 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("suite")
     ap.add_argument("--baseline", default=None, help="model before the change (default: base branch)")
+    ap.add_argument("--candidate", default=None, help="model after the change (default: release/model.json)")
+    ap.add_argument("--evidence", default=None, help="saved run to replay (default: evidence/<suite>)")
+    ap.add_argument("--live", action="store_true",
+                    help="run a small fresh sample on both models instead of replaying (needs MODEL_API_KEY)")
+    ap.add_argument("--packs", default=None, help="live: task packs or a .jsonl file (default per suite)")
+    ap.add_argument("--n", type=int, default=10, help="live: tasks per pack (default 10)")
+    ap.add_argument("--budget", type=float, default=1.0, help="live: strict spending cap in USD (default 1)")
+    ap.add_argument("--policy", default=None, help="release policy (default: release/policy.json)")
     args = ap.parse_args()
 
     base_ref = os.environ.get("GITHUB_BASE_REF")
     baseline = args.baseline or (model_at("origin/" + base_ref) if base_ref else model_at("HEAD~1"))
-    candidate = model_at()
-    name = "upgrade-gate / %s" % args.suite
+    candidate = args.candidate or model_at()
+    name = "upgrade-gate / %s%s" % (args.suite, " (live)" if args.live else "")
+    # "default" = built-in policy (used by the reusable Action when the caller has no policy file)
+    policy_path = None if args.policy == "default" else (args.policy or os.path.join(ROOT, "release", "policy.json"))
+    try:  # a broken policy must fail the check, not silently fall back to defaults
+        from upgrade_gate.behaviour import load_policy
+        load_policy(policy_path if policy_path and os.path.exists(policy_path) else None)
+    except (ValueError, json.JSONDecodeError) as e:
+        write_summary("### %s: policy error\n\n`release/policy.json` is invalid: %s" % (name, e))
+        return 1
     if baseline == candidate:
-        write_summary("### %s: nothing to gate\n\nThe model is unchanged (`%s`)." % (name, candidate))
+        write_summary("### %s: nothing to gate\n\nThe model is unchanged (`%s`). The release policy is valid."
+                      % (name, candidate))
         return 0
 
-    evidence = os.path.join(ROOT, "evidence", args.suite)
-    have = Counter(r["candidate"] for r in read_jsonl(os.path.join(evidence, "scores.jsonl")))
-    if baseline not in have or candidate not in have:
-        write_summary("### %s: INCONCLUSIVE\n\nNo saved answers for `%s` → `%s` in `evidence/%s`. "
-                      "Run `upgrade-gate all` with an API key to collect them." % (name, baseline, candidate, args.suite))
-        return 3
-
-    run_dir = os.path.join(os.environ.get("RUNNER_TEMP") or tempfile.gettempdir(), "upgrade-gate-" + args.suite)
-    shutil.rmtree(run_dir, ignore_errors=True)
-    shutil.copytree(evidence, run_dir)
-    policy = os.path.join(ROOT, "release", "policy.json")
-    gate_args = ["gate", run_dir, "--baseline", baseline, "--candidate", candidate]
-    if os.path.exists(policy):
-        gate_args += ["--policy", policy]
-    code = cli.main(gate_args)
+    tmp_root = os.environ.get("RUNNER_TEMP") or tempfile.gettempdir()
+    policy = policy_path if policy_path and os.path.exists(policy_path) else None
+    if args.live:
+        if not os.environ.get("MODEL_API_KEY"):
+            write_summary("### %s: skipped\n\nNo `MODEL_API_KEY` secret, so no live sample was run." % name)
+            return 0
+        packs = args.packs or LIVE_PACKS.get(args.suite)
+        if not packs:
+            write_summary("### %s: skipped\n\nNo live task set for this suite." % name)
+            return 0
+        os.environ.setdefault("MAX_TOTAL_SPEND_USD", str(args.budget))
+        os.environ.setdefault("CANARY_BUDGET_USD", "0")
+        out = os.path.join(tmp_root, "upgrade-gate-live")
+        run_id = "live-" + args.suite
+        shutil.rmtree(os.path.join(out, run_id), ignore_errors=True)
+        all_args = ["all", "--packs", packs, "--n", str(args.n), "-b", baseline, "-c", candidate, "--repeats", "3",
+                    "--budget", str(args.budget), "--yes", "--out", out, "--run-id", run_id, "--workers", "8"]
+        if policy:
+            all_args += ["--policy", policy]
+        code = cli.main(all_args)
+        run_dir = os.path.join(out, run_id)
+    else:
+        evidence = args.evidence or os.path.join(ROOT, "evidence", args.suite)
+        have = Counter(r["candidate"] for r in read_jsonl(os.path.join(evidence, "scores.jsonl")))
+        if baseline not in have or candidate not in have:
+            write_summary("### %s: INCONCLUSIVE\n\nNo saved answers for `%s` → `%s` in `%s`. Run with `--live` "
+                          "(and MODEL_API_KEY) to collect them." % (name, baseline, candidate, evidence))
+            return 3
+        run_dir = os.path.join(tmp_root, "upgrade-gate-" + args.suite)
+        shutil.rmtree(run_dir, ignore_errors=True)
+        shutil.copytree(evidence, run_dir)
+        gate_args = ["gate", run_dir, "--baseline", baseline, "--candidate", candidate]
+        if policy:
+            gate_args += ["--policy", policy]
+        code = cli.main(gate_args)
     with open(os.path.join(run_dir, "gate.json"), encoding="utf-8") as f:
         gate = json.load(f)
-    try:
-        cli.main(["report", run_dir])
-    except Exception as e:  # the decision stands even if the HTML report can't be built
-        print("report skipped:", e)
+    if not args.live:  # `all` already wrote the report in live mode
+        try:
+            cli.main(["report", run_dir])
+        except Exception as e:  # the decision stands even if the HTML report can't be built
+            print("report skipped:", e)
 
     decision = gate["decision"].upper()
     lines = ["### %s: %s" % (name, decision), "",
@@ -141,7 +183,12 @@ def main() -> int:
                       "- Correct: `%s`" % json.dumps(ex["expected"], ensure_ascii=False),
                       "- `%s`: `%s`" % (baseline, ex["base"][:200].replace("\n", " ")),
                       "- `%s`: `%s`" % (candidate, ex["cand"][:200].replace("\n", " "))]
+    if args.live:
+        lines += ["", "_Live sample: %s tasks per pack × 3 tries, capped at $%.2f. A small sample is often inconclusive; "
+                  "only a NO-GO fails this check._" % (args.n, args.budget)]
     write_summary("\n".join(lines) + "\n")
+    if args.live and code == 3:
+        return 0
     return code
 
 

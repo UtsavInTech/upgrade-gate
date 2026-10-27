@@ -55,6 +55,37 @@ def write_report(run_dir: str) -> list:          # returns paths written (report
 def export_regressions(run_dir: str) -> list:    # returns paths written (promptfoo.yaml, test_regressions.py)
 ```
 
+Claude-side internal interfaces (so parallel Claude agents can code against each other):
+
+```python
+# upgrade_gate/client.py
+@dataclass
+class ChatResult:
+    text: Optional[str]; usage: Dict[str, int]  # input_tokens, output_tokens, reasoning_tokens, cached_tokens
+    cost_usd: float; latency_ms: int; error: Optional[str]; returned_model: Optional[str]; cached: bool
+    raw: Optional[dict] = None
+
+class ModelClient:
+    def __init__(self, base_url=None, api_key=None, cache_dir=".cache/responses", max_concurrency=8): ...
+    def chat(self, model_id: str, messages: list, params: Optional[dict] = None,
+             use_cache: bool = True, cache_salt: str = "") -> ChatResult: ...
+
+def build_messages(task: Task) -> list   # text + image_url / file parts from task.attachments
+
+# upgrade_gate/packs/__init__.py
+PACKS: Dict[str, Callable[..., List[Task]]]
+def load_pack(name: str, n: Optional[int] = None, seed: int = 0) -> List[Task]
+
+# upgrade_gate/scorers.py
+def score_text(task: Task, text: Optional[str]) -> Tuple[Optional[bool], float, str]   # passed, score, detail
+
+# upgrade_gate/judges/base.py
+class Judge:   name: str
+    def vote(self, task: Task, text: str) -> Dict[str, Any]   # {"judge","passed","confidence","rationale","cost_usd"}
+```
+
+Config via env or `.env` (gitignored): `MODEL_API_KEY`, `MODEL_API_BASE` (default `https://api.meta.ai/v1`), `OPEN_JUDGE_BASE`, `OPEN_JUDGE_KEY`, `OPEN_JUDGE_MODEL` (hosted Muse Spark Open). API facts are in [META_API.md](META_API.md).
+
 The runner also writes `results/<run_id>/tasks.jsonl` (one Task dict per line), so stats and reports can read category, lang, modality and reference without importing packs.
 
 ## Conventions

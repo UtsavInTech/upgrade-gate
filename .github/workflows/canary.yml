@@ -33,7 +33,7 @@ jobs:
           MODEL_API_KEY: ${{ secrets.MODEL_API_KEY }}
           MODEL_API_BASE: ${{ vars.MODEL_API_BASE }}
           CANARY_MODELS: ${{ vars.CANARY_MODELS }}
-          CANARY_EXTRA_JSON: ${{ vars.CANARY_EXTRA_JSON || '{}' }}
+          CANARY_EXTRA_JSON: ${{ vars.CANARY_EXTRA_JSON }}
         run: python canary/run.py
       - name: Summarise
         run: python canary/summarize.py > /dev/null

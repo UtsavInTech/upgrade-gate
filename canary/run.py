@@ -4,15 +4,13 @@ Uses only the Python standard library.
 
 Environment variables:
   MODEL_API_KEY      required. Your Meta Model API key. Never commit it.
-  MODEL_API_BASE     API base URL. The request goes to {base}/chat/completions.
-                     ASSUMPTION: the Meta Model API is OpenAI-compatible. Check this on
-                     your first call. If it isn't, only call_model() needs changing.
+  MODEL_API_BASE     API base URL (default https://api.meta.ai/v1). Requests go to
+                     {base}/chat/completions (OpenAI-compatible, per Meta docs).
   CANARY_MODELS      comma-separated model IDs, e.g. "muse-spark-1.2,muse-spark-1.3".
                      Use the exact pinned IDs from Meta's model list.
   CANARY_REPEATS     repeats per prompt per run (default 3).
-  CANARY_MAX_TOKENS  max output tokens (default 400). Set to 0 to leave it out.
-  CANARY_EXTRA_JSON  optional JSON merged into each request body,
-                     e.g. '{"reasoning_effort": "low"}'.
+  CANARY_MAX_TOKENS  max_completion_tokens (default 4000). Reasoning tokens count toward it.
+  CANARY_EXTRA_JSON  JSON merged into each request body (default '{"reasoning_effort": "low"}').
   CANARY_WORKERS     parallel requests (default 4).
 
 Usage:
@@ -50,7 +48,7 @@ def call_model(base, key, model, prompt, max_tokens, extra):
         "temperature": 0,
     }
     if max_tokens:
-        body["max_tokens"] = max_tokens
+        body["max_completion_tokens"] = max_tokens
     body.update(extra)
     data = json.dumps(body).encode("utf-8")
     url = base.rstrip("/") + "/chat/completions"
@@ -110,13 +108,13 @@ def main():
     args = ap.parse_args()
 
     key = os.environ.get("MODEL_API_KEY")
-    base = os.environ.get("MODEL_API_BASE")
+    base = os.environ.get("MODEL_API_BASE") or "https://api.meta.ai/v1"
     models = [m.strip() for m in os.environ.get("CANARY_MODELS", "").split(",") if m.strip()]
     if not key or not base or not models:
         sys.exit("Set MODEL_API_KEY, MODEL_API_BASE and CANARY_MODELS first (see top of run.py).")
     repeats = 1 if args.limit else int(os.environ.get("CANARY_REPEATS", "3"))
-    max_tokens = int(os.environ.get("CANARY_MAX_TOKENS", "400"))
-    extra = json.loads(os.environ.get("CANARY_EXTRA_JSON", "{}"))
+    max_tokens = int(os.environ.get("CANARY_MAX_TOKENS", "4000"))
+    extra = json.loads(os.environ.get("CANARY_EXTRA_JSON") or '{"reasoning_effort": "low"}')
     workers = int(os.environ.get("CANARY_WORKERS", "4"))
 
     with open(os.path.join(HERE, "prompts.json"), encoding="utf-8") as f:
@@ -151,7 +149,7 @@ def main():
             "lang": p["lang"],
             "pair": p.get("pair"),
             "repeat": rep,
-            "request": {"temperature": 0, "max_tokens": max_tokens or None, "extra": extra},
+            "request": {"temperature": 0, "max_completion_tokens": max_tokens or None, "extra": extra},
             "passed": passed,
             "reason": "" if passed else reason,
             **res,

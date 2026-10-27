@@ -89,7 +89,7 @@ Details and caveats: [findings/LOG.md](findings/LOG.md). Tables: `experiments/ou
 ## Open items
 - [x] E7 real-voice rerun (accuracy drop + blanks; silent-failure rise borderline by item), E4 effort ladder (post-hoc strong trend), E2 judge bias (null)
 - [x] Gate checks silent failures itself, per input type (voice notes: NO-GO); bring-your-own-tasks
-- [x] Real blocked upgrade: [PR #1](https://github.com/UtsavInTech/upgrade-gate/pull/1) → voice-notes ❌, real-voices ❌, text-and-documents ✅, live sample ✅ (skipped: no key secret yet), deploy skipped (verified on GitHub 28 Oct)
+- [x] Real blocked upgrade: [PR #1](https://github.com/UtsavInTech/upgrade-gate/pull/1) → voice-notes ❌, real-voices ❌, text-and-documents ✅, live sample ✅ INCONCLUSIVE (real calls: 10 clips × 2 models × 3 tries, 60/60 ok, $0.13; too small to decide), deploy skipped (verified on GitHub 28 Oct, run #5)
 - [x] Second council fixes: claims match evidence (E7 partly, E3 same scores, E4 post-hoc), strict per-run budget, CI validates policy, label-audit page, live mode, reusable Action (`action.yml`)
 - [x] Council review fixes: audio-only headlines, "wrong, no warning" label, honest E4 wording, synced README/demo/screenshots
 - [ ] Post the Discord ask and X thread (`docs/OUTREACH.md`)
@@ -98,7 +98,7 @@ Details and caveats: [findings/LOG.md](findings/LOG.md). Tables: `experiments/ou
 - [ ] Record the 3-minute video ([docs/DEMO.md](docs/DEMO.md))
 - [ ] Make the repo public, add branch protection requiring the three `upgrade-gate / …` checks (PR then shows "Merging is blocked")
 - [ ] Label the 60-answer audit at `#/audit`, then `python3 scripts/audit_report.py` (κ + disagreements)
-- [ ] Add repo secret `MODEL_API_KEY` so the PR's live-sample check really runs (~$0.2 per run, capped at $1)
+- [x] Repo secret `MODEL_API_KEY` added; live sample runs on every PR push (~$0.13 per run, capped at $1; spent from CI, not in the local ledger)
 - [ ] 2–3 more speakers at `#/record`, then rerun E7 with the frozen rules
 - [ ] One real outside user trial, or state plainly that there wasn't one (council priority 4)
 - [ ] Submit by the evening of Nov 4 IST

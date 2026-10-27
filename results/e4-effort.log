@@ -1,0 +1,53 @@
+e4-effort: 135 tasks × 5 candidates × 3 repeats
+estimate: {"n_tasks": 135, "n_candidates": 5, "repeats": 3, "n_calls": 2025, "input_tokens_per_pass": 141480, "avg_output_tokens": 300, "per_candidate_usd": {"spark-1.3-c@minimal/16000": 0.066744, "spark-1.3-c@low/16000": 0.066744, "spark-1.3-c@medium/16000": 0.066744, "spark-1.3-c@high/16000": 0.066744, "spark-1.3-c@xhigh/16000": 0.066744}, "total_usd": 0.33372, "unknown_price_models": []}
+[e4-effort] 2025 jobs (150 already done) -> results/e4-effort
+[e4-effort] 102/2025 (5%) spent=$0.0206 errors=0 cached=0 81s
+[e4-effort] 203/2025 (10%) spent=$0.0636 errors=2 cached=0 178s
+[e4-effort] 304/2025 (15%) spent=$0.0886 errors=3 cached=0 249s
+[e4-effort] 405/2025 (20%) spent=$0.1132 errors=5 cached=0 324s
+[e4-effort] 507/2025 (25%) spent=$0.1481 errors=7 cached=0 394s
+[e4-effort] 608/2025 (30%) spent=$0.1801 errors=9 cached=0 479s
+[e4-effort] 709/2025 (35%) spent=$0.2009 errors=9 cached=0 540s
+[e4-effort] 810/2025 (40%) spent=$0.2317 errors=10 cached=0 627s
+[e4-effort] 912/2025 (45%) spent=$0.2636 errors=13 cached=0 710s
+[e4-effort] 1013/2025 (50%) spent=$0.2981 errors=16 cached=0 805s
+[e4-effort] 1114/2025 (55%) spent=$0.3249 errors=17 cached=0 886s
+[e4-effort] 1215/2025 (60%) spent=$0.3585 errors=20 cached=0 957s
+[e4-effort] 1317/2025 (65%) spent=$0.3875 errors=21 cached=0 1033s
+[e4-effort] 1418/2025 (70%) spent=$0.4293 errors=25 cached=0 1138s
+[e4-effort] 1519/2025 (75%) spent=$0.4560 errors=26 cached=0 1217s
+[e4-effort] 1620/2025 (80%) spent=$0.4882 errors=28 cached=0 1295s
+[e4-effort] 1722/2025 (85%) spent=$0.5165 errors=29 cached=0 1374s
+[e4-effort] 1823/2025 (90%) spent=$0.5430 errors=30 cached=0 1434s
+[e4-effort] 1924/2025 (95%) spent=$0.5734 errors=31 cached=0 1516s
+[e4-effort] 2025/2025 (100%) spent=$0.6181 errors=36 cached=0 1659s
+# E4 — reasoning effort ladder on muse-spark-1.3 Contributor (limit 16000 tokens)
+
+Run: `results/e4-effort`
+
+| Effort | correct (finished answers) | correct (cut-offs as fail) | cut off | avg output tokens | cost $ |
+|---|---|---|---|---|---|
+| minimal | 72.8% | 67.8% | 0 / 435 | 363 | 0.037 |
+| low | 69.1% | 64.1% | 1 / 435 | 791 | 0.074 |
+| medium | 64.8% | 59.8% | 4 / 435 | 1444 | 0.131 |
+| high | 66.0% | 59.3% | 14 / 435 | 1959 | 0.176 |
+| xhigh | 61.1% | 54.5% | 17 / 435 | 2437 | 0.218 |
+
+## Step-ups (negative Δ = more effort was worse; cut-offs excluded)
+
+| Slice | n | Δ pts | 95% CI | lost | gained | McNemar p |
+|---|---|---|---|---|---|---|
+| minimal→low classification | 45 | +2.2 | +0.0 to +6.7 | 0 | 1 | 1 |
+| minimal→low extraction | 45 | -13.3 | -28.9 to +0.0 | 9 | 3 | 0.146 |
+| minimal→low math | 45 | +0.0 | -8.9 to +8.9 | 2 | 2 | 1 |
+| low→medium classification | 45 | -2.2 | -6.7 to +0.0 | 1 | 0 | 1 |
+| low→medium extraction | 45 | -6.7 | -22.2 to +8.9 | 8 | 5 | 0.581 |
+| low→medium math | 45 | -6.7 | -15.6 to +2.2 | 4 | 1 | 0.375 |
+| medium→high classification | 45 | +0.0 | -6.7 to +6.7 | 1 | 1 | 1 |
+| medium→high extraction | 44 | +0.0 | -15.9 to +15.9 | 7 | 7 | 1 |
+| medium→high math | 45 | +6.7 | -4.4 to +17.8 | 2 | 5 | 0.453 |
+| high→xhigh classification | 45 | +0.0 | -6.7 to +6.7 | 1 | 1 | 1 |
+| high→xhigh extraction | 43 | -9.3 | -25.6 to +7.0 | 8 | 4 | 0.388 |
+| high→xhigh math | 45 | -6.7 | -17.8 to +4.4 | 5 | 2 | 0.453 |
+
+wrote experiments/out/e4_effort.md

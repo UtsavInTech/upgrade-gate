@@ -1,0 +1,18 @@
+{
+  "timestamp": "2026-10-28T00:50:21.472687+05:30",
+  "head": "18e2dcaf85e2f7ea3c1dbb738434b64915f003f7",
+  "status": " M scripts/export_web.py\n?? docs/judging/\n?? experiments/out/e2_judge_version.json\n?? experiments/out/e2_judge_version.md\n?? experiments/out/e4_effort.json\n?? experiments/out/e4_effort.md\n?? results/e2-judges.log\n?? results/e3-contributor.log\n?? results/e4-effort.log\n?? results/e4-pilot.log\n?? results/e6-audio.log\n?? results/e7-real-voices.log\n",
+  "evidence_sha256": {
+    "README.md": "1fdef588ad9bda3b31a1b092336c8de47e40558451f237cfc6e71be843ef1135",
+    "docs/DEMO.md": "403118e66e7e2ce68a6d938e75b0cdef08e7095b53b8a7730fe581b5dd856354",
+    "upgrade_gate/behaviour.py": "31c519c3a94217f20e09c1cef9f8bc8bcd55ab0edccf7467ed930d8bb310d2f7",
+    "upgrade_gate/cli.py": "d44ebddf5d0ef61f164bd3a888cfc2831238bd6256df9f644f1a7342317f1246",
+    "experiments/out/e6_audio.md": "c81fe353bc67f62614c22845ca2c67ae205b0d8def7deaea257c10b9b27a4adc",
+    "experiments/out/e7_real_voices.md": "517488faba48580bc83506c5ed6beb540520395c9f29493cc4ff168f6faf4c79",
+    "web/src/components/Hero.tsx": "a9dda87d22c241c2ae1f0fac23d34257205783a333e3c19828b4aeeb56867bc9",
+    "web/src/components/AudioSection.tsx": "830097ce8e50c3db0ea4de7fc7f4ca7600dbd297ace6ba91cd4c9b56dbc894fd",
+    "web/src/components/Report.tsx": "19d0ba163344dbc2b7bbd03bd61de7ef7e343c8846d9e796044e3e734b2e3734",
+    "results/e6-audio/gate.json": "2e25d7aa8a5dfc6c4560b6c9ee5954bb9300909e7f9d382dfea568596c994e71",
+    "results/e7-real-voices/gate.json": "3caa541810369435e08df736e22edf6aa5abc8268fff85eddb830d6e160e56b2"
+  }
+}

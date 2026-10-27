@@ -1,21 +1,22 @@
 # Demo script (3 minutes)
 
-Run `npm --prefix web run dev`, open http://127.0.0.1:5191 in a clean browser window at 1440×900, light mode.
-Have the volume up for the clip. Times are targets, not rules.
+Have two tabs ready at 1440×900, light mode, volume up:
+1. The GitHub pull request `upgrade/spark-1.3` with its checks finished.
+2. The site: `npm --prefix web run dev`, then http://127.0.0.1:5191/#/report/e6-audio.
 
 | Time | Screen | Say |
 |---|---|---|
-| 0:00 | Home, top | "Companies upgrade models the way they upgrade libraries: the new version scores a bit better, so they ship it. We built a gate that checks *how* the new version fails before you ship." |
-| 0:15 | Point at the pull-request checks on the right | "This is what a team sees on the pull request that bumps Meta's Muse Spark from 1.2 to 1.3. Two checks pass. Voice notes needs review. Let's open it." Click **Details** on `voice-notes`. |
-| 0:30 | Report, top | "135 voice notes in English, Hindi and Hinglish, three tries each on both versions, $3. Pass rate: 84.8 to 83.6. On accuracy alone the gate says inconclusive; it would need about 9,000 more clips." |
-| 0:50 | Scroll to the clip grid | "So we look at how each version fails. Every square is one voice note. Yellow is 1.2 saying 'I can't hear this audio'. On 1.3 that's gone, and the red and striped squares are answers that are wrong or blank with no warning. 18 clips became 42. That's significant with just 135 clips." |
-| 1:20 | Click a striped square in the Hinglish row of Spark 1.3 (e.g. `audio-synth-extract-02-hinglish`) | Play the clip. "A customer reads out an order number. 1.2 gets it right twice and once says it can't hear. 1.3 returns blank fields three times, as if everything were fine. A support bot on 1.3 would save an empty order number and nobody would know." |
-| 1:50 | Close the panel. Click the **Text, documents, Hindi** tab | "Second lesson: check the scorer before trusting the p-value. Our first scorer said 1.3 was 1.1 points better at Hindi, p of 0.00006." |
-| 2:05 | Back to Home → Scoring section, the "Somwar" example | "1.2 had written 'Somwar'; our answer key said 'Somvar'. Same word. Once we scored correctness and format separately, the improvement went to zero." |
-| 2:25 | Click the **Contributor mode** tab in the report | "Third: Meta's Contributor mode. Same answers on all 1,325 tasks at a tenth of a dollar per thousand tasks instead of $1.80." |
-| 2:40 | Home → How it works | "It runs from one command in CI. Exit code 0 ships, 2 blocks, 3 asks for more evidence, and every decision links to the answers behind it. Every paid call is checked against a spending cap first." |
-| 2:55 | Back to the PR checks | "Upgrade Gate: before you upgrade a model, check how it fails." |
+| 0:00 | GitHub PR "Upgrade to Muse Spark 1.3", the one-line diff in `release/model.json` | "Teams upgrade models the way they upgrade libraries: change one line, ship. This pull request moves our app from Meta's Muse Spark 1.2 to 1.3." |
+| 0:15 | The checks box: two red, one green, **deploy skipped** | "Upgrade Gate replays our saved tasks on both versions. Text and documents pass. Voice notes fail, and the deploy step never runs." |
+| 0:30 | Click `upgrade-gate / voice-notes` → the job summary | "Accuracy alone was inconclusive: about the same number right. What changed is how it fails. On 135 voice notes, answers that are wrong or blank with no warning went from 18 to 42. 1.2 often said 'I can't hear this'; 1.3 never does." |
+| 0:55 | Scroll to **One failing case** | "A customer leaves a Hindi voice note with their pincode. 1.2 gets it right. 1.3 returns 380015, a real Ahmedabad pincode, just the wrong one. It's correctly shaped, so a schema check passes it. That's the failure that reaches your database." |
+| 1:15 | Switch to the site report, Voice notes tab, the clip grid | "Every square is one voice note. Yellow is 1.2 saying it can't hear. On 1.3 that becomes red: wrong, and no warning." Click one red square, play the clip, show both versions' three tries. |
+| 1:45 | **Real voices** tab | "Synthetic voices are clean, so we wrote the prediction down first and recorded 45 lines in a real voice. Accuracy fell 11 points, which alone blocks the upgrade, and 1.3 started returning blanks. The silent-failure rise itself is borderline at that size; we say so on the page." |
+| 2:05 | Home → "More thinking, worse listening" chart | "Spark 1.3 lets you set reasoning effort. On voice notes, more thinking was worse: 73% at minimal, 59% at the highest, at six times the cost. It talks itself into 'I can't hear this'. That comparison was picked after seeing the data, so it's a strong trend, worth testing on your own clips." |
+| 2:25 | Home → scorer section ("Somwar") | "We also caught our own mistake: our first scorer said 1.3 was significantly better at Hindi. It was spelling. The tool shows rejected answers next to every score so you can check the rule." |
+| 2:40 | Report → Contributor mode tab | "And Contributor mode scored the same on every task at a tenth of a dollar per thousand tasks instead of $1.80." |
+| 2:50 | Back to the PR checks | "Upgrade Gate: before you upgrade a model, check how it fails. Open source; bring your own tasks as a JSONL file." |
 
-**If E7 (real voices) is done before recording:** at 1:40 add one line with its result, e.g. "We repeated this with real recorded voices and the same pattern held" (or say plainly that it didn't).
-
-**Recording tips:** hide the bookmarks bar, zoom the browser to 110% so text reads on small screens, record the screen at 1080p, and keep the cursor still while talking.
+**Before recording:** make the repo public and add a branch-protection rule on `main` requiring the three
+`upgrade-gate / …` checks, so the PR page also shows *Merging is blocked*. Hide the bookmarks bar, zoom to 110%,
+record at 1080p, keep the cursor still while talking.

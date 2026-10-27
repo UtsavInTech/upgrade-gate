@@ -23,11 +23,11 @@ export function Hero({ site }: { site: Site }) {
       name: "upgrade-gate / voice-notes",
       state: voiceState,
       summary: silent
-        ? `Wrong or blank with no warning: ${silent[BASE]} → ${silent[CAND]} of ${silent.tasks} clips${
-            e7?.confirmed && e7.silent
-              ? `; ${e7.silent.baseline} → ${e7.silent.candidate} with a real voice`
+        ? `Wrong or blank with no warning: ${silent[BASE]} → ${silent[CAND]} of ${silent.tasks} clips (synthetic voices).${
+            e7?.accuracy
+              ? ` Real voice: accuracy ${(e7.accuracy.delta * 100).toFixed(0)} pts, blank answers appear.`
               : ""
-          }.`
+          }`
         : "Accuracy inconclusive.",
       href: "#/report/e6-audio",
     },
@@ -42,7 +42,7 @@ export function Hero({ site }: { site: Site }) {
       state: e3.decision === "go" ? "pass" : "review",
       summary:
         std && con
-          ? `Same answers on every task. $${con.toFixed(2)} vs $${std.toFixed(2)} per 1,000 tasks.`
+          ? `Same pass/fail on every task. $${con.toFixed(2)} vs $${std.toFixed(2)} per 1,000 tasks.`
           : "Running.",
       href: "#/report/e3-contributor",
     },

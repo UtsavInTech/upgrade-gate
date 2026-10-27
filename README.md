@@ -8,9 +8,9 @@ We replay your tasks on two LLM versions and turn the differences into a GO, NO-
 
 - **Voice notes:** same accuracy (278 vs 274 of 405 answers), but answers that are **wrong or blank with no warning rose from 18 to 42 of 135 clips** (paired exact test, p = 3 × 10⁻⁶). Spark 1.2 often says "I can't hear the audio"; 1.3 never does, and instead returns wrong digits or empty fields. An accuracy-only gate calls this INCONCLUSIVE. Meta's docs warn that 1.3 audio is "not fully supported".
 - **Text, invoices and Hindi (1,325 tasks):** our first scorer reported a significant +1.1 point gain for 1.3. It came from Hindi spelling (`Somwar` vs `Somvar`). With content scoring the change is 0.0.
-- **Confirmed with a real voice:** 45 lines read by a person. Wrong-or-blank answers 6 → 13 (p = 0.016), all-blank answers 0 → 18, accuracy −11 points. The gate says NO-GO on its own.
+- **Rerun with a real voice:** 45 lines (15 items × 3 languages) read by one person. Accuracy fell 11 points (95% range −20 to −2), which is why the gate says NO-GO, and blank answers appeared only on 1.3 (0 → 6 clips). The combined wrong-or-blank rise (6 → 13) is borderline when the three language versions of each item are grouped (5 vs 0, p = 0.06), and filled-in wrong answers did not rise.
 - **More thinking, worse listening:** on voice clips, Spark 1.3 gets fewer right at every step up in reasoning effort (72.8% at minimal → 58.5% at xhigh, p = 0.0009) while costing 6× more; it increasingly decides it can't hear the clip.
-- **Contributor mode:** identical answers to Standard on every task, at $0.10 vs $1.80 per 1,000 tasks.
+- **Contributor mode:** the same pass/fail as Standard on every one of 1,325 tasks (we compared scores, not answer text), at $0.10 vs $1.80 per 1,000 tasks.
 - **Judges:** Spark 1.2 and 1.3 judges, given the reference answer, passed none of ~250 wrong answers from either version. No sign of judge-version bias.
 
 Full account and caveats: [findings/LOG.md](findings/LOG.md).
@@ -34,6 +34,25 @@ We ran **1,325 tasks × two Muse Spark versions × three repeats: 7,950 saved ca
 The old scorer rejected correct Hindi spellings such as `Somwar` versus `Somvar`, and some correct answers wrapped in extra text. We separated **correctness** from **requested format** and rescored the saved outputs. We made no new API calls to do that. The headline improvement disappeared. Every corrected content slice has a zero paired delta; E1's content gate is **GO** on this test suite.
 
 The models are near the ceiling here. This does not establish that 1.3 is safe on every company's workload. E1 shows why a statistically significant score difference still needs an audited scoring rule. See the [recorded E1 tables](experiments/out/e1_upgrade.md) and [experiment account](findings/LOG.md#e1-result-spark-12--13-and-a-scorer-that-invented-an-improvement). Raw run folders stay local under `results/` and are not committed.
+
+## Watch it block an upgrade
+
+[`release/model.json`](release/model.json) holds the model this app ships. The branch
+[`upgrade/spark-1.3`](https://github.com/UtsavInTech/upgrade-gate/compare/main...upgrade/spark-1.3) changes it from
+`spark-1.2@low` to `spark-1.3@low`. On that pull request, [the upgrade-gate workflow](.github/workflows/upgrade-gate.yml)
+replays the saved answers in [`evidence/`](evidence) for both models (no API key needed) and runs three checks:
+
+| Check | Result | Why |
+|---|---|---|
+| `upgrade-gate / voice-notes` | ❌ NO-GO | Audio input: wrong or blank with no warning 18 → 42 of 135 clips, p = 3 × 10⁻⁶. Accuracy alone: inconclusive |
+| `upgrade-gate / real-voices` | ❌ NO-GO | 6 → 13 of 45 clips read by a person, and accuracy down past the limit |
+| `upgrade-gate / text-and-documents` | ✅ GO | No change on 1,325 tasks |
+| `deploy model` | skipped | Runs only when every check passes |
+
+Each failed check's summary shows one filled-in wrong answer, e.g. a Hindi voice note where 1.3 returns pincode
+`380015` (a real Ahmedabad pincode) instead of `452089`: correctly shaped, so a required-fields check passes it. With
+branch protection requiring these checks, GitHub also blocks the merge. In a live setup the same step runs
+`upgrade-gate all` with `MODEL_API_KEY` instead of replaying saved answers.
 
 ## Try it without spending money
 

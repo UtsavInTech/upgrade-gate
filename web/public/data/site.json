@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-10-27T19:36:54Z",
+ "generated_utc": "2026-10-27T21:37:11Z",
  "spend": {
   "total_usd": 19.78,
   "limit_usd": 90.0
@@ -545,8 +545,20 @@
       "only_candidate": 26,
       "p": 3.032386302947998e-06,
       "rise": 0.17777777777777778,
-      "p_adjusted": 6.064772605895996e-06
+      "items": {
+       "n": 45,
+       "worse": 18,
+       "better": 1,
+       "p": 7.62939453125e-05,
+       "rise_ci": [
+        0.1037037037037037,
+        0.25925925925925924
+       ]
+      },
+      "p_adjusted": 0.000152587890625
      },
+     "test_p": 7.62939453125e-05,
+     "test_unit": "item",
      "blank": {
       "baseline": 0,
       "candidate": 7,
@@ -599,8 +611,20 @@
       "only_candidate": 0,
       "p": 1.0,
       "rise": 0.0,
+      "items": {
+       "n": 45,
+       "worse": 0,
+       "better": 0,
+       "p": 1.0,
+       "rise_ci": [
+        0.0,
+        0.0
+       ]
+      },
       "p_adjusted": 1.0
      },
+     "test_p": 1.0,
+     "test_unit": "item",
      "blank": {
       "baseline": 0,
       "candidate": 0,
@@ -630,6 +654,11 @@
    },
    "alpha": 0.05,
    "max_rise": 0.02,
+   "count": [
+    "wrong",
+    "blank"
+   ],
+   "unit": "item",
    "flagged": true,
    "population": "audio input",
    "tasks": 135,
@@ -656,7 +685,17 @@
     "only_candidate": 26,
     "p": 3.032386302947998e-06,
     "rise": 0.17777777777777778,
-    "p_adjusted": 6.064772605895996e-06
+    "items": {
+     "n": 45,
+     "worse": 18,
+     "better": 1,
+     "p": 7.62939453125e-05,
+     "rise_ci": [
+      0.1037037037037037,
+      0.25925925925925924
+     ]
+    },
+    "p_adjusted": 0.000152587890625
    },
    "abstain": {
     "baseline": 21,
@@ -682,7 +721,7 @@
     "p": 0.004343509674072266,
     "rise": 0.1037037037037037
    },
-   "reason": "Silent failures rose. Audio input: answers that are wrong or blank with no warning rose from 18 to 42 of 135 tasks (p = 3e-06; blank 0 → 7); answers admitting it can't answer fell from 21 to 0."
+   "reason": "Silent failures rose. Audio input: answers that are wrong or blank with no warning rose from 18 to 42 of 135 tasks (18 items worse, 1 better, p = 8e-05; blank 0 → 7); answers admitting it can't answer fell from 21 to 0."
   },
   "gate_reason": "CI overlaps the drop limit. Approximately 9072 more independent tasks are needed (normal approximation, 80% power; not a guarantee).",
   "tasks_needed": 9072,
@@ -2335,6 +2374,21 @@
   "calls": 270,
   "fresh_cost_usd": 0.7776,
   "reused_answers": 0,
+  "items": {
+   "n": 15,
+   "worse": 5,
+   "better": 0,
+   "p": 0.0625
+  },
+  "blank_clips": {
+   "baseline": 0,
+   "candidate": 6,
+   "p": 0.03125
+  },
+  "wrong_only_clips": {
+   "baseline": 6,
+   "candidate": 6
+  },
   "confirmed": true,
   "silent": {
    "baseline": 6,

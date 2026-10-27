@@ -102,18 +102,18 @@ export function EffortSection({ e4 }: { e4: E4 }) {
         <div className="border-t-2 border-go pt-5">
           <h3 className="font-semibold">What to do with it</h3>
           <p className="mt-3 text-muted">
-            For voice input, set{" "}
-            <code className="font-mono text-sm text-fg">reasoning_effort: "minimal"</code>. On these clips it
-            was the most accurate setting and about six times cheaper than the highest.
+            On these clips <code className="font-mono text-sm text-fg">reasoning_effort: "minimal"</code> was
+            the most accurate setting and about six times cheaper than the highest. For voice input it is the
+            setting to test first, not a rule: run your own clips through the gate at two effort levels.
           </p>
         </div>
         <div className="border-t-2 border-line pt-5">
           <h3 className="font-semibold">How far it goes</h3>
           <p className="mt-3 text-muted">
             Text-to-speech clips, Contributor mode (the same model served more cheaply), one run on 28 October
-            2026. We compared the lowest and highest levels after seeing the results, so read that p-value as a
-            strong trend rather than a tested prediction; no single step up is significant on its own. On text
-            tasks every level scored 100%, so this is about listening, not reasoning in general.
+            2026. We compared the lowest and highest levels after seeing the results, so read that p-value as
+            a strong trend rather than a tested prediction; no single step up is significant on its own. On
+            text tasks every level scored 100%, so this is about listening, not reasoning in general.
           </p>
         </div>
       </div>

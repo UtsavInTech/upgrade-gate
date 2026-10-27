@@ -1,0 +1,84 @@
+{
+  "question": "Judge Upgrade Gate as it exists now, including the user's replacement web UI, using Impact 30%, Demo 25%, Meta tooling 25%, Technical depth 20%. Give honest marks and top-five/top-ten selection votes against a strong hypothetical field, challenge the assessments, and prioritize improvements. Do not reward prior collaboration or builder effort.",
+  "judges": [
+    {
+      "role": "Contrarian",
+      "scores": [
+        7,
+        8,
+        8,
+        7.5
+      ],
+      "total": 76,
+      "top5": "No",
+      "top10": "Shortlist",
+      "response": "Impact 7/10, Demo 8/10, Meta tooling 8/10, Technical depth 7.5/10. Weighted total: 76/100 (21 + 20 + 20 + 15).\n\nTop-five: NO on current evidence. Top-ten: SHORTLIST. These are selection judgments, not placement predictions; I have no evidence about competing submissions.\n\nThe strongest evidence is the auditable change in failure behavior, supported by paired comparisons, text twins, preserved answers, and an unusually candid scorer correction. The current web/ report screenshot is polished and makes individual failures accessible. Direct Meta integration, Contributor experiments, spending controls, and implemented CI exit codes provide credible engineering substance.\n\nThree weaknesses hold it back:\n1. The demo misstates its denominator. docs/DEMO.md describes 135 voice notes and gives 84.8% → 83.6% accuracy. The screenshot’s figures combine audio with perfect text twins. experiments/out/e6_audio.md reports audio-only majority accuracy around 69%, with a −2.2-point delta. This materially softens the apparent audio failure rate.\n2. Confident and downstream harm exceed the measurement. experiments/e6_audio.py::_mode labels every incorrect response outside a narrow denial pattern confident wrong. It does not measure confidence. Empty JSON fields are detectable with ordinary validation, so the claim that nobody would know needs an actual downstream integration test.\n3. Validation remains narrow. E1’s ceiling performance and E4’s 30 easy tasks limit conclusions. E7 supplies encouraging confirmation—6 → 13 silent-failure tasks, p=.016—but covers one speaker and reused lines. Its outputs and recordings were untracked during this audit; the committed findings still describe confirmation as planned.\n\nHighest-return improvement: publish one reproducible, correctly denominated demonstration showing the current behavior gate actually blocking deployment, with E7 evidence committed and its single-speaker limitation explicit. That connects the strongest finding to demonstrated product impact."
+    },
+    {
+      "role": "First principles",
+      "scores": [
+        7,
+        8,
+        8,
+        7.5
+      ],
+      "total": 76,
+      "top5": "No",
+      "top10": "Yes",
+      "response": "Impact 7/10; Demo 8/10; Meta tooling 8/10; Technical depth 7.5/10. Weighted total: 76/100.\n\nSelection recommendation: top-ten YES; top-five NO on current evidence. These are judging recommendations, not acceptance predictions.\n\nThe problem is valuable: release owners need evidence about consequential failures, not merely aggregate accuracy. The strongest evidence is E6’s paired audio/text design and inspectable saved answers: silent wrong/blank failures increase 18→42, despite nearly unchanged accuracy. This now changes the actual decision: cli.py invokes behaviour.apply_to_gate, and saved results/e6-audio/gate.json records NO-GO, with accuracy alone INCONCLUSIVE. That mechanism is implemented. E7 is also completed locally: 6→13, p=.015625, on 45 clips from one human speaker. Honest correction of E1’s scorer-induced improvement strengthens credibility.\n\nThree shortcomings limit the marks:\n1. Unproven operational value. README’s support-team scenario is explicitly illustrative. There is no demonstrated customer workflow, release-owner adoption, or measured avoided harm. A plausible deployment problem does not establish demand.\n2. Limited independent evidence. audio_synth.py shares underlying items across translations; stats.py treats task pairs independently. E7 reuses those lines with one speaker (e7_real_voices.md). Its confirmation supports this narrow setting, not broad voice-note reliability.\n3. The risk definition needs validation. behaviour.py groups readily detectable empty JSON with wrong populated answers and identifies abstention through regexes. Those can warrant different release policies. Moreover, web/screenshots/report.png still shows INCONCLUSIVE while current exported data and code say NO-GO; findings documentation still calls E7 planned.\n\nHighest-return improvement: run one documented release decision with an actual voice-workflow owner, using their held-out clips and explicitly agreed failure costs. Demonstrate which harmful errors survive ordinary schema checks and why the gate changes their action."
+    },
+    {
+      "role": "Outsider",
+      "scores": [
+        7,
+        7.5,
+        8,
+        8
+      ],
+      "total": 75.75,
+      "top5": "No",
+      "top10": "Shortlist",
+      "response": "Impact 7/10; Demo 7.5/10; Meta tooling 8/10; Technical depth 8/10. Weighted total: 75.75/100.\n\nMy selection votes against a strong hypothetical field: Top five NO. Top ten SHORTLIST. These are selection judgments, not predictions about unknown competitors.\n\nThe first minute communicates a recognizable buyer problem: a developer upgrading models wants evidence before deployment. The current web/ screenshots have readable hierarchy and a useful pull-request metaphor. The paired clip grid makes the failure shift visible. Source inspection shows audio players, transcripts, reference answers, and repeated outputs, so a judge has the ingredients to verify an example. I did not audition playback or exercise the browser.\n\nThree blockers:\n1. The presentation contradicts its latest evidence. Screenshots and docs/DEMO.md show INCONCLUSIVE/review required; current exported data and saved gate results say NO-GO. The home-page caveat still calls real voices in progress, although E7 reports 6→13 silent failures across 45 clips, p=0.016.\n2. The headline denominator changes. The report’s 84.8→83.6% pools audio with perfect text twins; audio-only results are substantially lower. The behavioral gate describes 18→42 of 270 tasks while the visual tells the audio-only story of 135 clips. These choices need explicit labels.\n3. Deployment value is asserted more convincingly than demonstrated. The README supplies a credible CI handoff, but the depicted PR is illustrative. One actual blocked workflow and generated regression artifact would establish the product’s operational payoff.\n\nBest quality: the evidence chain connects a visible failure to preserved answers and affordable Meta-specific experiments.\n\nFirst improvement: make one consistent, 60-second demonstration—play a real recorded clip, expose the blank answer, show the saved NO-GO decision, then show the deployment check failing."
+    },
+    {
+      "role": "Opportunity",
+      "scores": [
+        8,
+        8,
+        8.5,
+        8
+      ],
+      "total": 81.25,
+      "top5": "No",
+      "top10": "Yes",
+      "response": "Impact 8.0/10, Demo 8.0/10, Meta tooling 8.5/10, Technical depth 8.0/10. Weighted total: 81.25/100. Top 10 YES. Top 5 NO against a strong hypothetical field. These are selection votes, not ranking probabilities.\n\nThe strongest defensible distinguishing value is the complete evidence-to-release-decision chain: replayed multilingual tasks, inspectable answers, audited scoring, paired statistics, and an implemented behavioral veto. Commit 7b70647 matters: the CLI now applies upgrade_gate/behaviour.py, so E6 actually becomes NO-GO rather than merely displaying an interesting exploratory finding. E7 strengthens that story: the frozen experiment reports silent failures increasing 6→13 across 45 human-recorded clips, p=0.015625. That earns credit today, despite its limits. E1’s openly documented scorer correction also demonstrates useful evaluation judgment.\n\nThree current weaknesses:\n1. Limited external validity: experiments/out/e7_real_voices.md contains one speaker and reused scripted lines; web/src/components/AudioSection.tsx acknowledges possible reading slips. This does not establish performance across production speakers or noisy recordings.\n2. Policy depends on heuristics: upgrade_gate/behaviour.py identifies abstention using regexes, with no demonstrated multilingual classification audit. Wrong answers with uncertainty wording can therefore change the release verdict.\n3. Submission evidence is inconsistent: web/screenshots/report.png still displays INCONCLUSIVE, while current exported data says NO-GO. E7 outputs and related web changes are uncommitted; README/findings still describe E7 as planned.\n\nHighest-return improvement: run a small, frozen, independently reviewed multi-speaker holdout, audit the failure labels, then package its results with synchronized screenshots and committed exports. That would strengthen the project’s central claim more than adding another feature."
+    },
+    {
+      "role": "Executor",
+      "scores": [
+        7,
+        8,
+        8,
+        8
+      ],
+      "total": 77,
+      "top5": "No",
+      "top10": "Shortlist",
+      "response": "Impact 7/10, Demo 8/10, Meta tooling 8/10, Technical depth 8/10. Weighted total: 77/100.\n\nAgainst a strong hypothetical field: Top 5 NO. Top 10 SHORTLIST. This judges the inspected snapshot, not an actual rank prediction.\n\nThe strongest asset is inspectable evidence for a useful release decision: accuracy alone can obscure a worsening failure mode. The current CLI applies behaviour.py after the accuracy gate and returns NO-GO; this is implemented behavior, not merely a dashboard annotation. E7 genuinely exists locally: 45 human clips, one speaker, 270 responses, and silent failures increasing 6→13, exact paired p=.015625. The current web/ source offers a polished route from verdict to individual answers and audio.\n\nThree shortcomings limit selection:\n1. The demonstration overstates integration. web/src/components/Hero.tsx simulates pull-request checks; .github/workflows/canary.yml runs monitoring, not a candidate-upgrade PR gate. README’s deployment workflow is an integration recipe. No inspected evidence demonstrates an actual blocked upgrade PR.\n2. The submission tells conflicting versions of the result. Saved web/screenshots/report.png and docs/DEMO.md still present INCONCLUSIVE, while current source and E6’s saved gate say NO-GO. E6’s behavior gate also counts 270 audio-plus-text tasks, whereas the headline uses 135 audio clips. E7 exports and recordings are untracked, weakening fresh-clone reproducibility.\n3. Validation remains narrow. experiments/out/e7_real_voices.md supports one speaker and 45 reused-script clips. It strengthens the specific finding, but establishes neither production impact nor broad release-policy reliability.\n\nThe deadline bottleneck is packaging a coherent, reproducible release story. Next action: produce one frozen submission showing an actual offline CI gate blocking a candidate, with committed E7 evidence and regenerated screenshots/script that agree with the current verdict."
+    }
+  ],
+  "verified_updates": [
+    "Chair inspected live web UI at http://127.0.0.1:5191 on Oct28 IST. Hero now says Failed/Merging blocked, and home includes real-voice confirmation6→13 with explicit one-speaker caveat. Do not claim the live homepage still says confirmation in progress.",
+    "Live E6 report shows NO-GO and Accuracy alone INCONCLUSIVE. Headline pass rate84.8→83.6 pools audio+text twins; report subtitle says voice notes each with text twin. It does not explicitly label headline as pooled. Behavior reason18→42 of270 and audio clip figure18→42 of135 both appear. This is a denominator-labeling/estimand problem, not proof of fabricated numbers.",
+    "E7 is completed locally on45 clips by one speaker. Primary frozen experiment imports the older E6 failure rules; generic production behaviour.py uses a broader abstention regex. E7 findings should not be assumed to validate every generic production classification rule.",
+    "Stored screenshots/docs/DEMO still say INCONCLUSIVE; local source/UI has advanced. Do not double-count this as absent gate implementation. Human voice recordings may stay private; reproducibility can use consented samples, scripts, hashes, outputs and limitations, not forced publication of private recordings.",
+    "Official Promptfoo docs show before/after GitHub Action evaluations (https://www.promptfoo.dev/docs/integrations/github-action/); Braintrust docs show model/experiment comparison, improvements/regressions and cost (https://www.braintrust.dev/foundations/how-to-analyze-your-eval-results). Thus generic evaluation/CI features alone are not a demonstrated unique wedge. These are established tools, not known entrants in this hackathon."
+  ],
+  "anonymization": {
+    "A": 2,
+    "B": 3,
+    "C": 0,
+    "D": 1,
+    "E": 4
+  }
+}

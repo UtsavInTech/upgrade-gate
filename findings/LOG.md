@@ -36,10 +36,10 @@ Artificial Analysis marks **Muse Spark 1.1 as deprecated** ("This model is depre
 
 ---
 
-## E3 result: Contributor mode gives the same answers at ~1/18 the cost
+## E3 result: Contributor mode scores the same at ~1/18 the cost
 
 - **Run:** Oct 27. Spark 1.3 Standard vs Spark 1.3 Contributor, effort low, 1,325 tasks × 3 repeats. The Standard half reused E1's saved answers (same tasks, same settings), so the run cost **$0.40**.
-- **Result:** identical: 3,971 / 3,975 answers correct for both, Δ 0.0 pts on every slice. Gate: **GO**; equivalent within ±2 pts.
+- **Result:** the same pass/fail on every task: 3,971 / 3,975 answers correct for both, Δ 0.0 pts on every slice. We compared scores, not answer text, so this doesn't show the answers are word-for-word identical. Gate: **GO**; equivalent within ±2 pts.
 - **Cost per 1,000 tasks** (billed tokens in this run): Standard **$1.80**, Contributor **$0.10**, about 18× cheaper.
 - **Caveat:** Contributor mode lets Meta use the traffic for training. Fine for synthetic or public data; for customer data it's a policy decision, not a quality one. The Standard answers were collected a few hours earlier than the Contributor ones.
 
@@ -63,13 +63,14 @@ Artificial Analysis marks **Muse Spark 1.1 as deprecated** ("This model is depre
 
 ---
 
-## E7 result: the silent-failure pattern holds on a real voice
+## E7 result: with a real voice, accuracy drops and blanks appear; the silent-failure rise is borderline by item
 
 - **Pre-registered** on 27 Oct, before any recording: same models and settings as E6, same failure-type rules unchanged; prediction "1.3 gives more confident-wrong-or-blank answers than 1.2 (paired, majority of 3 tries), p < 0.05".
 - **Run:** 28 Oct. One speaker (Utsav) read 45 of the E6 lines (15 English, 15 Hindi, 15 Hinglish; 15 each of order voice note, spoken maths, customer request) into a laptop microphone via `web/#/record`. 270 calls, **$0.78**, 1 answer cut off by the token limit (1.3).
 - **Result:** **CONFIRMED.** Wrong or blank with no warning (called "confident wrong or blank" in the frozen E6 rules; it does not measure confidence): **6 → 13 of 45 clips, p = 0.016.** Answers with every field blank: **0 → 18** of 135. Unlike the synthetic voices, accuracy also fell: **−11.1 pts (95% range −20.0 to −2.2)**, all of it in voice-note extraction (−33 pts; 5 clips lost, 0 gained). Gate: **NO-GO** on both counts (silent failures, and accuracy past the 2-pt drop limit).
 - **Difference from E6:** with the real voice, 1.2 rarely said "I can't hear the audio" (7 answers vs 65 on synthetic voices). So on real speech the story is mostly "1.3 hands back blank fields and mishears more digits", not "1.3 stopped admitting it can't hear".
 - **Checked by hand:** every failed extraction is a real misheard number (digits added, dropped or repeated) or a 1.3 blank. A few numbers were misheard identically by both versions (e.g. pincode 452089 as 540289), which may be reading slips; they count against both versions equally in the paired test. Blanks can't be explained by misreading.
+- **Item-level check (28 Oct, added after the council review):** the 45 clips are 15 items × 3 languages, which aren't independent. Grouped by item, the wrong-or-blank rise is **5 items worse, 0 better, p = 0.062: borderline**, and counting only filled-in wrong answers it's **1 vs 1: nothing**. So the real-voice confirmation rests on blank answers. E6 (synthetic) stays robust: 18 vs 1 items, p = 0.00008 (filled-in wrong only: 14 vs 1, p = 0.001). The E7 gate is still NO-GO because accuracy fell past the limit.
 - **Limits:** one speaker, one microphone, 45 clips. Recordings are kept private (not committed); results and answers are in the report.
 
 ---

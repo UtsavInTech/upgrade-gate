@@ -330,7 +330,15 @@ def e7() -> dict:
     gate = _json(run, "gate.json") or {}
     main = next(t for t in tests if t["flag"] == "confident wrong or blank" and t["lang"] == "all")
     overall = next((r for r in res["rows"] if r["slice"] == "overall"), None)
+    from upgrade_gate.behaviour import check
+    beh = check(d, A, B).get("by_input", {}).get("audio", {})
+    items = (beh.get("silent") or {}).get("items") or {}
+    blank_clips = beh.get("blank") or {}
+    wrong_only = beh.get("wrong_no_warning") or {}
     return {"status": "done", "speakers": res.get("speakers"), "clips": main["tasks"], **_run_cost(run),
+            "items": {"n": items.get("n"), "worse": items.get("worse"), "better": items.get("better"), "p": items.get("p")},
+            "blank_clips": {"baseline": blank_clips.get("baseline"), "candidate": blank_clips.get("candidate"), "p": blank_clips.get("p")},
+            "wrong_only_clips": {"baseline": wrong_only.get("baseline"), "candidate": wrong_only.get("candidate")},
             "confirmed": res.get("confirmed"), "silent": {"baseline": main[A], "candidate": main[B], "p": main["p"]},
             "blank_answers": {c: counts[(c, "all", "silent blank")] for c in (A, B)},
             "accuracy": _slim(overall) if overall else None,

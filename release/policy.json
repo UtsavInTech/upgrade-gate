@@ -1,0 +1,10 @@
+{
+  "why": "Voice notes create orders. A wrong order number or pincode is stored and ships to the wrong place; a blank one fails our form but the order is still lost. A model that says it can't hear is fine: we ask the customer to type it. So we block any significant rise in wrong or blank answers, and allow at most a 2-point accuracy drop.",
+  "accuracy": { "max_drop": 0.02, "alpha": 0.05 },
+  "silent_failures": {
+    "count": ["wrong", "blank"],
+    "max_rise": 0.02,
+    "alpha": 0.05,
+    "unit": "item"
+  }
+}

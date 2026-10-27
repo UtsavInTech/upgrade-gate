@@ -26,3 +26,4 @@ include = ["upgrade_gate*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+norecursedirs = ["fixtures"]

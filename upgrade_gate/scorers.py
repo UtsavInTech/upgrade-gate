@@ -450,7 +450,7 @@ def _r_word_count_between(t, r):
 
 
 def _r_no_commas(t, r):
-    return ("," not in t and "،" not in t), "has comma"
+    return not any(c in t for c in (",", "،", "，")), "has comma"
 
 
 def _r_all_caps(t, r):
@@ -468,8 +468,9 @@ def _r_starts_with(t, r):
 
 
 def _r_ends_with(t, r):
-    s = t.strip().rstrip("*_\"'` ").strip()
-    return s.casefold().endswith(str(r["value"]).casefold()), "ends %r" % s[-20:]
+    s = t.strip().rstrip("*_\"'` .!।").strip()
+    want = str(r["value"]).strip().rstrip(".!।").strip()
+    return s.casefold().endswith(want.casefold()), "ends %r" % s[-20:]
 
 
 def _r_line_count(t, r):
@@ -478,7 +479,10 @@ def _r_line_count(t, r):
 
 
 def _r_bullet_count(t, r):
-    prefixes = [r["prefix"]] if r.get("prefix") else ["- ", "* ", "• "]
+    # A bullet-style prefix (-, *, •) accepts any of the three; another prefix (e.g. "1.") is used as given.
+    marks = {"-", "*", "•"}
+    p = (r.get("prefix") or "").strip()
+    prefixes = marks if (not p or p in marks) else {p}
     n = sum(1 for l in _lines(t) if any(l.lstrip().startswith(p) for p in prefixes))
     return n == r["value"], "%d bullets" % n
 
@@ -494,18 +498,33 @@ def _r_must_include(t, r):
     return not miss, "missing %r" % miss
 
 
+_WORD_RE = re.compile(r"[\wऀ-ॿ]+")  # Devanagari vowel signs aren't \w
+
+
 def _r_must_not_include(t, r):
-    low = t.casefold()
-    hit = [v for v in r["values"] if str(v).casefold() in low]
+    """Whole-word match (multi-word values must appear as a consecutive token run)."""
+    toks = _WORD_RE.findall(t.casefold())
+    joined = " " + " ".join(toks) + " "
+    hit = []
+    for v in r["values"]:
+        vt = _WORD_RE.findall(str(v).casefold())
+        if vt and (" " + " ".join(vt) + " ") in joined:
+            hit.append(v)
     return not hit, "contains %r" % hit
 
 
 def _r_json_parseable(t, r):
     try:
-        json.loads(strip_wrapping(t))
-        return True, ""
+        obj = json.loads(strip_wrapping(t))
     except (ValueError, json.JSONDecodeError):
         return False, "not json"
+    keys = r.get("keys")
+    if keys:
+        if not isinstance(obj, dict):
+            return False, "not a JSON object"
+        if {str(k) for k in obj} != {str(k) for k in keys}:
+            return False, "keys %s" % sorted(obj)
+    return True, ""
 
 
 IFEVAL_RULES: Dict[str, Callable[[str, Dict[str, Any]], Tuple[bool, str]]] = {

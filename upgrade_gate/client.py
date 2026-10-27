@@ -76,9 +76,12 @@ def _extract_text(data: dict) -> Optional[str]:
     return content
 
 
-def cache_key(model_id: str, messages: list, params: Optional[dict], cache_salt: str = "") -> str:
+def cache_key(model_id: str, messages: list, params: Optional[dict], cache_salt: str = "",
+              base_url: str = "") -> str:
+    """base_url is part of the key so answers from a mock or another provider are never
+    served for the real API."""
     blob = json.dumps(
-        [model_id, messages, sorted((params or {}).items()), cache_salt],
+        [base_url.rstrip("/"), model_id, messages, sorted((params or {}).items()), cache_salt],
         sort_keys=True, ensure_ascii=False, separators=(",", ":"), default=str,
     )
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()
@@ -105,14 +108,16 @@ class _RateLimiter:
 
 
 class ModelClient:
-    def __init__(self, base_url=None, api_key=None, cache_dir=".cache/responses", max_concurrency=8,
+    def __init__(self, base_url=None, api_key=None, cache_dir=None, max_concurrency=8,
                  rpm: Optional[Dict[str, float]] = None, timeout: float = 180.0, max_attempts: int = 5,
                  backoff_base: float = 1.0, backoff_max: float = 60.0):
         """rpm: optional {model_id: requests_per_minute}; key "*" sets the default for any
         model. Without it: 140 for *-contributor models, 2500 otherwise. 0 disables limiting."""
         self.base_url = (base_url or config.model_api_base()).rstrip("/")
         self._api_key = api_key if api_key is not None else config.model_api_key()
-        self.cache_dir = cache_dir
+        # None -> $UPGRADE_GATE_CACHE_DIR or .cache/responses; "" disables caching
+        self.cache_dir = cache_dir if cache_dir is not None else os.environ.get(
+            "UPGRADE_GATE_CACHE_DIR", ".cache/responses")
         self.max_concurrency = max(1, int(max_concurrency))
         self.rpm = dict(rpm or {})
         self.timeout = timeout
@@ -233,7 +238,7 @@ class ModelClient:
     def chat(self, model_id: str, messages: list, params: Optional[dict] = None,
              use_cache: bool = True, cache_salt: str = "") -> ChatResult:
         params = dict(params or {})
-        key = cache_key(model_id, messages, params, cache_salt)
+        key = cache_key(model_id, messages, params, cache_salt, base_url=self.base_url)
         if use_cache:
             hit = self._cache_get(key)
             if hit is not None:

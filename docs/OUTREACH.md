@@ -28,8 +28,9 @@ Edit freely; these are starting points in your voice. Post the X thread with the
 > answers instead: 18 → 42 clips. Each square below is one voice note.
 
 **Post 2** (attach the 20-second clip recording)
-> Example: a customer leaves a Hindi voice note with their pincode, 452089. 1.2 gets it right.
-> 1.3 answers 380015, a real Ahmedabad pincode, just the wrong one, three times out of three.
+> Example: a customer leaves a Hindi voice note with their pincode, 452089. 1.2 gets the pincode right in
+> all three tries. 1.3 answers 380015, a real Ahmedabad pincode, just the wrong one, in two of three
+> (and 452009 in the third).
 >
 > It's correctly shaped, so a format check passes it. That's the error that reaches your database.
 

@@ -279,9 +279,12 @@ class ModelClient:
         text = _extract_text(data)
         cost = pricing.cost(model_id, usage)
         returned_model = data.get("model")
-        if text is None:
+        if not text:
+            finish = ((data.get("choices") or [{}])[0] or {}).get("finish_reason")
+            why = ("no answer: hit max_completion_tokens (reasoning used %d tokens); raise the limit"
+                   % usage["reasoning_tokens"]) if finish == "length" else "no message content in response"
             return ChatResult(text=None, usage=usage, cost_usd=cost, latency_ms=latency,
-                              error="no message content in response", returned_model=returned_model,
+                              error=why, returned_model=returned_model,
                               cached=False, raw=data)
         if use_cache:
             self._cache_put(key, {"model_id": model_id, "text": text, "usage": usage, "cost_usd": cost,

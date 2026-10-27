@@ -111,7 +111,8 @@ def cmd_check(args) -> int:
         c = parse_candidate(spec)
         try:
             res = client.chat(c.model_id, [{"role": "user", "content": "Reply with the word ok."}],
-                              {"max_completion_tokens": 200}, use_cache=False)
+                              # reasoning tokens count toward the limit; 200 left 1.1/1.3 with no answer
+                              {"max_completion_tokens": 2000, "reasoning_effort": "low"}, use_cache=False)
         except spend.SpendCapError as e:
             print("STOP", e)
             return 1

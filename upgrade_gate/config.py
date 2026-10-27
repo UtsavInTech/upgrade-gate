@@ -9,9 +9,11 @@ from typing import Dict, Optional
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_MODEL_API_BASE = "https://api.meta.ai/v1"
+OPENROUTER_BASE = "https://openrouter.ai/api/v1"
 
-KEYS = ("MODEL_API_KEY", "MODEL_API_BASE", "OPEN_JUDGE_BASE", "OPEN_JUDGE_KEY", "OPEN_JUDGE_MODEL")
-_DEFAULTS = {"MODEL_API_BASE": DEFAULT_MODEL_API_BASE}
+KEYS = ("MODEL_PROVIDER", "MODEL_API_KEY", "MODEL_API_BASE", "OPENROUTER_API_KEY",
+        "OPEN_JUDGE_BASE", "OPEN_JUDGE_KEY", "OPEN_JUDGE_MODEL")
+_DEFAULTS: Dict[str, str] = {}
 
 _dotenv_cache: Optional[Dict[str, str]] = None
 
@@ -67,12 +69,26 @@ def get(key: str, default: Optional[str] = None) -> Optional[str]:
     return default
 
 
+def provider() -> str:
+    """'meta' (Meta Model API) or 'openrouter'. Explicit MODEL_PROVIDER wins; otherwise
+    OpenRouter is used when only OPENROUTER_API_KEY is set."""
+    p = (get("MODEL_PROVIDER") or "").strip().lower()
+    if p in ("meta", "openrouter"):
+        return p
+    if get("OPENROUTER_API_KEY") and not get("MODEL_API_KEY"):
+        return "openrouter"
+    return "meta"
+
+
 def model_api_key() -> Optional[str]:
+    if provider() == "openrouter":
+        return get("OPENROUTER_API_KEY") or get("MODEL_API_KEY")
     return get("MODEL_API_KEY")
 
 
 def model_api_base() -> str:
-    return (get("MODEL_API_BASE") or DEFAULT_MODEL_API_BASE).rstrip("/")
+    default = OPENROUTER_BASE if provider() == "openrouter" else DEFAULT_MODEL_API_BASE
+    return (get("MODEL_API_BASE") or default).rstrip("/")
 
 
 def open_judge() -> Dict[str, Optional[str]]:
@@ -81,7 +97,7 @@ def open_judge() -> Dict[str, Optional[str]]:
 
 def describe() -> Dict[str, str]:
     """Redacted summary, safe to print: secrets show only set/unset."""
-    out = {}
+    out = {"provider": provider(), "base": model_api_base()}
     for k in KEYS:
         v = get(k)
         if k.endswith("_KEY"):

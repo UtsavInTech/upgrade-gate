@@ -3,7 +3,8 @@
 Uses only the Python standard library.
 
 Environment variables:
-  MODEL_API_KEY      required. Your Meta Model API key. Never commit it.
+  MODEL_API_KEY      required. Meta Model API key, or an OpenRouter key when
+                     MODEL_API_BASE=https://openrouter.ai/api/v1. Never commit it.
   MODEL_API_BASE     API base URL (default https://api.meta.ai/v1). Requests go to
                      {base}/chat/completions (OpenAI-compatible, per Meta docs).
   CANARY_MODELS      comma-separated model IDs, e.g. "muse-spark-1.2,muse-spark-1.3".
@@ -39,6 +40,9 @@ MAX_RETRIES = 4
 
 def call_model(base, key, model, prompt, max_tokens, extra):
     """One chat request. Returns a dict with text, usage and transport metadata."""
+    if "openrouter.ai" in base:
+        # Same Meta models via OpenRouter: meta/ prefix, max_tokens, pinned to Meta, real cost.
+        model = model if "/" in model else "meta/" + model
     body = {
         "model": model,
         "messages": [
@@ -48,7 +52,12 @@ def call_model(base, key, model, prompt, max_tokens, extra):
         "temperature": 0,
     }
     if max_tokens:
-        body["max_completion_tokens"] = max_tokens
+        body["max_tokens" if "openrouter.ai" in base else "max_completion_tokens"] = max_tokens
+    if "openrouter.ai" in base:
+        body["provider"] = {"order": ["meta"], "allow_fallbacks": False}
+        if model.endswith("-contributor"):
+            body["provider"]["data_collection"] = "allow"
+        body["usage"] = {"include": True}
     body.update(extra)
     data = json.dumps(body).encode("utf-8")
     url = base.rstrip("/") + "/chat/completions"
@@ -107,7 +116,7 @@ def main():
     ap.add_argument("--limit", type=int, default=0, help="only the first N prompts, 1 repeat")
     args = ap.parse_args()
 
-    key = os.environ.get("MODEL_API_KEY")
+    key = os.environ.get("MODEL_API_KEY") or os.environ.get("OPENROUTER_API_KEY")
     base = os.environ.get("MODEL_API_BASE") or "https://api.meta.ai/v1"
     models = [m.strip() for m in os.environ.get("CANARY_MODELS", "").split(",") if m.strip()]
     if not key or not base or not models:

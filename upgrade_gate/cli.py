@@ -10,7 +10,10 @@
   upgrade-gate all ... --yes                 run -> score -> gate -> report -> export
 
 Candidates are preset names with an optional effort suffix:
-  spark-1.1, spark-1.2, spark-1.3, spark-1.2-c, spark-1.3-c (Contributor mode), wonder
+  spark-1.1, spark-1.2, spark-1.3, spark-1.2-c, spark-1.3-c (Contributor mode), wonder,
+  open (Muse Spark Open), glimmer (Muse Glimmer 30B)
+Provider: Meta Model API by default; set MODEL_PROVIDER=openrouter + OPENROUTER_API_KEY in .env
+to route the same models through OpenRouter.
   e.g. spark-1.3@high  ->  muse-spark-1.3 with reasoning_effort=high
 """
 from __future__ import annotations
@@ -30,6 +33,8 @@ PRESETS: Dict[str, str] = {
     "spark-1.2-c": "muse-spark-1.2-contributor",
     "spark-1.3-c": "muse-spark-1.3-contributor",
     "wonder": "muse-wonder-1.0",
+    "open": "muse-spark-open",          # open weights (OpenRouter)
+    "glimmer": "muse-glimmer-30b",      # open weights, small (OpenRouter)
 }
 EFFORTS = ("minimal", "low", "medium", "high", "xhigh", "max")
 DEFAULT_PARAMS = {"max_completion_tokens": 4000}
@@ -71,10 +76,9 @@ def make_judges(names: List[str]):
     client = ModelClient()
     judges = []
     for n in names:
-        if n == "open":
-            cfg = config.load()
-            judges.append(OpenAICompatJudge("open", cfg.get("OPEN_JUDGE_BASE"), cfg.get("OPEN_JUDGE_KEY"),
-                                            cfg.get("OPEN_JUDGE_MODEL")))
+        if n == "open" and config.get("OPEN_JUDGE_BASE"):
+            oj = config.open_judge()
+            judges.append(OpenAICompatJudge("open", oj["base"], oj["key"], oj["model"]))
         else:
             c = parse_candidate(n)
             judges.append(LLMJudge(c.name, c.model_id, client, params={"reasoning_effort": "low",
@@ -86,7 +90,10 @@ def make_judges(names: List[str]):
 
 def cmd_check(args) -> int:
     from .client import ModelClient
+    from . import config
     client = ModelClient()
+    print("provider: %s  base: %s  key: %s" % (config.provider(), client.base_url,
+                                              "set" if config.model_api_key() else "MISSING"))
     ok = True
     for spec in _split(args.models) or ["spark-1.2", "spark-1.3", "spark-1.3-c"]:
         c = parse_candidate(spec)

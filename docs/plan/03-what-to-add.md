@@ -5,7 +5,7 @@ Nothing here needs a new experiment, and nothing redesigns the site.
 
 ## A. Must-add (they support the "must do" list)
 
-### A1. Static VoiceOrder for the hosted site — 2 h
+### A1. Static VoiceOrder for the hosted site — 2 h ✅ done 28 Oct (44 of 45 notes; one had no saved answer)
 **Why:** today VoiceOrder needs the local Python server. On GitHub Pages judges would see an empty app.
 **How:**
 1. `scripts/export_web.py` writes `web/public/data/voiceorder.json`: for each sample note, the saved 1.2 and 1.3

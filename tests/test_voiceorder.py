@@ -77,3 +77,18 @@ class Api(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class StaticExport(unittest.TestCase):
+    """scripts/export_voiceorder.py must never call the API: a cache miss is skipped, not sent."""
+
+    def test_cache_only_client_refuses_to_send(self):
+        import importlib.util
+        root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        spec = importlib.util.spec_from_file_location("export_voiceorder", os.path.join(root, "scripts", "export_voiceorder.py"))
+        export_voiceorder = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(export_voiceorder)
+        with tempfile.TemporaryDirectory() as d:
+            c = export_voiceorder.CacheOnly(api_key="x", cache_dir=d)
+            with self.assertRaises(LookupError):
+                c.chat("muse-spark-1.3", [{"role": "user", "content": "hi"}])

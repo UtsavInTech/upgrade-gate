@@ -4,7 +4,15 @@ import { toWav16k } from "../audio";
 import { LANG_LABEL, shortModel } from "../data";
 
 type Sample = { id: string; lang: string; transcript: string; audio: string };
-type Config = { shipping: string; candidate: string; pr: string; samples: Sample[] };
+type Config = {
+  shipping: string;
+  candidate: string;
+  pr: string;
+  samples: Sample[];
+  // Hosted site: no service, so saved answers come with the config.
+  static?: boolean;
+  results?: Record<string, Record<string, Result>>;
+};
 type Result = {
   model: string;
   text: string;
@@ -13,7 +21,7 @@ type Result = {
   checks: { status: "saved" | "rejected" | "ask_customer"; message: string; fields: Record<string, boolean> };
   cost_usd: number;
   reused: boolean;
-  latency_ms: number;
+  latency_ms: number | null;
   truth?: { correct: boolean; expected: Record<string, string> };
 };
 
@@ -43,8 +51,11 @@ export function VoiceOrder() {
   const rec = useRef<MediaRecorder | null>(null);
 
   useEffect(() => {
+    const json = (r: Response) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)));
     fetch("/api/voiceorder/config")
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+      .then(json)
+      // No service (hosted site, or the dev server isn't running it): fall back to the saved answers.
+      .catch(() => fetch("data/voiceorder.json").then(json))
       .then(setCfg)
       .catch(() =>
         setError(
@@ -58,6 +69,11 @@ export function VoiceOrder() {
   const run = useCallback(
     async (source: { sample: string } | { wav: Blob }) => {
       if (!cfg) return;
+      if (cfg.static) {
+        const saved = "sample" in source ? cfg.results?.[source.sample] : undefined;
+        setResults(Object.fromEntries(models.map((m) => [m, saved?.[m] ?? { error: "No saved answer for this note." }])));
+        return;
+      }
       setResults(Object.fromEntries(models.map((m) => [m, "loading"])));
       await Promise.all(
         models.map(async (m) => {
@@ -204,6 +220,17 @@ export function VoiceOrder() {
                   </div>
                 )}
               </>
+            ) : cfg?.static ? (
+              <div className="mt-4 rounded-lg border border-line p-4 text-sm text-muted">
+                <p>
+                  Recording your own note sends it to Meta’s API, so it only works when you run VoiceOrder on
+                  your machine:
+                </p>
+                <pre className="mt-3 rounded bg-surface p-3 font-mono text-xs break-all whitespace-pre-wrap text-fg">
+                  {"git clone https://github.com/UtsavInTech/upgrade-gate\ncd upgrade-gate && npm --prefix web run dev"}
+                </pre>
+                <p className="mt-3">The sample notes on the other tab use the answers each model gave in our test.</p>
+              </div>
             ) : (
               <div className="mt-4 rounded-lg border border-line p-4">
                 <p className="text-sm text-muted">
@@ -366,7 +393,7 @@ function OrderCard({
       <p className="mt-3 text-xs text-faint">
         {res.reused
           ? "Saved answer, $0"
-          : `$${res.cost_usd.toFixed(4)} · ${(res.latency_ms / 1000).toFixed(1)} s`}
+          : `$${res.cost_usd.toFixed(4)} · ${((res.latency_ms ?? 0) / 1000).toFixed(1)} s`}
       </p>
     </article>
   );

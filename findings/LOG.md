@@ -63,6 +63,30 @@ Artificial Analysis marks **Muse Spark 1.1 as deprecated** ("This model is depre
 
 ---
 
+## E8 (pre-registered 28 Oct 2026, before any clip was generated or run): spoken self-corrections
+
+- **Lead:** using VoiceOrder, Utsav corrected himself mid-note ("… sorry, …") and saw Spark 1.2 use the corrected
+  number while 1.3 kept the first one. Anecdotal (those notes were not stored), so this is a hypothesis.
+- **Clips:** 15 order voice notes × 3 languages (English, Hindi, Hinglish), each in two versions with the same
+  final details:
+  - **correction**: one number is said, then taken back and replaced ("order number 9 3 4 3 7… sorry, no,
+    9 3 4 7 3"); 8 items correct the order number, 7 the pincode;
+  - **control**: the same note saying only the final number.
+  macOS text-to-speech, same voices and prompt as E6's order notes (`audio-synth` extract). Plus a real-voice subset:
+  Utsav records the 15 correction lines of items 0–4 (all three languages).
+- **Models and settings:** Spark 1.2 vs 1.3, reasoning effort low, 3 tries, same prompt and scorer as E6.
+- **Primary test:** on correction clips, correct answers (all three fields right), majority of 3 tries, grouped
+  by item (the three languages of one item count as one): **prediction: 1.3 is right less often than 1.2,
+  sign test across items p < 0.05.**
+- **Secondary:** (a) "kept the taken-back number": the answer contains the corrected-away value; prediction: more
+  often on 1.3. (b) Control: on the no-correction twins the gap is smaller, so the effect is about corrections,
+  not hearing numbers in general. (c) Real-voice subset, reported with its n, no test promised.
+- **If it doesn't hold:** reported as "no measurable difference on self-corrections", and VoiceOrder gets no
+  self-correction claim.
+- Script: `experiments/e8_corrections.py`; clips: `scripts/build_corrections.py`. Budget cap $3.
+
+---
+
 ## E7 result: with a real voice, accuracy drops and blanks appear; the silent-failure rise is borderline by item
 
 - **Pre-registered** on 27 Oct, before any recording: same models and settings as E6, same failure-type rules unchanged; prediction "1.3 gives more confident-wrong-or-blank answers than 1.2 (paired, majority of 3 tries), p < 0.05".

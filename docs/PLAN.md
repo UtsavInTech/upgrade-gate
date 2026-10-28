@@ -1,5 +1,7 @@
 # Plan to submission (28 Oct → 4 Nov 2026, IST)
 
+> Superseded by [docs/plan/](plan/README.md) (28 Oct 2026). Kept for history.
+
 Deadline: Nov 4, 9:00 PM ET = **Nov 5, 7:30 AM IST**. Treat **Nov 4, 9 PM IST** as the real cut-off.
 Where we stand: council #2 scored **79/100** (top-ten from all 5 judges, top-five from none); with the planned work
 done, **82–88** depending on outcomes. Since then: PR #1 verified on GitHub, live mode working (60/60 real calls),

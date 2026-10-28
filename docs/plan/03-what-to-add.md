@@ -14,7 +14,7 @@ Nothing here needs a new experiment, and nothing redesigns the site.
    The "Record your own" tab shows "Runs locally only: clone the repo" instead of a broken button.
 3. Test: `npm run build && npx vite preview`, with the Python server stopped.
 
-### A2. GitHub Pages workflow — 45 min ✅ workflow added 28 Oct (needs Pages switched on)
+### A2. GitHub Pages workflow — 45 min ✅ live 28 Oct: https://utsavintech.github.io/upgrade-gate/
 **How:** `.github/workflows/pages.yml`: on push to main → `npm ci && npm run build` in `web/` → `actions/upload-pages-artifact` → `actions/deploy-pages`.
 Set Vite `base: "./"` (hash routes already work from any folder). You enable Pages once: Settings → Pages → Source: GitHub Actions.
 

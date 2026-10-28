@@ -9,7 +9,7 @@ Without them we are a solid top-ten entry; with them, a top-five candidate.
 | L2 | Audit report → site, README, LOG; fix any rule it shows is wrong, re-run gates | me | 1 h | Turns the audit into evidence (κ score + disagreements) |
 | L3 | **2–3 more speakers** record the 45 lines at `#/record` (friends, family, phone mic fine) | you + friends | 10 min each | E7 rests on one voice. More voices = the finding is not about you |
 | L4 | **E7b**: rerun the frozen real-voice test on all speakers (~$1.50, cap $4), report whatever it shows | me | 30 min | The strongest possible evidence |
-| L5 | ✅ public 28 Oct; branch protection still to do · **Make the repo public** + branch protection on `main` (require the 3 `upgrade-gate / …` checks) | you | 5 min | PR #1 then visibly says "Merging is blocked" to anyone |
+| L5 | ✅ done 28 Oct (public; main requires the 3 checks, admins can bypass) · **Make the repo public** + branch protection on `main` (require the 3 `upgrade-gate / …` checks) | you | 5 min | PR #1 then visibly says "Merging is blocked" to anyone |
 | L6 | ✅ live 28 Oct · **Hosted site** on GitHub Pages, including a static VoiceOrder (see 03 → A1) | me | 3 h | Judges click a link instead of installing anything |
 | L7 | **3-minute video** (script in `docs/DEMO.md`) | you | 2–3 h | Most judges watch the video first |
 | L8 | **Submission text** | me draft, you edit | 1 h | Problem, what it does, findings with caveats, Meta tooling, links |

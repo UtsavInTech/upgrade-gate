@@ -17,7 +17,7 @@ serves those. No new experiments or UI redesigns unless a step below needs them.
 | 2 | Put the audit result (κ, disagreements) on the site, README and findings; fix any rule the audit shows is wrong, then re-run the gates | me | 1 h | Technical depth | Oct 28–29 |
 | 3 | **More speakers**: 2–3 people each read the 45 lines at `#/record` (different accents, phone mic is fine) | you + friends | 10 min each | Technical depth, Meta tooling | Oct 29–30 |
 | 4 | **E7b**: rerun the frozen real-voice test on all speakers (~$1.50, cap $4); report it whatever it shows, grouped by item | me | 30 min | Technical depth | after #3 |
-| 5 | **Switch on the canary** (pinned-model drift over days): repo variables `CANARY_MODELS=muse-spark-1.3,muse-spark-1.3-contributor`, `CANARY_BUDGET_USD=8` (secret already set) | you (2 min) | — | Meta tooling | **Oct 28** (needs days of data) |
+| 5 | ✅ **Canary on** (first run 28 Oct 15:56 IST: 300 answers, 0 errors, $0.21; ~$0.85/day). Was: **Switch on the canary** (pinned-model drift over days): repo variables `CANARY_MODELS=muse-spark-1.3,muse-spark-1.3-contributor`, `CANARY_BUDGET_USD=8` (secret already set) | you (2 min) | — | Meta tooling | **Oct 28** (needs days of data) |
 | 6 | **Make the repo public**; branch protection on `main` requiring the 3 `upgrade-gate / …` checks → PR #1 shows *Merging is blocked* | you | 5 min | Demo, eligibility | Oct 30 |
 | 7 | Publish the site (GitHub Pages from `web/dist`, workflow) so judges can click it without running anything | me | 45 min | Demo | after #6 |
 | 8 | Third judging council (`docs/judging/COUNCIL_PROMPT.md`) as a checkpoint; fix the top 2 findings | you run, me fix | 1 h | all | Nov 1 |

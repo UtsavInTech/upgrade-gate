@@ -1,0 +1,254 @@
+{
+  "run_dir": "results/e8-corrections",
+  "primary": {
+    "items": 15,
+    "worse": 7,
+    "better": 2,
+    "p": 0.1796875,
+    "spark-1.2@low": 22,
+    "spark-1.3@low": 13
+  },
+  "control": {
+    "items": 15,
+    "worse": 6,
+    "better": 1,
+    "p": 0.125,
+    "spark-1.2@low": 25,
+    "spark-1.3@low": 18
+  },
+  "diff_in_diff": {
+    "worse": 3,
+    "better": 3,
+    "p": 1.0
+  },
+  "kept_first": [
+    {
+      "set": "synthetic",
+      "clips": 45,
+      "tries": {
+        "spark-1.2@low": 135,
+        "spark-1.3@low": 135
+      },
+      "kept_tries": {
+        "spark-1.2@low": 14,
+        "spark-1.3@low": 7
+      },
+      "spark-1.2@low": 3,
+      "spark-1.3@low": 0,
+      "only_spark-1.2@low": 3,
+      "only_spark-1.3@low": 0,
+      "p": 0.25
+    }
+  ],
+  "rows": [
+    {
+      "slice": "correction clips",
+      "n": 45,
+      "delta": -0.2,
+      "ci": [
+        -0.35555555555555557,
+        -0.044444444444444446
+      ],
+      "regressions": 12,
+      "improvements": 3,
+      "p": 0.03515625
+    },
+    {
+      "slice": "control clips",
+      "n": 45,
+      "delta": -0.15555555555555556,
+      "ci": [
+        -0.3111111111111111,
+        0.0
+      ],
+      "regressions": 11,
+      "improvements": 4,
+      "p": 0.11846923828125
+    },
+    {
+      "slice": "correction, en",
+      "n": 15,
+      "delta": -0.2,
+      "ci": [
+        -0.4666666666666667,
+        0.06666666666666667
+      ],
+      "regressions": 4,
+      "improvements": 1,
+      "p": 0.375
+    },
+    {
+      "slice": "correction, hi",
+      "n": 15,
+      "delta": -0.13333333333333333,
+      "ci": [
+        -0.4,
+        0.13333333333333333
+      ],
+      "regressions": 3,
+      "improvements": 1,
+      "p": 0.625
+    },
+    {
+      "slice": "correction, hinglish",
+      "n": 15,
+      "delta": -0.26666666666666666,
+      "ci": [
+        -0.5333333333333333,
+        0.0
+      ],
+      "regressions": 5,
+      "improvements": 1,
+      "p": 0.21875
+    },
+    {
+      "slice": "correction, order_number corrected",
+      "n": 24,
+      "delta": -0.2916666666666667,
+      "ci": [
+        -0.5,
+        -0.08333333333333333
+      ],
+      "regressions": 8,
+      "improvements": 1,
+      "p": 0.0390625
+    },
+    {
+      "slice": "correction, pincode corrected",
+      "n": 21,
+      "delta": -0.09523809523809523,
+      "ci": [
+        -0.3333333333333333,
+        0.14285714285714285
+      ],
+      "regressions": 4,
+      "improvements": 2,
+      "p": 0.6875
+    }
+  ],
+  "items_correction": {
+    "corr-00": [
+      2,
+      0
+    ],
+    "corr-01": [
+      0,
+      0
+    ],
+    "corr-02": [
+      1,
+      0
+    ],
+    "corr-03": [
+      3,
+      1
+    ],
+    "corr-04": [
+      2,
+      0
+    ],
+    "corr-05": [
+      3,
+      2
+    ],
+    "corr-06": [
+      1,
+      2
+    ],
+    "corr-07": [
+      1,
+      1
+    ],
+    "corr-08": [
+      2,
+      0
+    ],
+    "corr-09": [
+      0,
+      0
+    ],
+    "corr-10": [
+      1,
+      1
+    ],
+    "corr-11": [
+      2,
+      2
+    ],
+    "corr-12": [
+      2,
+      2
+    ],
+    "corr-13": [
+      0,
+      1
+    ],
+    "corr-14": [
+      2,
+      1
+    ]
+  },
+  "items_control": {
+    "corr-00": [
+      1,
+      1
+    ],
+    "corr-01": [
+      2,
+      1
+    ],
+    "corr-02": [
+      1,
+      0
+    ],
+    "corr-03": [
+      3,
+      3
+    ],
+    "corr-04": [
+      3,
+      1
+    ],
+    "corr-05": [
+      1,
+      0
+    ],
+    "corr-06": [
+      2,
+      3
+    ],
+    "corr-07": [
+      1,
+      1
+    ],
+    "corr-08": [
+      3,
+      1
+    ],
+    "corr-09": [
+      0,
+      0
+    ],
+    "corr-10": [
+      2,
+      2
+    ],
+    "corr-11": [
+      2,
+      2
+    ],
+    "corr-12": [
+      1,
+      0
+    ],
+    "corr-13": [
+      1,
+      1
+    ],
+    "corr-14": [
+      2,
+      2
+    ]
+  },
+  "confirmed": false
+}

@@ -63,6 +63,25 @@ Artificial Analysis marks **Muse Spark 1.1 as deprecated** ("This model is depre
 
 ---
 
+## E8 result (synthetic voices): not confirmed. 1.3 is worse on these notes, but not because of the correction
+
+Run `results/e8-corrections`, 540 answers, $2.59, 11 hit the token limit (10 of them 1.3 on correction notes).
+Full tables: `experiments/out/e8_corrections.md`.
+
+- **Pre-registered test, not confirmed.** On correction notes 1.3 got 13 of 45 right, 1.2 got 22. By item:
+  7 worse, 2 better, p = 0.18. (Per clip it is −20 pts, p = 0.035, but clips of one note are not
+  independent, so the item test is the one we registered.)
+- **The control notes show almost the same gap** (25 → 18 right; 6 items worse, 1 better, p = 0.12). The
+  difference between the two gaps is 3 items worse, 3 better (p = 1). So 1.3 hears these synthetic order
+  notes worse in general; the correction itself does not add to it.
+- **1.3 did not keep the taken-back number more often. It kept it less:** 7 of 135 tries vs 14 for 1.2.
+  The prediction behind Utsav's observation is not supported on synthetic voices.
+- Not pre-registered, worth a look: on correction notes 1.3 more often gave **no answer** (10 tries vs 1 on
+  controls) or **blanked** the field (16 vs 3 for 1.2). With a correction, 1.3 fails by giving up rather
+  than by saving the wrong number. Treat as a lead, not a finding.
+- **Consequence:** no self-correction claim on the site or in VoiceOrder. The real-voice subset (Utsav's
+  15 correction lines) is still to run and will be reported with its n, as registered.
+
 ## E8 (pre-registered 28 Oct 2026, before any clip was generated or run): spoken self-corrections
 
 - **Lead:** using VoiceOrder, Utsav corrected himself mid-note ("… sorry, …") and saw Spark 1.2 use the corrected

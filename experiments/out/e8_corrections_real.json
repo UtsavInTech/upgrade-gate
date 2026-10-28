@@ -1,0 +1,144 @@
+{
+  "run_dir": "results/e8-real",
+  "primary": {
+    "items": 0,
+    "worse": 0,
+    "better": 0,
+    "p": 1.0,
+    "spark-1.2@low": 0,
+    "spark-1.3@low": 0
+  },
+  "control": {
+    "items": 0,
+    "worse": 0,
+    "better": 0,
+    "p": 1.0,
+    "spark-1.2@low": 0,
+    "spark-1.3@low": 0
+  },
+  "diff_in_diff": {
+    "worse": 0,
+    "better": 0,
+    "p": 1.0
+  },
+  "kept_first": [
+    {
+      "set": "real voice",
+      "clips": 15,
+      "tries": {
+        "spark-1.2@low": 45,
+        "spark-1.3@low": 45
+      },
+      "kept_tries": {
+        "spark-1.2@low": 0,
+        "spark-1.3@low": 3
+      },
+      "spark-1.2@low": 0,
+      "spark-1.3@low": 1,
+      "only_spark-1.2@low": 0,
+      "only_spark-1.3@low": 1,
+      "p": 1.0
+    }
+  ],
+  "rows": [
+    {
+      "slice": "correction clips",
+      "n": 0,
+      "delta": NaN,
+      "ci": [
+        NaN,
+        NaN
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "control clips",
+      "n": 0,
+      "delta": NaN,
+      "ci": [
+        NaN,
+        NaN
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "correction, en",
+      "n": 0,
+      "delta": NaN,
+      "ci": [
+        NaN,
+        NaN
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "correction, hi",
+      "n": 0,
+      "delta": NaN,
+      "ci": [
+        NaN,
+        NaN
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "correction, hinglish",
+      "n": 0,
+      "delta": NaN,
+      "ci": [
+        NaN,
+        NaN
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "correction, order_number corrected",
+      "n": 0,
+      "delta": NaN,
+      "ci": [
+        NaN,
+        NaN
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "correction, pincode corrected",
+      "n": 0,
+      "delta": NaN,
+      "ci": [
+        NaN,
+        NaN
+      ],
+      "regressions": 0,
+      "improvements": 0,
+      "p": 1.0
+    },
+    {
+      "slice": "correction, real voice",
+      "n": 15,
+      "delta": -0.5333333333333333,
+      "ci": [
+        -0.8,
+        -0.26666666666666666
+      ],
+      "regressions": 8,
+      "improvements": 0,
+      "p": 0.0078125
+    }
+  ],
+  "items_correction": {},
+  "items_control": {},
+  "confirmed": false
+}

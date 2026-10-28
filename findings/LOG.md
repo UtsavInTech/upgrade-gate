@@ -79,8 +79,17 @@ Full tables: `experiments/out/e8_corrections.md`.
 - Not pre-registered, worth a look: on correction notes 1.3 more often gave **no answer** (10 tries vs 1 on
   controls) or **blanked** the field (16 vs 3 for 1.2). With a correction, 1.3 fails by giving up rather
   than by saving the wrong number. Treat as a lead, not a finding.
-- **Consequence:** no self-correction claim on the site or in VoiceOrder. The real-voice subset (Utsav's
-  15 correction lines) is still to run and will be reported with its n, as registered.
+- **Real-voice subset (one speaker, Utsav, 15 correction notes = 5 items × 3 languages; run `results/e8-real`,
+  $0.54):** 1.2 got 9 of 15 right, 1.3 got 1. Per clip 8 lost, 0 gained (p = 0.008); by item 5 worse, 0 better
+  (p = 0.06, the smallest p five items can give). How 1.3 failed, over 45 tries: 19 gave up (12 blank fields,
+  4 hit the token limit, 3 no JSON), 11 wrong order number, 5 another field wrong, **3 saved the taken-back
+  number** (1.2: 0). Two of those three are the Ahmedabad Hindi note.
+- **Control for the real voice:** the same speaker's plain order notes from E7 (no correction): 1.2 7 of 15,
+  1.3 2 of 15. The gap with a correction (−8) is a little larger than without (−5), but at n = 15 that
+  difference is not testable. We registered no control for the real voice, so we report it as above.
+- **Consequence:** no claim that 1.3 "misses corrections". What holds on both voices: with Utsav's voice,
+  1.3 gets his order notes wrong much more often than 1.2, and when it fails it most often returns a blank
+  or nothing. That is the same silent-failure pattern as E6/E7. The site and VoiceOrder stay as they are.
 
 ## E8 (pre-registered 28 Oct 2026, before any clip was generated or run): spoken self-corrections
 

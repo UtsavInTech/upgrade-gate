@@ -35,6 +35,19 @@ The old scorer rejected correct Hindi spellings such as `Somwar` versus `Somvar`
 
 The models are near the ceiling here. This does not establish that 1.3 is safe on every company's workload. E1 shows why a statistically significant score difference still needs an audited scoring rule. See the [recorded E1 tables](experiments/out/e1_upgrade.md) and [experiment account](findings/LOG.md#e1-result-spark-12--13-and-a-scorer-that-invented-an-improvement). Raw run folders stay local under `results/` and are not committed.
 
+## The app it protects: VoiceOrder
+
+[`voiceorder/`](voiceorder/server.py) is a small voice-order helper for an Indian online shop. A customer leaves a
+voice note in Hindi, Hinglish or English with their order number, pincode and city; Meta Muse Spark turns it into an
+order, and the shop's usual format checks run before it's saved. It uses **the model in
+[`release/model.json`](release/model.json) and exactly the prompt the gate tests**, so the gate's verdict is about
+this app.
+
+On the same Hindi voice note, Spark 1.2 saves pincode `452089` (correct). Spark 1.3 saves `380015`, a real Ahmedabad
+pincode, just the wrong one, and the shop's checks pass it. On other notes 1.3 returns every field blank, and the order
+is lost. Run it at `#/voiceorder` (`npm --prefix web run dev` starts the app and its API). Sample notes reuse saved
+answers ($0); a fresh recording costs about $0.01 and isn't stored.
+
 ## Watch it block an upgrade
 
 [`release/model.json`](release/model.json) holds the model this app ships. The branch

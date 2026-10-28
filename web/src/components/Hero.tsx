@@ -70,6 +70,12 @@ export function Hero({ site }: { site: Site }) {
               See what we found
             </a>
             <a
+              href="#/voiceorder"
+              className="rounded-md border border-line px-5 py-3 font-semibold text-fg transition-colors hover:bg-surface"
+            >
+              Try the VoiceOrder app
+            </a>
+            <a
               href="https://github.com/UtsavInTech/upgrade-gate"
               className="px-4 py-3 font-medium text-fg underline decoration-line underline-offset-4 transition-colors hover:decoration-fg"
             >

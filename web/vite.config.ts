@@ -2,6 +2,7 @@ import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import fs from "node:fs";
+import { spawn, type ChildProcess } from "node:child_process";
 import path from "node:path";
 
 const REPO = path.resolve(__dirname, "..");
@@ -118,7 +119,30 @@ function recorder(): Plugin {
   };
 }
 
+// Starts the VoiceOrder API (voiceorder/server.py, port 5192) alongside the dev server, so one
+// `npm run dev` runs everything. /api/voiceorder is proxied to it below.
+function voiceOrderApi(): Plugin {
+  let child: ChildProcess | null = null;
+  return {
+    name: "voiceorder-api",
+    configureServer(server) {
+      const py = fs.existsSync(path.join(REPO, ".venv/bin/python"))
+        ? path.join(REPO, ".venv/bin/python")
+        : "python3";
+      child = spawn(py, ["-m", "voiceorder.server"], {
+        cwd: REPO,
+        env: { ...process.env, PYTHONPATH: REPO },
+        stdio: ["ignore", "inherit", "inherit"],
+      });
+      const stop = () => child && !child.killed && child.kill();
+      server.httpServer?.on("close", stop);
+      process.on("exit", stop);
+    },
+  };
+}
+
 export default defineConfig({
   base: "./",
-  plugins: [react(), tailwindcss(), recorder()],
+  plugins: [react(), tailwindcss(), recorder(), voiceOrderApi()],
+  server: { proxy: { "/api/voiceorder": "http://127.0.0.1:5192" } },
 });

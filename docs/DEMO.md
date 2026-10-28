@@ -6,8 +6,10 @@ Have two tabs ready at 1440×900, light mode, volume up:
 
 | Time | Screen | Say |
 |---|---|---|
-| 0:00 | GitHub PR "Upgrade to Muse Spark 1.3", the one-line diff in `release/model.json` | "Teams upgrade models the way they upgrade libraries: change one line, ship. This pull request moves our app from Meta's Muse Spark 1.2 to 1.3." |
-| 0:15 | The checks box: two red, one green, **deploy skipped** | "Upgrade Gate replays our saved tasks on both versions. Text and documents pass. Voice notes fail, and the deploy step never runs." |
+| 0:00 | Site `#/voiceorder`, the Hindi Ahmedabad note selected, play 3 s of it | "This is VoiceOrder, a voice-order helper for an Indian shop on Meta's Muse Spark. A customer says their order number and pincode in Hindi." |
+| 0:12 | The two order cards | "Today's model saves 452089, which is right. The new version, 1.3, saves 380015: a real Ahmedabad pincode, just the wrong one. The shop's checks pass both. That parcel goes to the wrong address." |
+| 0:25 | GitHub PR "Upgrade to Muse Spark 1.3", the one-line diff in `release/model.json` | "Upgrading is one line. This pull request moves VoiceOrder from 1.2 to 1.3." |
+| 0:35 | The checks box: two red, one green, **deploy skipped** | "Upgrade Gate replays our saved tasks on both versions. Text and documents pass. Voice notes fail, and the deploy step never runs." |
 | 0:30 | Click `upgrade-gate / voice-notes` → the job summary | "Accuracy alone was inconclusive: about the same number right. What changed is how it fails. On 135 voice notes, answers that are wrong or blank with no warning went from 18 to 42. 1.2 often said 'I can't hear this'; 1.3 never does." |
 | 0:55 | Scroll to **One failing case** | "A customer leaves a Hindi voice note with their pincode. 1.2 gets it right. 1.3 returns 380015, a real Ahmedabad pincode, just the wrong one. It's correctly shaped, so a schema check passes it. That's the failure that reaches your database." |
 | 1:15 | Switch to the site report, Voice notes tab, the clip grid | "Every square is one voice note. Yellow is 1.2 saying it can't hear. On 1.3 that becomes red: wrong, and no warning." Click one red square, play the clip, show both versions' three tries. |

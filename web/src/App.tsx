@@ -1,6 +1,7 @@
 import { MotionConfig } from "motion/react";
 import { useCallback, useEffect, useState } from "react";
 import { Audit } from "./components/Audit";
+import { VoiceOrder } from "./components/VoiceOrder";
 import { AudioSection } from "./components/AudioSection";
 import { CostSection } from "./components/CostSection";
 import { EffortSection } from "./components/EffortSection";
@@ -18,7 +19,8 @@ export type Route =
   | { page: "home" }
   | { page: "report"; run: string; task: string | null }
   | { page: "record" }
-  | { page: "audit" };
+  | { page: "audit" }
+  | { page: "voiceorder" };
 
 function initialTheme(): Theme {
   const set = document.documentElement.dataset.theme;
@@ -34,6 +36,7 @@ function parseRoute(): Route {
   if (m) return { page: "report", run: m[1] ?? "e6-audio", task: m[2] ?? null };
   if (h.startsWith("#/record")) return { page: "record" };
   if (h.startsWith("#/audit")) return { page: "audit" };
+  if (h.startsWith("#/voiceorder")) return { page: "voiceorder" };
   return { page: "home" };
 }
 
@@ -84,6 +87,7 @@ export default function App() {
         {route.page === "report" && <Report run={route.run} task={route.task} />}
         {route.page === "record" && <Record />}
         {route.page === "audit" && <Audit />}
+        {route.page === "voiceorder" && <VoiceOrder />}
         {route.page === "home" && (
           <>
             {error && (

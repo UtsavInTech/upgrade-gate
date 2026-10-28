@@ -58,6 +58,12 @@ export function Header({
           )}
         </nav>
         <div className="ml-auto flex items-center gap-2">
+          <a
+            href="#/voiceorder"
+            className="hidden rounded-md px-3 py-2 text-sm font-medium text-fg transition-colors hover:bg-surface sm:inline-block"
+          >
+            VoiceOrder app
+          </a>
           {route.page !== "report" && (
             <a
               href="#/report/e6-audio"

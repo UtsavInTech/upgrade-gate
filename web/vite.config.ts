@@ -11,8 +11,10 @@ const REPO = path.resolve(__dirname, "..");
 // Saves to data/audio-real/<speaker>/<clip>.wav and appends data/audio-real/manifest.jsonl.
 function recorder(): Plugin {
   const allowed = new Set<string>(
-    JSON.parse(fs.readFileSync(path.join(__dirname, "public/data/record.json"), "utf8")).map(
-      (r: { clip_id: string }) => r.clip_id,
+    ["record.json", "record-corrections.json"].flatMap((f) =>
+      JSON.parse(fs.readFileSync(path.join(__dirname, "public/data", f), "utf8")).map(
+        (r: { clip_id: string }) => r.clip_id,
+      ),
     ),
   );
   return {

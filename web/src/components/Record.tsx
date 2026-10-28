@@ -9,6 +9,7 @@ const KIND: Record<string, string> = {
   math: "Spoken maths",
   extract: "Order voice note",
   intent: "Customer request",
+  correction: "Voice note with a correction",
 };
 
 function loadSpeaker(): string {
@@ -19,7 +20,7 @@ function loadSpeaker(): string {
   }
 }
 
-export function Record() {
+export function Record({ set = "main" }: { set?: "main" | "corrections" }) {
   const [lines, setLines] = useState<Line[]>([]);
   const [speaker, setSpeaker] = useState(loadSpeaker);
   const [done, setDone] = useState<Set<string>>(new Set());
@@ -32,7 +33,7 @@ export function Record() {
   const valid = /^[a-z0-9-]{1,32}$/.test(speaker);
 
   useEffect(() => {
-    fetch("data/record.json")
+    fetch(set === "corrections" ? "data/record-corrections.json" : "data/record.json")
       .then((r) => r.json())
       .then(setLines, () => setError("Couldn’t load the lines to record."));
   }, []);
@@ -111,12 +112,22 @@ export function Record() {
   return (
     <div className="mx-auto max-w-6xl px-4 pt-10 pb-24 sm:px-8">
       <header className="max-w-2xl">
-        <h1 className="text-3xl font-semibold tracking-tight">Record real voice notes</h1>
-        <p className="mt-3 text-muted">
-          Read each line the way you’d send a voice note: normal speed, your own accent, in a normal room.
-          Read digits one by one. Each line takes about ten seconds; all 45 take around ten minutes. More
-          speakers make the test stronger, so ask a friend to record with their own name too.
-        </p>
+        <h1 className="text-3xl font-semibold tracking-tight">
+          {set === "corrections" ? "Record voice notes with a correction" : "Record real voice notes"}
+        </h1>
+        {set === "corrections" ? (
+          <p className="mt-3 text-muted">
+            Each line says a number, takes it back and says it again. Read it the way you would really
+            correct yourself: a short pause, then “sorry, no” and the right number. Read digits one by one.
+            15 lines, about five minutes.
+          </p>
+        ) : (
+          <p className="mt-3 text-muted">
+            Read each line the way you’d send a voice note: normal speed, your own accent, in a normal room.
+            Read digits one by one. Each line takes about ten seconds; all 45 take around ten minutes. More
+            speakers make the test stronger, so ask a friend to record with their own name too.
+          </p>
+        )}
       </header>
 
       <label className="mt-8 block max-w-sm text-sm">

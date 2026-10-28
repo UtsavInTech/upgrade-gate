@@ -12,6 +12,7 @@ Packs (category, langs):
     audio-synth    math/extraction/classification  en / hi / hinglish, modality audio (WAV) + text twin
     audio-clips    audio-synth without the text twins
     audio-real     the same lines read by real people (web/#/record); empty until recorded
+    audio-corrections  E8: voice notes where a number is taken back and said again, plus controls
     canary         mixed           canary/prompts.json wrapped as Tasks
 
 Content of every pack is fixed (generated from a fixed internal seed), so ids and tasks are
@@ -80,7 +81,7 @@ import random
 from typing import Callable, Dict, List, Optional
 
 from ..schema import Task
-from . import audio_real, audio_synth, canary_pack, docs_synth, extract_pairs, ifeval_pack, intent, math_pairs
+from . import audio_corrections, audio_real, audio_synth, canary_pack, docs_synth, extract_pairs, ifeval_pack, intent, math_pairs
 
 PACKS: Dict[str, Callable[..., List[Task]]] = {
     "math-pairs": math_pairs.build,
@@ -91,6 +92,7 @@ PACKS: Dict[str, Callable[..., List[Task]]] = {
     "audio-synth": audio_synth.build,
     "audio-real": audio_real.build,
     "audio-clips": audio_synth.build_audio_only,
+    "audio-corrections": audio_corrections.build,
     "canary": canary_pack.build,
 }
 

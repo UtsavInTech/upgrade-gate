@@ -18,7 +18,7 @@ type Theme = "light" | "dark";
 export type Route =
   | { page: "home" }
   | { page: "report"; run: string; task: string | null }
-  | { page: "record" }
+  | { page: "record"; set: "main" | "corrections" }
   | { page: "audit" }
   | { page: "voiceorder" };
 
@@ -34,7 +34,7 @@ function parseRoute(): Route {
   const h = window.location.hash;
   const m = h.match(/^#\/report(?:\/([\w-]+))?(?:\/([\w-]+))?/);
   if (m) return { page: "report", run: m[1] ?? "e6-audio", task: m[2] ?? null };
-  if (h.startsWith("#/record")) return { page: "record" };
+  if (h.startsWith("#/record")) return { page: "record", set: h.startsWith("#/record/corrections") ? "corrections" : "main" };
   if (h.startsWith("#/audit")) return { page: "audit" };
   if (h.startsWith("#/voiceorder")) return { page: "voiceorder" };
   return { page: "home" };
@@ -85,7 +85,7 @@ export default function App() {
       <Header theme={theme} onToggleTheme={toggleTheme} route={route} />
       <main>
         {route.page === "report" && <Report run={route.run} task={route.task} />}
-        {route.page === "record" && <Record />}
+        {route.page === "record" && <Record key={route.set} set={route.set} />}
         {route.page === "audit" && <Audit />}
         {route.page === "voiceorder" && <VoiceOrder />}
         {route.page === "home" && (

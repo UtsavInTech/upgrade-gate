@@ -8,6 +8,39 @@ Status values: `planned` · `scouting` · `promising` · `confirmed` · `dropped
 
 ---
 
+## E9 (pre-registered 31 Oct 2026, before any E9 call): is there a safe upgrade route for voice notes?
+
+- **Why:** the gate blocks Spark 1.2 → 1.3 for voice notes (E6, E7). A block alone leaves the team stuck.
+  Meta's docs say 1.3 audio is "not fully supported" and point to 1.2 or the dedicated speech model
+  `muse-voice-transcribe-1.0`. Nobody has measured that advice on Hindi / Hinglish order notes.
+- **Route tested ("transcribe route"):** clip → `muse-voice-transcribe-1.0` (`POST /v1/asr/transcribe`, WAV,
+  `PUSH_TO_TALK`) → transcript → Spark 1.3 @ low on the text. Prompt: "This is a speech-to-text transcript of a
+  customer's voice note. It may contain recognition errors, and numbers may be written as words." + the same
+  E6 instruction + the transcript. Same scorer as E6. Each of the 3 tries is a full pipeline: the clip is
+  transcribed 3 times and try *k* uses transcript *k*.
+- **Compared against (incumbent):** today's production route, Spark 1.2 @ low listening to the clip directly.
+  Its answers are the saved E6 / E7 answers ($0, unchanged).
+- **Data:** primary = the 135 E6 text-to-speech clips. Secondary = the 45 E7 real-voice clips (one speaker,
+  Utsav). Friends' recordings, if they arrive, are reported separately as a further check, never pooled into
+  the primary.
+- **Primary decision:** the production gate, unchanged: `release/policy.json` (accuracy may drop at most
+  2 pts, alpha 0.05; wrong-or-blank answers may not rise, tested per item), `upgrade-gate gate` with baseline
+  = Spark 1.2 direct audio, candidate = transcribe route. Whatever it says (GO / NO-GO / INCONCLUSIVE) is
+  reported as the result.
+- **Recommendation rule (fixed now):** VoiceOrder switches to the transcribe route only if the primary gate
+  says **GO** and the real-voice secondary is **not NO-GO**. Otherwise the advice stays "hold on 1.2".
+- **Also reported (descriptive, no test promised):** Spark 1.3 direct audio (saved E6) and transcribe → Spark
+  1.2 for reference; per-field digit accuracy (order number, pincode); "can't hear" / abstain counts;
+  end-to-end latency (median, p90; transcription + Spark); cost per 1,000 clips for each stage.
+- **Seen before freezing:** one transcription call to check the API (`audio-extract-00-hi`): it returned the
+  Hindi text with digits spelled as Hindi words and two repeated words. The "numbers may be written as words"
+  line in the prompt was added after seeing it. No Spark call on any transcript yet.
+- **Known limits:** text-to-speech clips are cleaner than real voice notes; one real speaker; ASR settings left
+  at defaults (no language hint, the API page shows none).
+- Script: `experiments/e9_route.py`. Budget cap $3.
+
+---
+
 ## ⚠️ Plan-level finding: Muse Spark 1.1 is deprecated
 
 Artificial Analysis marks **Muse Spark 1.1 as deprecated** ("This model is deprecated"), with 1.2 as the successor. No retirement date is given. 1.1 pricing: $1.25 in / $4.25 out per 1M tokens. ([source](https://artificialanalysis.ai/models/muse-spark-1-1))

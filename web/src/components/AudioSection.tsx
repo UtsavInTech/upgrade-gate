@@ -186,7 +186,7 @@ function Examples({ examples }: { examples: AudioExample[] }) {
           <p className="text-muted">Real clips from the run, with every answer each version gave.</p>
         </div>
       </div>
-      <div className="grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
         <div
           role="tablist"
           aria-label="Examples"
@@ -245,7 +245,7 @@ function Examples({ examples }: { examples: AudioExample[] }) {
             </div>
             <div className="mt-10 grid gap-8 md:grid-cols-2">
               {[BASE, CAND].map((m) => (
-                <div key={m} className="rounded-md bg-bg p-4">
+                <div key={m} className="min-w-0 rounded-md bg-bg p-4">
                   <p className="mb-3 font-semibold">{shortModel(m)}</p>
                   <ol className="space-y-3">
                     {ex.answers[m].map((a, k) => (
@@ -254,7 +254,7 @@ function Examples({ examples }: { examples: AudioExample[] }) {
                           <span className="text-xs text-faint">Try {k + 1}</span>
                           <ModeChip mode={a.mode} />
                         </div>
-                        <p className="font-mono text-[13px] leading-relaxed break-words text-fg/90">
+                        <p className="font-mono text-[13px] leading-relaxed [overflow-wrap:anywhere] text-fg/90">
                           {a.text.length > 220 ? a.text.slice(0, 220) + "…" : a.text || "(empty)"}
                         </p>
                         {a.says_cant_hear && a.mode === "correct" && (

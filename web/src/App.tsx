@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Audit } from "./components/Audit";
 import { VoiceOrder } from "./components/VoiceOrder";
 import { AudioSection } from "./components/AudioSection";
+import { CompareSection } from "./components/CompareSection";
 import { CostSection } from "./components/CostSection";
 import { EffortSection } from "./components/EffortSection";
 import { Header, Logo } from "./components/Header";
@@ -112,6 +113,7 @@ export default function App() {
                 {site.e4?.status === "done" && <EffortSection e4={site.e4} />}
                 <ScoringSection e1={site.e1} />
                 <CostSection e3={site.e3} />
+                <CompareSection />
                 <HowSection />
               </>
             )}

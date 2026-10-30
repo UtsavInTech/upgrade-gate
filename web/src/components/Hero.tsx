@@ -52,7 +52,7 @@ export function Hero({ site }: { site: Site }) {
 
   return (
     <section id="top" className="relative">
-      <div className="mx-auto grid max-w-6xl gap-14 px-4 pt-16 pb-20 sm:px-8 sm:pt-24 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-16 lg:pb-28">
+      <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)] gap-14 px-4 pt-16 pb-20 sm:px-8 sm:pt-24 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-16 lg:pb-28">
         <div>
           <p className="mb-6 text-sm font-medium text-muted">
             Meta Muse Spark 1.2 → 1.3 · tested 27 October 2026

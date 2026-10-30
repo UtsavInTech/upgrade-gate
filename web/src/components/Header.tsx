@@ -7,6 +7,7 @@ const NAV = [
   { href: "#effort", label: "Effort" },
   { href: "#scoring", label: "Scoring" },
   { href: "#cost", label: "Cost" },
+  { href: "#compare", label: "Compare" },
   { href: "#how", label: "How it works" },
 ];
 
@@ -38,15 +39,15 @@ export function Header({
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-4 sm:px-8">
         <a href="#/" className="flex items-center gap-2.5 font-semibold tracking-tight">
           <Logo />
-          <span className="text-[17px]">Upgrade Gate</span>
+          <span className="text-[17px] whitespace-nowrap">Upgrade Gate</span>
         </a>
-        <nav aria-label="Sections" className="ml-4 hidden items-center gap-1 md:flex">
+        <nav aria-label="Sections" className="ml-4 hidden items-center gap-1 lg:flex">
           {home ? (
             NAV.map((n) => (
               <a
                 key={n.href}
                 href={n.href}
-                className="rounded-md px-3 py-2 text-sm text-muted transition-colors hover:text-fg"
+                className="rounded-md px-3 py-2 text-sm whitespace-nowrap text-muted transition-colors hover:text-fg"
               >
                 {n.label}
               </a>
@@ -60,14 +61,14 @@ export function Header({
         <div className="ml-auto flex items-center gap-2">
           <a
             href="#/voiceorder"
-            className="hidden rounded-md px-3 py-2 text-sm font-medium text-fg transition-colors hover:bg-surface sm:inline-block"
+            className="hidden rounded-md px-3 py-2 text-sm font-medium whitespace-nowrap text-fg transition-colors hover:bg-surface sm:inline-block"
           >
             VoiceOrder app
           </a>
           {route.page !== "report" && (
             <a
               href="#/report/e6-audio"
-              className="rounded-md bg-fg px-3.5 py-2 text-sm font-semibold text-bg transition-opacity hover:opacity-90"
+              className="rounded-md bg-fg px-3.5 py-2 text-sm font-semibold whitespace-nowrap text-bg transition-opacity hover:opacity-90"
             >
               Open report
             </a>

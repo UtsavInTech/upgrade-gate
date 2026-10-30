@@ -24,10 +24,12 @@ Without them we are a solid top-ten entry; with them, a top-five candidate.
 3. For each answer pick: correct / says it can't answer / blank / wrong / unsure. Don't look up our label; it's hidden on purpose.
 4. Tell me "audit done". I run `python3 scripts/audit_report.py`.
 
-**L3 — More speakers**
-1. Each person opens `http://localhost:5191/#/record` on your laptop (or sends you voice notes of the 45 lines).
-2. They type their own name (e.g. `riya`), read each line, Save and next.
-3. Ask them first if their recording may be used in a private test; it stays out of the public repo.
+**L3 — More speakers** (remote, no laptop needed)
+1. Send each friend their own link, e.g.
+   `https://utsavintech.github.io/upgrade-gate/#/record?name=riya&voice=female` (name: lowercase, dashes ok; voice: female/male, optional).
+2. They tick the consent box and record the 45 lines on their phone. Takes stay on their phone, even after a refresh.
+3. When done they tap **Download all** and send you `voice-notes-<name>.zip` (WhatsApp/Drive).
+4. You run `python3 scripts/import_recordings.py ~/Downloads/voice-notes-<name>.zip`. Files go to `data/audio-real/<name>/` (git-ignored, private).
 
 **L5 — Public repo**
 GitHub → repo → Settings → General → Danger zone → Change visibility → Public.

@@ -71,7 +71,21 @@ branch protection requiring these checks, GitHub also blocks the merge. In a liv
 
 ## Use it in your repo
 
-Add the Action to any workflow that runs on a model change. Replay mode gates saved, scored answers; live mode runs a
+Five minutes, from an empty repo to a first result:
+
+```sh
+python3 -m venv .venv && .venv/bin/python -m pip install --upgrade pip
+.venv/bin/pip install "git+https://github.com/UtsavInTech/upgrade-gate"
+.venv/bin/upgrade-gate init --model spark-1.2@low --candidate spark-1.3@low
+export MODEL_API_KEY=...        # your Meta Model API key
+.venv/bin/upgrade-gate all --packs tasks/my_tasks.jsonl -b spark-1.2@low -c spark-1.3@low --budget 1 --yes
+```
+
+`init` writes `release/model.json`, `release/policy.json` (fill in the "why"), `tasks/my_tasks.jsonl` (five examples
+to replace with 20–50 of your own) and a PR workflow, and never overwrites existing files. On the five examples the
+run takes about 7 seconds and $0.03 and reports INCONCLUSIVE ("only 5 paired tasks"): add your own tasks for a decision.
+
+Or add the Action to any workflow that runs on a model change. Replay mode gates saved, scored answers; live mode runs a
 small fresh sample on both models with a strict spending cap (an inconclusive small sample doesn't fail the check;
 a NO-GO does).
 

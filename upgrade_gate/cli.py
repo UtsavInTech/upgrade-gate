@@ -1,5 +1,6 @@
 """Command line for Upgrade Gate.
 
+  upgrade-gate init [--model spark-1.2@low]  set up this repo: model, policy, example tasks, PR workflow
   upgrade-gate check                         one tiny call per model to confirm the key works
   upgrade-gate estimate --packs ... -c ...   cost estimate, spends nothing
   upgrade-gate run --packs ... -b spark-1.2 -c spark-1.3 [--n 50] [--repeats 3] [--budget 20] --yes
@@ -277,6 +278,13 @@ def build_parser() -> argparse.ArgumentParser:
         sp.add_argument("--n", type=int, default=None, help="max tasks per pack")
         sp.add_argument("--seed", type=int, default=0)
         sp.add_argument("--repeats", type=int, default=3)
+
+    sp = sub.add_parser("init", help="set up this repo to gate its model upgrades, spends nothing")
+    sp.add_argument("--model", default="spark-1.2@low", help="the model your app ships today")
+    sp.add_argument("--candidate", default="spark-1.3@low", help="the model you want to move to")
+    sp.add_argument("--dir", default=".", help="repo root (default: current folder)")
+    sp.add_argument("--force", action="store_true", help="replace files that already exist")
+    sp.set_defaults(fn=lambda a: __import__("upgrade_gate.init", fromlist=["init"]).init(a.dir, a.model, a.candidate, a.force))
 
     sp = sub.add_parser("spend", help="show lifetime spend vs the cap, spends nothing")
     sp.set_defaults(fn=cmd_spend)

@@ -23,7 +23,7 @@ COPY voiceorder/ voiceorder/
 COPY release/ release/
 COPY serve.py ./
 COPY --from=web /app/web/dist web/dist
-RUN useradd --create-home app && mkdir -p /data && chown app /data
-USER app
+# Runs as root: Railway mounts volumes owned by root, and the app writes to DATA_DIR on the volume.
+RUN mkdir -p /data
 EXPOSE 8080
 CMD ["python", "serve.py"]

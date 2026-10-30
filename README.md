@@ -2,7 +2,7 @@
 
 We replay your tasks on two LLM versions and turn the differences into a GO, NO-GO, or INCONCLUSIVE release decision, with the answers and costs attached.
 
-**Live site:** https://utsavintech.github.io/upgrade-gate/ · **Try the app it protects:** [VoiceOrder](https://utsavintech.github.io/upgrade-gate/#/voiceorder) · **The blocked upgrade:** [PR #1](https://github.com/UtsavInTech/upgrade-gate/pull/1)
+**Live site:** https://web-production-00176.up.railway.app (mirror: https://utsavintech.github.io/upgrade-gate/) · **Try the app it protects:** [VoiceOrder](https://web-production-00176.up.railway.app/#/voiceorder) · **The blocked upgrade:** [PR #1](https://github.com/UtsavInTech/upgrade-gate/pull/1)
 
 ![Upgrade Gate report for the voice-note run: pass rate barely moves, but Spark 1.3's wrong-without-warning answers rise from 18 to 42 of 135 clips](web/screenshots/report.png)
 

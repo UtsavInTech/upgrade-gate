@@ -72,6 +72,7 @@ export type Behaviour = {
   reason?: string;
   silent: { baseline: number; candidate: number; p: number };
   abstain: { baseline: number; candidate: number; p: number };
+  by_input?: Record<string, Omit<Behaviour, "by_input"> & { label: string }>;
 };
 
 export type E6 = {
@@ -134,6 +135,42 @@ export type E4 = {
   minimal_vs_xhigh: Comparison;
 };
 
+export type E9Describe = {
+  answers: number;
+  correct: number;
+  clips_correct_majority: number;
+  clips: number;
+  types: Record<string, number>;
+  order_number_right: string;
+  pincode_right: string;
+  latency_ms_median: number | null;
+  latency_ms_p90: number | null;
+  usd_per_1000_clips: number;
+  asr_usd_per_1000_clips: number;
+};
+
+export type E9Set = {
+  run: string;
+  describe: Record<string, E9Describe>;
+  gates: Record<string, { decision: string; reasons: string[] }>;
+  overall: {
+    delta: number;
+    ci_low: number;
+    ci_high: number;
+    n: number;
+    silent: { baseline: number; candidate: number };
+    silent_items_p: number;
+  } | null;
+  loss: {
+    assumption: string;
+    order_notes: number;
+    by_route: Record<string, { per_1000: Record<string, number>; inr_per_1000: [number, number] }>;
+  } | null;
+};
+
+// E9: the transcribe route. synth = 135 text-to-speech notes (primary), real = 45 notes, one speaker.
+export type E9 = { status: "done" | "missing"; route: string; baseline: string; direct: string; sets: Record<string, E9Set> };
+
 export type Site = {
   generated_utc: string;
   spend: { total_usd: number; limit_usd: number };
@@ -142,6 +179,7 @@ export type Site = {
   e3: E3;
   e7?: E7;
   e4?: E4;
+  e9?: E9;
 };
 
 export async function loadSite(): Promise<Site> {

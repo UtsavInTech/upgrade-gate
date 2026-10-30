@@ -4,22 +4,23 @@
    Chart series colours were checked with the dataviz palette validator in both modes. */
 :root {
   color-scheme: light;
-  --bg: #ffffff;
-  --surface: #f3f5f7;
-  --surface-2: #e8ecf0;
+  --bg: #f7f9fc; /* page */
+  --card: #ffffff; /* panels that hold a task, a result or a decision */
+  --surface: #eef2f7;
+  --surface-2: #e3e8ef;
   --fg: #1c2b33;
-  --muted: #56636f;
-  --faint: #7d8a96;
-  --border: #dbe1e7;
+  --muted: #536170; /* 5.9:1 on --bg */
+  --faint: #67747f; /* 4.6:1 on --bg, AA for small text */
+  --border: #dde3ea;
   --accent: #0064e0;
   --accent-ink: #ffffff;
   --accent-soft: #e8f1fd;
-  --go: #1b7a4a;
-  --go-soft: #e4f4ea;
-  --risk: #b42f1c;
-  --risk-soft: #fbe9e6;
-  --hold: #8a5a00;
-  --hold-soft: #fbf1dc;
+  --go: #16794d; /* 5.3:1 on white */
+  --go-soft: #e6f4ec;
+  --risk: #b93826; /* 5.6:1 on white */
+  --risk-soft: #fbeae7;
+  --hold: #9a6700; /* 4.8:1 on white */
+  --hold-soft: #fbf2dd;
 
   --s-correct: #2a78d6;
   --s-deny: #eda100;
@@ -33,6 +34,7 @@
   :root:where(:not([data-theme="light"])) {
     color-scheme: dark;
     --bg: #0d1013;
+    --card: #12171c;
     --surface: #151a1f;
     --surface-2: #1d2329;
     --fg: #e7ecf0;
@@ -61,6 +63,7 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
   --bg: #0d1013;
+  --card: #12171c;
   --surface: #151a1f;
   --surface-2: #1d2329;
   --fg: #e7ecf0;
@@ -89,6 +92,7 @@
   --font-sans: "Figtree Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
   --color-bg: var(--bg);
+  --color-card: var(--card);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
   --color-fg: var(--fg);
@@ -159,5 +163,11 @@ html.presenting [data-slide] {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }

@@ -1,4 +1,4 @@
 {
-  "model": "spark-1.2@low",
-  "note": "The Muse Spark model and reasoning effort this app ships. Changing it opens the upgrade gate."
+  "model": "transcribe+spark-1.3@low",
+  "note": "The Muse Spark model and reasoning effort this app ships. transcribe+ means voice notes go through Muse Voice Transcribe first (E9). Changing it opens the upgrade gate."
 }

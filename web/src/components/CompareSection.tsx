@@ -6,21 +6,29 @@ type Cell = string | boolean;
 
 const COLUMNS = ["Model leaderboards", "Eval tools (Promptfoo, Braintrust)", "Upgrade Gate"];
 
+// Each eval-tool cell says what those tools offer out of the box, not "No": most of this
+// can be built on them with custom checks. Keep claims to what their docs show.
 const ROWS: { feature: string; cells: [Cell, Cell, Cell] }[] = [
   { feature: "Whose tasks", cells: ["Public benchmarks", "Yours", "Yours"] },
-  { feature: "What it reports", cells: ["One average score", "Pass rates", "How failures change"] },
+  {
+    feature: "What it reports",
+    cells: ["A score per model", "Scores and pass rates, side by side", "How the failures change"],
+  },
   {
     feature: "Separates blank, wrong-with-no-warning and “can’t answer”",
-    cells: [false, false, true],
+    cells: [false, "Possible with custom checks you write", "Built in, for every answer"],
   },
   {
     feature: "Paired tests, related items grouped, corrected across input types",
-    cells: [false, false, true],
+    cells: [false, "Score differences; the statistics are up to you", "Built in"],
   },
-  { feature: "Written release policy with a reason", cells: [false, false, true] },
   {
-    feature: "Blocks the pull request with the failing case attached",
-    cells: [false, "Pass/fail threshold", true],
+    feature: "Release rule",
+    cells: [false, "Pass/fail thresholds you set", "A policy file that says why, in plain words"],
+  },
+  {
+    feature: "Fails the pull request",
+    cells: [false, "Yes, in CI", "Yes, with the failing answers in the check"],
   },
 ];
 
@@ -106,6 +114,10 @@ export function CompareSection() {
         </table>
       </Reveal>
       <p className="mt-6 text-sm text-muted">
+        Eval tools do more than we do in many ways: dashboards, many model providers, tracing, team
+        workflows. Upgrade Gate is narrower: one model change, and whether the way it fails got worse.
+      </p>
+      <p className="mt-2 text-sm text-muted">
         Already use Promptfoo? <code className="font-mono text-fg">upgrade-gate export</code> writes the
         failing cases as a Promptfoo config and pytest checks.
       </p>

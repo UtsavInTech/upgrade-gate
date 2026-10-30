@@ -101,7 +101,7 @@ npm --prefix web run dev     # http://127.0.0.1:5191
 - `#/report/e6-audio` (also `e1-upgrade`, `e3-contributor`) — the report: gate verdict, slices with 95% ranges, every task with both versions' answers, audio and documents, filters and search.
 - `#/record` — record the voice-note lines in a real voice for the confirmation run (E7).
 
-The site reads exported data committed under `web/public`, so it makes no model calls. To refresh it from your own runs: `npm --prefix web run data`. To run the pipeline itself: `python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'`, add `MODEL_API_KEY` to `.env`, then `.venv/bin/upgrade-gate check`.
+The site reads exported data committed under `web/public`, so it makes no model calls. To refresh it from your own runs: `npm --prefix web run data`. To run the pipeline itself: `python3 -m venv .venv && .venv/bin/python -m pip install --upgrade pip && .venv/bin/pip install -e '.[dev]'`, add `MODEL_API_KEY` to `.env`, then `.venv/bin/upgrade-gate check`. (The pip upgrade matters on macOS: its bundled pip 21 cannot do editable installs.)
 
 ## How it works
 

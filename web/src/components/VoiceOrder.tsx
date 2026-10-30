@@ -67,9 +67,10 @@ export function VoiceOrder() {
       );
   }, []);
 
-  const models = cfg ? [cfg.shipping, cfg.candidate, ...(cfg.route ? [cfg.route] : [])] : [];
+  // Once the route ships, shipping and route are the same model: show it once.
+  const models = cfg ? [...new Set([cfg.shipping, cfg.candidate, ...(cfg.route ? [cfg.route] : [])])] : [];
   const label = (m: string) =>
-    m === cfg?.route ? "Approved route" : m === cfg?.candidate ? "Proposed upgrade" : "Shipping today";
+    m === cfg?.shipping ? "Shipping today" : m === cfg?.route ? "Approved route" : "Proposed upgrade";
 
   const run = useCallback(
     async (source: { sample: string } | { wav: Blob }) => {

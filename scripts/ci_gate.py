@@ -117,6 +117,10 @@ def main() -> int:
         if not os.environ.get("MODEL_API_KEY"):
             write_summary("### %s: skipped\n\nNo `MODEL_API_KEY` secret, so no live sample was run." % name)
             return 0
+        if any(m.startswith("transcribe+") for m in (baseline, candidate)):
+            write_summary("### %s: skipped\n\nLive sampling doesn't run the transcribe route (`%s` → `%s`) yet. "
+                          "The replay checks gate it on the saved E9 answers." % (name, baseline, candidate))
+            return 0
         packs = args.packs or LIVE_PACKS.get(args.suite)
         if not packs:
             write_summary("### %s: skipped\n\nNo live task set for this suite." % name)

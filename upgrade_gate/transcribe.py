@@ -30,6 +30,17 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(REPO, "results", "transcripts")
 RETRY = {429, 500, 502, 503, 504}
 
+# The transcribe route (E9): clip -> this model -> transcript -> Spark on text. A candidate named
+# "transcribe+spark-1.3@low" means that route. The wording is the one E9 tested; keep it identical.
+ROUTE_PREFIX = "transcribe+"
+ROUTE_LEAD = ("This is a speech-to-text transcript of a customer's voice note. It may contain recognition "
+              "errors, and numbers may be written as words. ")
+
+
+def route_prompt(instruction: str, transcript: str) -> str:
+    """Spark's prompt on the transcribe route: lead line + the task's own instruction + the transcript."""
+    return ROUTE_LEAD + instruction + "\n\nTranscript:\n" + transcript
+
 
 def _seconds(path: str) -> float:
     with wave.open(path, "rb") as w:

@@ -7,6 +7,8 @@ type Sample = { id: string; lang: string; transcript: string; audio: string };
 type Config = {
   shipping: string;
   candidate: string;
+  route?: string; // the route the gate approved (E9)
+  route_url?: string;
   pr: string;
   samples: Sample[];
   // Hosted site: no service, so saved answers come with the config.
@@ -23,6 +25,7 @@ type Result = {
   reused: boolean;
   latency_ms: number | null;
   truth?: { correct: boolean; expected: Record<string, string> };
+  transcript?: string | null; // route only: what Voice Transcribe heard
 };
 
 const FIELDS: [string, string][] = [
@@ -64,7 +67,9 @@ export function VoiceOrder() {
       );
   }, []);
 
-  const models = cfg ? [cfg.shipping, cfg.candidate] : [];
+  const models = cfg ? [cfg.shipping, cfg.candidate, ...(cfg.route ? [cfg.route] : [])] : [];
+  const label = (m: string) =>
+    m === cfg?.route ? "Approved route" : m === cfg?.candidate ? "Proposed upgrade" : "Shipping today";
 
   const run = useCallback(
     async (source: { sample: string } | { wav: Blob }) => {
@@ -155,6 +160,19 @@ export function VoiceOrder() {
                 </a>
               </dd>
             </div>
+            {cfg.route && (
+              <div className="flex items-center justify-between gap-4 bg-go-soft px-4 py-3 text-go">
+                <dt>
+                  <span className="font-semibold">Approved route</span>{" "}
+                  <span className="font-mono text-xs">{shortModel(cfg.route)}</span>
+                </dt>
+                <dd>
+                  <a href={cfg.route_url} target="_blank" rel="noreferrer" className="underline underline-offset-2">
+                    Gate: GO
+                  </a>
+                </dd>
+              </div>
+            )}
           </dl>
         )}
       </header>
@@ -235,7 +253,7 @@ export function VoiceOrder() {
               <div className="mt-4 rounded-lg border border-line p-4">
                 <p className="text-sm text-muted">
                   Say an order number digit by digit, a 6-digit pincode and your city. The note is sent to
-                  Meta for both models (about $0.01) and not stored.
+                  Meta for each route (about $0.02 in all) and not stored.
                 </p>
                 <div className="mt-4 flex flex-wrap items-center gap-3">
                   {recState === "recording" ? (
@@ -277,14 +295,9 @@ export function VoiceOrder() {
                 The customer said: <span className="text-fg">{sample.transcript}</span>
               </p>
             )}
-            <div className="mt-4 grid gap-4 md:grid-cols-2">
-              {models.map((m, i) => (
-                <OrderCard
-                  key={m}
-                  label={i === 0 ? "Shipping today" : "Proposed upgrade"}
-                  model={m}
-                  r={results[m]}
-                />
+            <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {models.map((m) => (
+                <OrderCard key={m} label={label(m)} model={m} r={results[m]} />
               ))}
             </div>
             <p className="mt-6 max-w-2xl text-sm text-muted">
@@ -294,6 +307,17 @@ export function VoiceOrder() {
               <a href="#/report/e6-audio" className="text-accent underline underline-offset-2">
                 Open the report
               </a>
+              {cfg.route && (
+                <>
+                  {" "}
+                  The same gate, same policy, approved a different way to use Spark 1.3: let Meta’s Voice
+                  Transcribe write the note down first, then read the text. On the 135 notes it got 12.8 points
+                  more right than today’s app, with no rise in silent failures.{" "}
+                  <a href="#safe-route" className="text-accent underline underline-offset-2">
+                    How we tested it
+                  </a>
+                </>
+              )}
             </p>
           </section>
         </div>
@@ -385,6 +409,12 @@ function OrderCard({
               .join(" · ")}
           </span>
         </p>
+      )}
+      {res.transcript && (
+        <details className="mt-3 text-xs text-muted">
+          <summary className="cursor-pointer">What Voice Transcribe heard</summary>
+          <p className="mt-2 break-words">{res.transcript}</p>
+        </details>
       )}
       <details className="mt-3 text-xs text-muted">
         <summary className="cursor-pointer">Model reply</summary>

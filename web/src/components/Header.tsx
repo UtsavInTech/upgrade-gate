@@ -2,11 +2,13 @@ import { motion, useScroll, useSpring } from "motion/react";
 import { Moon, Sun } from "lucide-react";
 import type { Route } from "../App";
 
-const NAV = [
+// `wide` links show only from 1280px; below that the bar would push the buttons off screen.
+const NAV: { href: string; label: string; wide?: boolean }[] = [
   { href: "#audio", label: "Voice notes" },
-  { href: "#effort", label: "Effort" },
+  { href: "#safe-route", label: "Safe route" },
+  { href: "#effort", label: "Effort", wide: true },
   { href: "#scoring", label: "Scoring" },
-  { href: "#cost", label: "Cost" },
+  { href: "#cost", label: "Cost", wide: true },
   { href: "#compare", label: "Compare" },
   { href: "#how", label: "How it works" },
 ];
@@ -47,7 +49,7 @@ export function Header({
               <a
                 key={n.href}
                 href={n.href}
-                className="rounded-md px-3 py-2 text-sm whitespace-nowrap text-muted transition-colors hover:text-fg"
+                className={`${n.wide ? "hidden xl:inline-block" : ""} rounded-md px-3 py-2 text-sm whitespace-nowrap text-muted transition-colors hover:text-fg`}
               >
                 {n.label}
               </a>

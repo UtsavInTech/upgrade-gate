@@ -192,6 +192,8 @@ function superscript(e: string): string {
 }
 
 export function shortModel(id: string): string {
+  // "transcribe+spark-1.3@low" is the E9 route: Voice Transcribe, then Spark on the transcript.
+  if (id.startsWith("transcribe+")) return "Transcribe → " + shortModel(id.slice("transcribe+".length));
   return id.replace("spark-", "Spark ").replace("@low", "").replace("-c", " Contributor");
 }
 

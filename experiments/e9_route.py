@@ -32,8 +32,7 @@ SETS = {"synth": "evidence/voice-notes", "real": "evidence/real-voices"}
 BASE, DIRECT13 = "spark-1.2@low", "spark-1.3@low"
 ROUTES = {"transcribe+spark-1.3@low": "spark-1.3@low", "transcribe+spark-1.2@low": "spark-1.2@low"}
 PRIMARY = "transcribe+spark-1.3@low"
-LEAD = ("This is a speech-to-text transcript of a customer's voice note. It may contain recognition "
-        "errors, and numbers may be written as words. ")
+from upgrade_gate.transcribe import ROUTE_LEAD as LEAD, route_prompt as _route_prompt  # noqa: E402
 REPEATS = 3
 
 
@@ -45,7 +44,7 @@ def ask(task: dict) -> str:
 
 
 def route_prompt(task: dict, transcript: str) -> str:
-    return LEAD + ask(task) + "\n\nTranscript:\n" + transcript
+    return _route_prompt(ask(task), transcript)
 
 
 def load(set_name: str):

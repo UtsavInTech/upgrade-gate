@@ -12,8 +12,9 @@ Endpoints
   GET  /api/voiceorder/config                         shipping + candidate model, sample notes
   POST /api/voiceorder/parse?model=<spec>&sample=<id> parse a sample note (saved answers reused: free)
   POST /api/voiceorder/parse?model=<spec>             parse an uploaded WAV note (body = audio/wav, ~$0.005)
-Only the shipping and candidate models are allowed, every paid call goes through the spending cap,
-and uploaded notes are never stored.
+Models: the shipping model, the blocked candidate (Spark 1.3 listening directly) and the route the gate
+approved in E9 (ROUTE: Voice Transcribe, then Spark 1.3 on the transcript). Every paid call goes through
+the spending cap, and uploaded notes are never stored.
 """
 from __future__ import annotations
 
@@ -37,8 +38,11 @@ from upgrade_gate.packs import load_pack  # noqa: E402
 from upgrade_gate.packs.audio_synth import ASK  # noqa: E402
 from upgrade_gate.scorers import extract_json, score_text  # noqa: E402
 from upgrade_gate.spend import SpendCapError  # noqa: E402
+from upgrade_gate.transcribe import ROUTE_PREFIX, route_prompt, transcribe  # noqa: E402
 
 CANDIDATE = "spark-1.3@low"
+ROUTE = "transcribe+spark-1.3@low"  # E9: GO on the production gate (findings/LOG.md)
+E9_URL = "https://github.com/UtsavInTech/upgrade-gate/blob/main/findings/LOG.md#e9-result-transcribe-first-then-spark-13--the-gate-says-go"
 PR_URL = "https://github.com/UtsavInTech/upgrade-gate/pull/1"
 PROMPT = "Listen to the attached audio. " + ASK["extract"]
 MAX_BODY = 10_000_000
@@ -85,9 +89,31 @@ def checks(order: Optional[dict], text: str) -> dict:
     return {"status": "rejected", "message": "Some fields fail the format check. The form rejects it.", "fields": fields}
 
 
-def parse(client: ModelClient, model_spec: str, task=None, wav: Optional[bytes] = None) -> dict:
-    cand = parse_candidate(model_spec)
+def _transcribe(task=None, wav: Optional[bytes] = None) -> dict:
+    """First stage of the route. A sample reuses E9's first transcript ($0); a recording is sent once."""
     if task is not None:
+        return transcribe(os.path.join(ROOT, task.attachments[0]), attempt=0)
+    import tempfile
+    with tempfile.NamedTemporaryFile(suffix=".wav") as f:  # deleted on close: notes are never stored
+        f.write(wav)
+        f.flush()
+        return transcribe(f.name, attempt=0, use_cache=False)
+
+
+def parse(client: ModelClient, model_spec: str, task=None, wav: Optional[bytes] = None) -> dict:
+    route = model_spec.startswith(ROUTE_PREFIX)
+    cand = parse_candidate(model_spec[len(ROUTE_PREFIX):] if route else model_spec)
+    stage = None
+    if route:
+        t0 = time.monotonic()
+        stage = _transcribe(task, wav)
+        if stage.get("error") or stage.get("transcript") is None:
+            return {"model": model_spec, "text": "", "error": "transcription failed: %s" % stage.get("error"),
+                    "order": None, "checks": checks(None, ""), "cost_usd": 0.0, "reused": False,
+                    "latency_ms": int((time.monotonic() - t0) * 1000), "transcript": None}
+        messages = [{"role": "user", "content": route_prompt(ASK["extract"], stage["transcript"])}]
+        salt = "e9-rep1" if task is not None else "live-%d" % time.time_ns()
+    elif task is not None:
         messages = build_messages(task)
         salt = "rep0"  # the first try from the saved run: same task, prompt and settings, so it is reused
     else:
@@ -105,6 +131,12 @@ def parse(client: ModelClient, model_spec: str, task=None, wav: Optional[bytes] 
            "checks": checks(order if isinstance(order, dict) else None, text),
            "cost_usd": 0.0 if res.cached else round(res.cost_usd, 5), "reused": res.cached,
            "latency_ms": res.latency_ms if not res.cached else int((time.monotonic() - t0) * 1000)}
+    if stage is not None:
+        out["transcript"] = stage["transcript"]
+        out["reused"] = bool(res.cached and stage.get("cached"))
+        out["cost_usd"] = round((0.0 if stage.get("cached") else stage["cost_usd"]) + out["cost_usd"], 5)
+        if not out["reused"]:
+            out["latency_ms"] = (stage.get("latency_ms") or 0) + (out["latency_ms"] or 0)
     if task is not None:
         ok = score_text(task, text)[0] if text else False
         out["truth"] = {"correct": bool(ok), "expected": {k: (v[0] if isinstance(v, list) else v)
@@ -135,7 +167,8 @@ class Handler(BaseHTTPRequestHandler):
             clip = os.path.splitext(os.path.basename(t.attachments[0]))[0]
             items.append({"id": tid, "lang": t.lang, "transcript": t.meta.get("transcript"),
                           "audio": "att/%s.m4a" % clip})
-        self._json(200, {"shipping": shipping_model(), "candidate": CANDIDATE, "pr": PR_URL, "samples": items})
+        self._json(200, {"shipping": shipping_model(), "candidate": CANDIDATE, "route": ROUTE, "route_url": E9_URL,
+                         "pr": PR_URL, "samples": items})
 
     def do_POST(self):
         url = urlparse(self.path)
@@ -143,8 +176,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(404, {"error": "not found"})
         q = parse_qs(url.query)
         model = (q.get("model") or [""])[0]
-        if model not in (shipping_model(), CANDIDATE):
-            return self._json(400, {"error": "model must be the shipping model or %s" % CANDIDATE})
+        if model not in (shipping_model(), CANDIDATE, ROUTE):
+            return self._json(400, {"error": "model must be the shipping model, %s or %s" % (CANDIDATE, ROUTE)})
         sample = (q.get("sample") or [""])[0]
         try:
             if sample:

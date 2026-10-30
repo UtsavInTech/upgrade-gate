@@ -11,6 +11,7 @@ import { Hero } from "./components/Hero";
 import { HowSection } from "./components/HowSection";
 import { Record } from "./components/Record";
 import { Report } from "./components/Report";
+import { SafeRouteSection } from "./components/SafeRouteSection";
 import { ScoringSection } from "./components/ScoringSection";
 import type { Site } from "./data";
 import { loadSite } from "./data";
@@ -110,6 +111,7 @@ export default function App() {
               <>
                 <Hero site={site} />
                 <AudioSection e6={site.e6} e7={site.e7} />
+                <SafeRouteSection />
                 {site.e4?.status === "done" && <EffortSection e4={site.e4} />}
                 <ScoringSection e1={site.e1} />
                 <CostSection e3={site.e3} />

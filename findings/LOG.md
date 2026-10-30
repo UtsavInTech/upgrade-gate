@@ -8,6 +8,42 @@ Status values: `planned` · `scouting` · `promising` · `confirmed` · `dropped
 
 ---
 
+## E9 result: transcribe first, then Spark 1.3 — the gate says GO
+
+- **Run:** 31 Oct, 180 clips × 3 full-pipeline tries; 540 transcriptions (0 errors) + 1,080 Spark text calls,
+  about $2.95 including the API check. Run dirs `results/e9-route-synth`, `results/e9-route-real`; numbers in
+  [../experiments/out/e9_route.json](../experiments/out/e9_route.json). Run exactly as pre-registered below.
+- **Primary (135 TTS clips), production gate and policy unchanged — GO.** Transcribe → Spark 1.3 vs today's
+  Spark 1.2 listening directly: correct +12.8 pts (95% CI +5.3 to +20.3); wrong-or-blank with no warning 18 → 20
+  tasks (grouped by item 9 worse, 7 better, p = 0.8). Clips right in most tries: 93 → 110 of 135.
+- **Secondary (45 real-voice clips, one speaker) — INCONCLUSIVE, not NO-GO.** Clips right: 36 → 38 of 45;
+  wrong-or-blank 6 → 7. The gate wants ~295 more tasks to decide. Per the fixed rule (primary GO and real voice
+  not NO-GO), **VoiceOrder moves to the transcribe route**.
+- **Same check on the plain upgrade, same run:** Spark 1.3 listening directly stays NO-GO on both sets (18 → 42;
+  real voice accuracy CI below the limit). So the advice is: upgrade to 1.3 only behind the transcribe step.
+- **The model version barely matters once the audio is text:** transcribe → 1.2 is also GO (+13.3 pts), and both
+  routes get the same order numbers (111/135) and pincodes (104/135) right. The gain comes from the speech model.
+- **Order numbers and pincodes (every try counted, majority not used):** order number right 85 → 111 of 135 (TTS),
+  24 → 41 of 45 (real voice); pincode 83 → 104 (TTS), 32 → 35 (real voice).
+- **What the route gives up:** it never says "I can't hear" (21 → 0 on TTS), because the transcript always has
+  words. Its mistakes come from the transcript instead: repeated words and digits ("छह छह छह छह" → pincode
+  2666697), a dropped phrase ("My … two zero eight nine"), and once Bengali script for the opening words of an
+  English clip. Most of these change the digit count, so the shop's own format check rejects them rather than
+  saving a wrong order (see the scenario below). 15 of 405 route answers on 1.3 hit the 4,000-token limit (vs 7
+  for 1.3 listening directly).
+- **Latency (end to end, every answer):** median 5.9 s vs 5.1 s for 1.2 listening; p90 10.1 s vs 21.2 s.
+  **Cost:** $3.00 vs $2.44 per 1,000 clips (+23%); the speech model is $0.42 of that.
+- **What it would cost a shop (scenario, `scripts/loss_scenario.py`):** order notes only, every try, run through
+  VoiceOrder's own save checks. Wrong-but-saved orders per 1,000: 185 → 52 (TTS), 400 → 89 (real voice, 1.3 route).
+  Priced only as failed deliveries at an assumed Rs 180–240 each (logistics only, industry estimate cited by
+  Amazon Shipping), that is roughly Rs 33,000–44,000 → Rs 9,000–12,000 per 1,000 orders on TTS clips. Rejected
+  orders (caught, but need a follow-up) are counted, not priced: 185 → 289 per 1,000 on TTS, 44 → 200 on real
+  voice. A scenario with stated assumptions, not measured savings.
+- **Limits:** TTS clips are cleaner than real notes; real voice is one speaker and 45 clips; the transcript prompt
+  line about numbers was written after seeing one transcript; ASR ran with default settings.
+
+---
+
 ## E9 (pre-registered 31 Oct 2026, before any E9 call): is there a safe upgrade route for voice notes?
 
 - **Why:** the gate blocks Spark 1.2 → 1.3 for voice notes (E6, E7). A block alone leaves the team stuck.

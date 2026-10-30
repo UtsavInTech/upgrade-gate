@@ -1,0 +1,201 @@
+{
+  "synth": {
+    "run_dir": "results/e9-route-synth",
+    "describe": {
+      "spark-1.2@low": {
+        "answers": 405,
+        "correct": 278,
+        "clips_correct_majority": 93,
+        "clips": 135,
+        "types": {
+          "correct": 278,
+          "wrong": 60,
+          "no answer": 2,
+          "abstain": 65
+        },
+        "order_number_right": "85/135",
+        "pincode_right": "83/135",
+        "latency_ms_median": 5121,
+        "latency_ms_p90": 21222,
+        "usd_per_1000_clips": 2.437,
+        "asr_usd_per_1000_clips": 0.0
+      },
+      "spark-1.3@low": {
+        "answers": 405,
+        "correct": 274,
+        "clips_correct_majority": 90,
+        "clips": 135,
+        "types": {
+          "correct": 274,
+          "wrong": 90,
+          "blank": 30,
+          "no answer": 7,
+          "abstain": 4
+        },
+        "order_number_right": "68/135",
+        "pincode_right": "56/135",
+        "latency_ms_median": 8732,
+        "latency_ms_p90": 26873,
+        "usd_per_1000_clips": 3.499,
+        "asr_usd_per_1000_clips": 0.0
+      },
+      "transcribe+spark-1.3@low": {
+        "answers": 405,
+        "correct": 321,
+        "clips_correct_majority": 110,
+        "clips": 135,
+        "types": {
+          "wrong": 69,
+          "no answer": 15,
+          "correct": 321
+        },
+        "order_number_right": "111/135",
+        "pincode_right": "104/135",
+        "latency_ms_median": 5863,
+        "latency_ms_p90": 10062,
+        "usd_per_1000_clips": 2.998,
+        "asr_usd_per_1000_clips": 0.424
+      },
+      "transcribe+spark-1.2@low": {
+        "answers": 405,
+        "correct": 322,
+        "clips_correct_majority": 111,
+        "clips": 135,
+        "types": {
+          "wrong": 81,
+          "correct": 322,
+          "no answer": 2
+        },
+        "order_number_right": "111/135",
+        "pincode_right": "104/135",
+        "latency_ms_median": 6259,
+        "latency_ms_p90": 11035,
+        "usd_per_1000_clips": 3.003,
+        "asr_usd_per_1000_clips": 0.424
+      }
+    },
+    "gates": {
+      "transcribe+spark-1.3@low": {
+        "decision": "go",
+        "reasons": [
+          "Overall change +12.8 pts (95% CI +5.3 to +20.3) clears the 2.0 pt drop limit; no tested slice regresses significantly."
+        ],
+        "stdout": "Failure types, audio input (135 tasks): wrong or blank with no warning 18 -> 20, says it can't answer 21 -> 0\n    grouped into 45 items: 9 worse, 7 better, p = 0.8; tested per item\nGO  (spark-1.2@low -> transcribe+spark-1.3@low)\n  - Overall change +12.8 pts (95% CI +5.3 to +20.3) clears the 2.0 pt drop limit; no tested slice regresses significantly."
+      },
+      "transcribe+spark-1.2@low": {
+        "decision": "go",
+        "reasons": [
+          "Overall change +13.3 pts (95% CI +6.7 to +20.7) clears the 2.0 pt drop limit; no tested slice regresses significantly."
+        ],
+        "stdout": "Failure types, audio input (135 tasks): wrong or blank with no warning 18 -> 24, says it can't answer 21 -> 0\n    grouped into 45 items: 10 worse, 6 better, p = 0.45; tested per item\nGO  (spark-1.2@low -> transcribe+spark-1.2@low)\n  - Overall change +13.3 pts (95% CI +6.7 to +20.7) clears the 2.0 pt drop limit; no tested slice regresses significantly."
+      },
+      "spark-1.3@low": {
+        "decision": "no-go",
+        "reasons": [
+          "Silent failures rose. Audio input: answers that are wrong or blank with no warning rose from 18 to 42 of 135 tasks (18 items worse, 1 better, p = 8e-05; blank 0 → 7); answers admitting it can't answer fell from 21 to 0.",
+          "CI overlaps the drop limit. Approximately 257877 more independent tasks are needed (normal approximation, 80% power; not a guarantee)."
+        ],
+        "stdout": "Failure types, audio input (135 tasks): wrong or blank with no warning 18 -> 42, says it can't answer 21 -> 0  << flagged\n    grouped into 45 items: 18 worse, 1 better, p = 7.6e-05; tested per item\nNO-GO  (spark-1.2@low -> spark-1.3@low)\n  - Silent failures rose. Audio input: answers that are wrong or blank with no warning rose from 18 to 42 of 135 tasks (18 items worse, 1 better, p = 8e-05; blank 0 → 7); answers admitting it can't answer fell from 21 to 0.\n  - CI overlaps the drop limit. Approximately 257877 more independent tasks are needed (normal approximation, 80% power; not a guarantee)."
+      }
+    }
+  },
+  "real": {
+    "run_dir": "results/e9-route-real",
+    "describe": {
+      "spark-1.2@low": {
+        "answers": 135,
+        "correct": 106,
+        "clips_correct_majority": 36,
+        "clips": 45,
+        "types": {
+          "correct": 106,
+          "abstain": 7,
+          "wrong": 22
+        },
+        "order_number_right": "24/45",
+        "pincode_right": "32/45",
+        "latency_ms_median": 3430,
+        "latency_ms_p90": 5675,
+        "usd_per_1000_clips": 2.419,
+        "asr_usd_per_1000_clips": 0.0
+      },
+      "spark-1.3@low": {
+        "answers": 135,
+        "correct": 96,
+        "clips_correct_majority": 31,
+        "clips": 45,
+        "types": {
+          "correct": 96,
+          "wrong": 17,
+          "blank": 18,
+          "abstain": 3,
+          "no answer": 1
+        },
+        "order_number_right": "12/45",
+        "pincode_right": "17/45",
+        "latency_ms_median": 5407,
+        "latency_ms_p90": 14351,
+        "usd_per_1000_clips": 3.341,
+        "asr_usd_per_1000_clips": 0.0
+      },
+      "transcribe+spark-1.3@low": {
+        "answers": 135,
+        "correct": 108,
+        "clips_correct_majority": 38,
+        "clips": 45,
+        "types": {
+          "wrong": 26,
+          "correct": 108,
+          "no answer": 1
+        },
+        "order_number_right": "41/45",
+        "pincode_right": "35/45",
+        "latency_ms_median": 5837,
+        "latency_ms_p90": 9256,
+        "usd_per_1000_clips": 2.456,
+        "asr_usd_per_1000_clips": 0.426
+      },
+      "transcribe+spark-1.2@low": {
+        "answers": 135,
+        "correct": 106,
+        "clips_correct_majority": 38,
+        "clips": 45,
+        "types": {
+          "wrong": 28,
+          "correct": 106,
+          "no answer": 1
+        },
+        "order_number_right": "41/45",
+        "pincode_right": "35/45",
+        "latency_ms_median": 6265,
+        "latency_ms_p90": 11201,
+        "usd_per_1000_clips": 2.893,
+        "asr_usd_per_1000_clips": 0.426
+      }
+    },
+    "gates": {
+      "transcribe+spark-1.3@low": {
+        "decision": "inconclusive",
+        "reasons": [
+          "CI overlaps the drop limit. Approximately 295 more independent tasks are needed (normal approximation, 80% power; not a guarantee)."
+        ],
+        "stdout": "Failure types, audio input (45 tasks): wrong or blank with no warning 6 -> 7, says it can't answer 1 -> 0\n    grouped into 15 items: 3 worse, 2 better, p = 1; tested per item\nINCONCLUSIVE  (spark-1.2@low -> transcribe+spark-1.3@low)\n  - CI overlaps the drop limit. Approximately 295 more independent tasks are needed (normal approximation, 80% power; not a guarantee)."
+      },
+      "transcribe+spark-1.2@low": {
+        "decision": "inconclusive",
+        "reasons": [
+          "CI overlaps the drop limit. Approximately 295 more independent tasks are needed (normal approximation, 80% power; not a guarantee)."
+        ],
+        "stdout": "Failure types, audio input (45 tasks): wrong or blank with no warning 6 -> 7, says it can't answer 1 -> 0\n    grouped into 15 items: 3 worse, 2 better, p = 1; tested per item\nINCONCLUSIVE  (spark-1.2@low -> transcribe+spark-1.2@low)\n  - CI overlaps the drop limit. Approximately 295 more independent tasks are needed (normal approximation, 80% power; not a guarantee)."
+      },
+      "spark-1.3@low": {
+        "decision": "no-go",
+        "reasons": [
+          "Overall CI upper bound -2.2 pts is below the allowed drop of 2.0 pts.",
+          "Not robust: Audio input: wrong or blank answers rose 6 → 13 per task (p = 0.02), but not when related tasks are grouped into 15 items (5 worse, 0 better, p = 0.062)."
+        ],
+        "stdout": "Failure types, audio input (45 tasks): wrong or blank with no warning 6 -> 13, says it can't answer 1 -> 0\n    grouped into 15 items: 5 worse, 0 better, p = 0.062; tested per item\nNO-GO  (spark-1.2@low -> spark-1.3@low)\n  - Overall CI upper bound -2.2 pts is below the allowed drop of 2.0 pts.\n  - Not robust: Audio input: wrong or blank answers rose 6 → 13 per task (p = 0.02), but not when related tasks are grouped into 15 items (5 worse, 0 better, p = 0.062)."
+      }
+    }
+  }
+}

@@ -248,8 +248,8 @@ class App(BaseHTTPRequestHandler):
         """Owner-only: list who recorded, and download one speaker's recordings as a zip (the same
         layout scripts/import_recordings.py reads). Off unless ADMIN_TOKEN is set; token in a header."""
         import hmac
-        token = os.environ.get("ADMIN_TOKEN", "")
-        given = self.headers.get("X-Admin-Token", "")
+        token = os.environ.get("ADMIN_TOKEN", "").strip()  # a pasted value may carry a trailing newline
+        given = self.headers.get("X-Admin-Token", "").strip()
         if len(token) < 24 or not hmac.compare_digest(token, given):
             return self._json(404, {"error": "No such API endpoint: %s" % path})
         base = os.path.join(DATA_DIR, "audio-real")

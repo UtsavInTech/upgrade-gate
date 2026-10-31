@@ -1,6 +1,6 @@
 {
-  "run_id": "e7-real-voices",
-  "created_utc": "2026-10-27T19:08:44Z",
+  "run_id": "e10-real-voices",
+  "created_utc": "2026-10-31T13:08:55Z",
   "candidates": [
     {
       "name": "spark-1.2@low",
@@ -31,8 +31,8 @@
   "packs": [
     "audio-real"
   ],
-  "n_tasks": 45,
+  "n_tasks": 90,
   "repeats": 3,
-  "budget_usd": 4.0,
-  "notes": "experiment e7-real-voices; shuffle_seed=441483458"
+  "budget_usd": 3.0,
+  "notes": "E7 + E10: real voices, 90 clips from 2 speakers (pooled, as pre-registered in E10)"
 }

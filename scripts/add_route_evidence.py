@@ -3,7 +3,8 @@
   python3 scripts/add_route_evidence.py          # rewrites evidence/*/responses.jsonl and scores.jsonl
 
 How each saved row is made, so the replayed check is about exactly what the route does:
-  - audio input (voice-notes, real-voices): the E9 answers from results/e9-route-<set>/ (Voice
+  - audio input: voice-notes from E9 (results/e9-route-synth), real-voices from E10 (results/e10-real-voices,
+    every real speaker pooled; the route there is the same E9 code) (Voice
     Transcribe, then Spark 1.3 on the transcript; 3 full-pipeline tries). For real voices the transcript
     text is left out: those recordings are private.
   - any other input (the text twins of voice notes, text, documents, images): the route only changes
@@ -22,7 +23,7 @@ sys.path.insert(0, ROOT)
 from upgrade_gate.schema import read_jsonl  # noqa: E402
 
 ROUTE, PLAIN = "transcribe+spark-1.3@low", "spark-1.3@low"
-SUITES = {"voice-notes": "results/e9-route-synth", "real-voices": "results/e9-route-real", "text-and-documents": None}
+SUITES = {"voice-notes": "results/e9-route-synth", "real-voices": "results/e10-real-voices", "text-and-documents": None}
 PRIVATE = {"real-voices"}
 
 

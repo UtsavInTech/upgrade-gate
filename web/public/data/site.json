@@ -1,7 +1,7 @@
 {
- "generated_utc": "2026-10-27T21:37:11Z",
+ "generated_utc": "2026-10-31T13:15:28Z",
  "spend": {
-  "total_usd": 19.78,
+  "total_usd": 27.14,
   "limit_usd": 90.0
  },
  "e1": {
@@ -2502,6 +2502,300 @@
    "regressions": 19,
    "improvements": 3,
    "p": 0.0008554458618164062
+  }
+ },
+ "e9": {
+  "status": "done",
+  "route": "transcribe+spark-1.3@low",
+  "baseline": "spark-1.2@low",
+  "direct": "spark-1.3@low",
+  "sets": {
+   "synth": {
+    "run": "e9-route-synth",
+    "describe": {
+     "spark-1.2@low": {
+      "answers": 405,
+      "correct": 278,
+      "clips_correct_majority": 93,
+      "clips": 135,
+      "types": {
+       "correct": 278,
+       "wrong": 60,
+       "no answer": 2,
+       "abstain": 65
+      },
+      "order_number_right": "85/135",
+      "pincode_right": "83/135",
+      "latency_ms_median": 5121,
+      "latency_ms_p90": 21222,
+      "usd_per_1000_clips": 2.437,
+      "asr_usd_per_1000_clips": 0.0
+     },
+     "spark-1.3@low": {
+      "answers": 405,
+      "correct": 274,
+      "clips_correct_majority": 90,
+      "clips": 135,
+      "types": {
+       "correct": 274,
+       "wrong": 90,
+       "blank": 30,
+       "no answer": 7,
+       "abstain": 4
+      },
+      "order_number_right": "68/135",
+      "pincode_right": "56/135",
+      "latency_ms_median": 8732,
+      "latency_ms_p90": 26873,
+      "usd_per_1000_clips": 3.499,
+      "asr_usd_per_1000_clips": 0.0
+     },
+     "transcribe+spark-1.3@low": {
+      "answers": 405,
+      "correct": 321,
+      "clips_correct_majority": 110,
+      "clips": 135,
+      "types": {
+       "wrong": 69,
+       "no answer": 15,
+       "correct": 321
+      },
+      "order_number_right": "111/135",
+      "pincode_right": "104/135",
+      "latency_ms_median": 5863,
+      "latency_ms_p90": 10062,
+      "usd_per_1000_clips": 2.998,
+      "asr_usd_per_1000_clips": 0.424
+     },
+     "transcribe+spark-1.2@low": {
+      "answers": 405,
+      "correct": 322,
+      "clips_correct_majority": 111,
+      "clips": 135,
+      "types": {
+       "wrong": 81,
+       "correct": 322,
+       "no answer": 2
+      },
+      "order_number_right": "111/135",
+      "pincode_right": "104/135",
+      "latency_ms_median": 6259,
+      "latency_ms_p90": 11035,
+      "usd_per_1000_clips": 3.003,
+      "asr_usd_per_1000_clips": 0.424
+     }
+    },
+    "gates": {
+     "transcribe+spark-1.3@low": {
+      "decision": "go",
+      "reasons": [
+       "Overall change +12.8 pts (95% CI +5.3 to +20.3) clears the 2.0 pt drop limit; no tested slice regresses significantly."
+      ]
+     },
+     "transcribe+spark-1.2@low": {
+      "decision": "go",
+      "reasons": [
+       "Overall change +13.3 pts (95% CI +6.7 to +20.7) clears the 2.0 pt drop limit; no tested slice regresses significantly."
+      ]
+     },
+     "spark-1.3@low": {
+      "decision": "no-go",
+      "reasons": [
+       "Silent failures rose. Audio input: answers that are wrong or blank with no warning rose from 18 to 42 of 135 tasks (18 items worse, 1 better, p = 8e-05; blank 0 → 7); answers admitting it can't answer fell from 21 to 0.",
+       "CI overlaps the drop limit. Approximately 257877 more independent tasks are needed (normal approximation, 80% power; not a guarantee)."
+      ]
+     }
+    },
+    "overall": {
+     "delta": 0.12781954887218044,
+     "ci_low": 0.05263157894736842,
+     "ci_high": 0.20300751879699247,
+     "n": 133,
+     "silent": {
+      "baseline": 18,
+      "candidate": 20
+     },
+     "silent_items_p": 0.803619384765625
+    },
+    "loss": {
+     "assumption": "each wrong-but-saved order = one failed delivery at Rs 180-240 (logistics only; https://shipping.amazon.in/blog/what-is-rto-how-to-reduce-return-to-origin)",
+     "order_notes": 45,
+     "by_route": {
+      "spark-1.2@low": {
+       "per_1000": {
+        "correct": 459,
+        "rejected": 185,
+        "wrong but saved": 185,
+        "asked to type": 170
+       },
+       "inr_per_1000": [
+        33333,
+        44444
+       ]
+      },
+      "spark-1.3@low": {
+       "per_1000": {
+        "correct": 296,
+        "rejected": 407,
+        "wrong but saved": 274,
+        "asked to type": 22
+       },
+       "inr_per_1000": [
+        49333,
+        65778
+       ]
+      },
+      "transcribe+spark-1.2@low": {
+       "per_1000": {
+        "rejected": 289,
+        "correct": 659,
+        "wrong but saved": 52
+       },
+       "inr_per_1000": [
+        9333,
+        12444
+       ]
+      },
+      "transcribe+spark-1.3@low": {
+       "per_1000": {
+        "rejected": 289,
+        "correct": 659,
+        "wrong but saved": 52
+       },
+       "inr_per_1000": [
+        9333,
+        12444
+       ]
+      }
+     }
+    },
+    "speakers": null
+   },
+   "real": {
+    "run": "e10-real-voices",
+    "describe": {
+     "spark-1.3@low": {
+      "answers": 270,
+      "correct": 201,
+      "clips_correct_majority": 65,
+      "clips": 90,
+      "types": {
+       "correct": 201,
+       "blank": 22,
+       "wrong": 38,
+       "abstain": 4,
+       "no answer": 5
+      },
+      "order_number_right": "33/90",
+      "pincode_right": "43/90",
+      "latency_ms_median": 5263,
+      "latency_ms_p90": 13221,
+      "usd_per_1000_clips": 3.261,
+      "asr_usd_per_1000_clips": 0.0
+     },
+     "spark-1.2@low": {
+      "answers": 270,
+      "correct": 218,
+      "clips_correct_majority": 73,
+      "clips": 90,
+      "types": {
+       "correct": 218,
+       "wrong": 45,
+       "abstain": 7
+      },
+      "order_number_right": "52/90",
+      "pincode_right": "66/90",
+      "latency_ms_median": 4393,
+      "latency_ms_p90": 8240,
+      "usd_per_1000_clips": 2.335,
+      "asr_usd_per_1000_clips": 0.0
+     },
+     "transcribe+spark-1.3@low": {
+      "answers": 270,
+      "correct": 228,
+      "clips_correct_majority": 77,
+      "clips": 90,
+      "types": {
+       "correct": 228,
+       "wrong": 41,
+       "no answer": 1
+      },
+      "order_number_right": "79/90",
+      "pincode_right": "73/90",
+      "latency_ms_median": 5697,
+      "latency_ms_p90": 7712,
+      "usd_per_1000_clips": 2.25,
+      "asr_usd_per_1000_clips": 0.494
+     }
+    },
+    "gates": {
+     "transcribe+spark-1.3@low": {
+      "decision": "inconclusive",
+      "reasons": [
+       "CI overlaps the drop limit. Approximately 119 more independent tasks are needed (normal approximation, 80% power; not a guarantee)."
+      ]
+     },
+     "spark-1.3@low": {
+      "decision": "no-go",
+      "reasons": [
+       "Overall CI upper bound -2.2 pts is below the allowed drop of 2.0 pts."
+      ]
+     }
+    },
+    "overall": {
+     "delta": 0.044444444444444446,
+     "ci_low": -0.022222222222222223,
+     "ci_high": 0.1111111111111111,
+     "n": 90,
+     "silent": {
+      "baseline": 14,
+      "candidate": 13
+     },
+     "silent_items_p": 1.0
+    },
+    "loss": {
+     "assumption": "each wrong-but-saved order = one failed delivery at Rs 180-240 (logistics only; https://shipping.amazon.in/blog/what-is-rto-how-to-reduce-return-to-origin)",
+     "order_notes": 30,
+     "by_route": {
+      "spark-1.2@low": {
+       "per_1000": {
+        "correct": 478,
+        "wrong but saved": 344,
+        "rejected": 133,
+        "asked to type": 44
+       },
+       "inr_per_1000": [
+        62000,
+        82667
+       ]
+      },
+      "spark-1.3@low": {
+       "per_1000": {
+        "rejected": 422,
+        "correct": 278,
+        "wrong but saved": 267,
+        "asked to type": 33
+       },
+       "inr_per_1000": [
+        48000,
+        64000
+       ]
+      },
+      "transcribe+spark-1.3@low": {
+       "per_1000": {
+        "correct": 700,
+        "wrong but saved": 122,
+        "rejected": 178
+       },
+       "inr_per_1000": [
+        22000,
+        29333
+       ]
+      }
+     }
+    },
+    "speakers": 2
+   }
   }
  }
 }

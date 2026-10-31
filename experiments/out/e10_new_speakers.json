@@ -1,0 +1,348 @@
+{
+  "speakers": [
+    "simran",
+    "utsav"
+  ],
+  "new": [
+    "simran"
+  ],
+  "sets": {
+    "new": {
+      "run_dir": "results/e10-new",
+      "clips": 45,
+      "testA": {
+        "decision": "inconclusive",
+        "reasons": [
+          "CI overlaps the drop limit. Approximately 349 more independent tasks are needed (normal approximation, 80% power; not a guarantee)."
+        ],
+        "stdout": "Failure types, audio input (45 tasks): wrong or blank with no warning 8 -> 7, says it can't answer 0 -> 0\n    grouped into 15 items: 1 worse, 2 better, p = 1; tested per item\nINCONCLUSIVE  (spark-1.2@low -> spark-1.3@low)\n  - CI overlaps the drop limit. Approximately 349 more independent tasks are needed (normal approximation, 80% power; not a guarantee).",
+        "overall": {
+          "delta": -0.06666666666666667,
+          "ci_low": -0.17777777777777778,
+          "ci_high": 0.022222222222222223,
+          "n": 45
+        }
+      },
+      "testB": {
+        "decision": "go",
+        "reasons": [
+          "Overall change +4.4 pts (95% CI +0.0 to +11.1) clears the 2.0 pt drop limit; no tested slice regresses significantly."
+        ],
+        "stdout": "Failure types, audio input (45 tasks): wrong or blank with no warning 8 -> 6, says it can't answer 0 -> 0\n    grouped into 15 items: 0 worse, 2 better, p = 0.5; tested per item\nGO  (spark-1.2@low -> transcribe+spark-1.3@low)\n  - Overall change +4.4 pts (95% CI +0.0 to +11.1) clears the 2.0 pt drop limit; no tested slice regresses significantly.",
+        "overall": {
+          "delta": 0.044444444444444446,
+          "ci_low": 0.0,
+          "ci_high": 0.1111111111111111,
+          "n": 45
+        }
+      },
+      "describe": {
+        "spark-1.3@low": {
+          "answers": 135,
+          "correct": 105,
+          "clips_correct_majority": 34,
+          "clips": 45,
+          "types": {
+            "correct": 105,
+            "wrong": 20,
+            "no answer": 5,
+            "abstain": 1,
+            "blank": 4
+          },
+          "order_number_right": "21/45",
+          "pincode_right": "25/45",
+          "latency_ms_median": 5160,
+          "latency_ms_p90": 10987,
+          "usd_per_1000_clips": 3.253,
+          "asr_usd_per_1000_clips": 0.0
+        },
+        "spark-1.2@low": {
+          "answers": 135,
+          "correct": 112,
+          "clips_correct_majority": 37,
+          "clips": 45,
+          "types": {
+            "correct": 112,
+            "wrong": 23
+          },
+          "order_number_right": "28/45",
+          "pincode_right": "34/45",
+          "latency_ms_median": 5111,
+          "latency_ms_p90": 8979,
+          "usd_per_1000_clips": 2.25,
+          "asr_usd_per_1000_clips": 0.0
+        },
+        "transcribe+spark-1.3@low": {
+          "answers": 135,
+          "correct": 120,
+          "clips_correct_majority": 39,
+          "clips": 45,
+          "types": {
+            "correct": 120,
+            "wrong": 14,
+            "no answer": 1
+          },
+          "order_number_right": "37/45",
+          "pincode_right": "38/45",
+          "latency_ms_median": 5466,
+          "latency_ms_p90": 7053,
+          "usd_per_1000_clips": 2.12,
+          "asr_usd_per_1000_clips": 0.562
+        }
+      }
+    },
+    "pooled": {
+      "run_dir": "results/e10-real-voices",
+      "clips": 90,
+      "testA": {
+        "decision": "no-go",
+        "reasons": [
+          "Overall CI upper bound -2.2 pts is below the allowed drop of 2.0 pts."
+        ],
+        "stdout": "Failure types, audio input (90 tasks): wrong or blank with no warning 14 -> 20, says it can't answer 1 -> 0\n    grouped into 15 items: 4 worse, 0 better, p = 0.12; tested per item\nNO-GO  (spark-1.2@low -> spark-1.3@low)\n  - Overall CI upper bound -2.2 pts is below the allowed drop of 2.0 pts.",
+        "overall": {
+          "delta": -0.08888888888888889,
+          "ci_low": -0.15555555555555556,
+          "ci_high": -0.022222222222222223,
+          "n": 90
+        }
+      },
+      "testB": {
+        "decision": "inconclusive",
+        "reasons": [
+          "CI overlaps the drop limit. Approximately 119 more independent tasks are needed (normal approximation, 80% power; not a guarantee)."
+        ],
+        "stdout": "Failure types, audio input (90 tasks): wrong or blank with no warning 14 -> 13, says it can't answer 1 -> 0\n    grouped into 15 items: 3 worse, 2 better, p = 1; tested per item\nINCONCLUSIVE  (spark-1.2@low -> transcribe+spark-1.3@low)\n  - CI overlaps the drop limit. Approximately 119 more independent tasks are needed (normal approximation, 80% power; not a guarantee).",
+        "overall": {
+          "delta": 0.044444444444444446,
+          "ci_low": -0.022222222222222223,
+          "ci_high": 0.1111111111111111,
+          "n": 90
+        }
+      },
+      "describe": {
+        "spark-1.3@low": {
+          "answers": 270,
+          "correct": 201,
+          "clips_correct_majority": 65,
+          "clips": 90,
+          "types": {
+            "correct": 201,
+            "blank": 22,
+            "wrong": 38,
+            "abstain": 4,
+            "no answer": 5
+          },
+          "order_number_right": "33/90",
+          "pincode_right": "43/90",
+          "latency_ms_median": 5263,
+          "latency_ms_p90": 13221,
+          "usd_per_1000_clips": 3.261,
+          "asr_usd_per_1000_clips": 0.0
+        },
+        "spark-1.2@low": {
+          "answers": 270,
+          "correct": 218,
+          "clips_correct_majority": 73,
+          "clips": 90,
+          "types": {
+            "correct": 218,
+            "wrong": 45,
+            "abstain": 7
+          },
+          "order_number_right": "52/90",
+          "pincode_right": "66/90",
+          "latency_ms_median": 4393,
+          "latency_ms_p90": 8240,
+          "usd_per_1000_clips": 2.335,
+          "asr_usd_per_1000_clips": 0.0
+        },
+        "transcribe+spark-1.3@low": {
+          "answers": 270,
+          "correct": 228,
+          "clips_correct_majority": 77,
+          "clips": 90,
+          "types": {
+            "correct": 228,
+            "wrong": 41,
+            "no answer": 1
+          },
+          "order_number_right": "79/90",
+          "pincode_right": "73/90",
+          "latency_ms_median": 5697,
+          "latency_ms_p90": 7712,
+          "usd_per_1000_clips": 2.25,
+          "asr_usd_per_1000_clips": 0.494
+        }
+      }
+    },
+    "speaker:simran": {
+      "run_dir": "results/e10-simran",
+      "clips": 45,
+      "testA": {
+        "decision": "inconclusive",
+        "reasons": [
+          "CI overlaps the drop limit. Approximately 349 more independent tasks are needed (normal approximation, 80% power; not a guarantee)."
+        ],
+        "stdout": "Failure types, audio input (45 tasks): wrong or blank with no warning 8 -> 7, says it can't answer 0 -> 0\n    grouped into 15 items: 1 worse, 2 better, p = 1; tested per item\nINCONCLUSIVE  (spark-1.2@low -> spark-1.3@low)\n  - CI overlaps the drop limit. Approximately 349 more independent tasks are needed (normal approximation, 80% power; not a guarantee).",
+        "overall": {
+          "delta": -0.06666666666666667,
+          "ci_low": -0.17777777777777778,
+          "ci_high": 0.022222222222222223,
+          "n": 45
+        }
+      },
+      "testB": {
+        "decision": "go",
+        "reasons": [
+          "Overall change +4.4 pts (95% CI +0.0 to +11.1) clears the 2.0 pt drop limit; no tested slice regresses significantly."
+        ],
+        "stdout": "Failure types, audio input (45 tasks): wrong or blank with no warning 8 -> 6, says it can't answer 0 -> 0\n    grouped into 15 items: 0 worse, 2 better, p = 0.5; tested per item\nGO  (spark-1.2@low -> transcribe+spark-1.3@low)\n  - Overall change +4.4 pts (95% CI +0.0 to +11.1) clears the 2.0 pt drop limit; no tested slice regresses significantly.",
+        "overall": {
+          "delta": 0.044444444444444446,
+          "ci_low": 0.0,
+          "ci_high": 0.1111111111111111,
+          "n": 45
+        }
+      },
+      "describe": {
+        "spark-1.3@low": {
+          "answers": 135,
+          "correct": 105,
+          "clips_correct_majority": 34,
+          "clips": 45,
+          "types": {
+            "correct": 105,
+            "wrong": 20,
+            "no answer": 5,
+            "abstain": 1,
+            "blank": 4
+          },
+          "order_number_right": "21/45",
+          "pincode_right": "25/45",
+          "latency_ms_median": 5160,
+          "latency_ms_p90": 10987,
+          "usd_per_1000_clips": 3.253,
+          "asr_usd_per_1000_clips": 0.0
+        },
+        "spark-1.2@low": {
+          "answers": 135,
+          "correct": 112,
+          "clips_correct_majority": 37,
+          "clips": 45,
+          "types": {
+            "correct": 112,
+            "wrong": 23
+          },
+          "order_number_right": "28/45",
+          "pincode_right": "34/45",
+          "latency_ms_median": 5111,
+          "latency_ms_p90": 8979,
+          "usd_per_1000_clips": 2.25,
+          "asr_usd_per_1000_clips": 0.0
+        },
+        "transcribe+spark-1.3@low": {
+          "answers": 135,
+          "correct": 120,
+          "clips_correct_majority": 39,
+          "clips": 45,
+          "types": {
+            "correct": 120,
+            "wrong": 14,
+            "no answer": 1
+          },
+          "order_number_right": "37/45",
+          "pincode_right": "38/45",
+          "latency_ms_median": 5466,
+          "latency_ms_p90": 7053,
+          "usd_per_1000_clips": 2.12,
+          "asr_usd_per_1000_clips": 0.562
+        }
+      }
+    },
+    "speaker:utsav": {
+      "run_dir": "results/e10-utsav",
+      "clips": 45,
+      "testA": {
+        "decision": "no-go",
+        "reasons": [
+          "Overall CI upper bound -2.2 pts is below the allowed drop of 2.0 pts.",
+          "Not robust: Audio input: wrong or blank answers rose 6 → 13 per task (p = 0.02), but not when related tasks are grouped into 15 items (5 worse, 0 better, p = 0.062)."
+        ],
+        "stdout": "Failure types, audio input (45 tasks): wrong or blank with no warning 6 -> 13, says it can't answer 1 -> 0\n    grouped into 15 items: 5 worse, 0 better, p = 0.062; tested per item\nNO-GO  (spark-1.2@low -> spark-1.3@low)\n  - Overall CI upper bound -2.2 pts is below the allowed drop of 2.0 pts.\n  - Not robust: Audio input: wrong or blank answers rose 6 → 13 per task (p = 0.02), but not when related tasks are grouped into 15 items (5 worse, 0 better, p = 0.062).",
+        "overall": {
+          "delta": -0.1111111111111111,
+          "ci_low": -0.2,
+          "ci_high": -0.022222222222222223,
+          "n": 45
+        }
+      },
+      "testB": {
+        "decision": "inconclusive",
+        "reasons": [
+          "CI overlaps the drop limit. Approximately 295 more independent tasks are needed (normal approximation, 80% power; not a guarantee)."
+        ],
+        "stdout": "Failure types, audio input (45 tasks): wrong or blank with no warning 6 -> 7, says it can't answer 1 -> 0\n    grouped into 15 items: 3 worse, 2 better, p = 1; tested per item\nINCONCLUSIVE  (spark-1.2@low -> transcribe+spark-1.3@low)\n  - CI overlaps the drop limit. Approximately 295 more independent tasks are needed (normal approximation, 80% power; not a guarantee).",
+        "overall": {
+          "delta": 0.044444444444444446,
+          "ci_low": -0.06666666666666667,
+          "ci_high": 0.17777777777777778,
+          "n": 45
+        }
+      },
+      "describe": {
+        "spark-1.3@low": {
+          "answers": 135,
+          "correct": 96,
+          "clips_correct_majority": 31,
+          "clips": 45,
+          "types": {
+            "correct": 96,
+            "blank": 18,
+            "wrong": 18,
+            "abstain": 3
+          },
+          "order_number_right": "12/45",
+          "pincode_right": "18/45",
+          "latency_ms_median": 5407,
+          "latency_ms_p90": 14298,
+          "usd_per_1000_clips": 3.27,
+          "asr_usd_per_1000_clips": 0.0
+        },
+        "spark-1.2@low": {
+          "answers": 135,
+          "correct": 106,
+          "clips_correct_majority": 36,
+          "clips": 45,
+          "types": {
+            "correct": 106,
+            "wrong": 22,
+            "abstain": 7
+          },
+          "order_number_right": "24/45",
+          "pincode_right": "32/45",
+          "latency_ms_median": 3430,
+          "latency_ms_p90": 5675,
+          "usd_per_1000_clips": 2.419,
+          "asr_usd_per_1000_clips": 0.0
+        },
+        "transcribe+spark-1.3@low": {
+          "answers": 135,
+          "correct": 108,
+          "clips_correct_majority": 38,
+          "clips": 45,
+          "types": {
+            "wrong": 27,
+            "correct": 108
+          },
+          "order_number_right": "42/45",
+          "pincode_right": "35/45",
+          "latency_ms_median": 5837,
+          "latency_ms_p90": 9256,
+          "usd_per_1000_clips": 2.38,
+          "asr_usd_per_1000_clips": 0.426
+        }
+      }
+    }
+  }
+}

@@ -1,3 +1,4 @@
+import { CircleCheck, CircleHelp, CircleX } from "lucide-react";
 import type { ReactNode } from "react";
 import type { Mode } from "../data";
 
@@ -52,9 +53,18 @@ const VERDICT: Record<string, { label: string; cls: string }> = {
   risk: { label: "RISK", cls: "text-risk" },
 };
 
-export function Verdict({ decision }: { decision: string }) {
+const ICON = { go: CircleCheck, "no-go": CircleX, inconclusive: CircleHelp, risk: CircleX } as const;
+
+export function Verdict({ decision, large = false }: { decision: string; large?: boolean }) {
   const v = VERDICT[decision] ?? VERDICT.inconclusive;
-  return <span className={`text-xs font-bold tracking-[0.08em] ${v.cls}`}>{v.label}</span>;
+  if (!large) return <span className={`text-xs font-bold tracking-[0.08em] ${v.cls}`}>{v.label}</span>;
+  const Icon = ICON[decision as keyof typeof ICON] ?? CircleHelp;
+  return (
+    <span className={`inline-flex items-center gap-1.5 text-sm font-bold tracking-[0.08em] ${v.cls}`}>
+      <Icon aria-hidden className="size-5" />
+      {v.label}
+    </span>
+  );
 }
 
 export const MODE_STYLE: Record<Mode, { color: string; label: string; short: string; hatch?: boolean }> = {

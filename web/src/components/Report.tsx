@@ -1,3 +1,4 @@
+import { EvidenceTabs } from "./Findings";
 import { AnimatePresence } from "motion/react";
 import { ArrowDown, ArrowUp, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -87,8 +88,9 @@ export function Report({ run, task }: { run: string; task: string | null }) {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 pt-8 pb-24 sm:px-8">
-      <nav aria-label="Reports" className="-mx-1 flex gap-1 overflow-x-auto border-b border-line">
+    <div className="mx-auto max-w-6xl px-4 pt-8 pb-16 sm:px-8">
+      <EvidenceTabs active="runs" />
+      <nav aria-label="Runs" className="mt-6 -mx-1 flex gap-1 overflow-x-auto border-b border-line">
         {(runs.length ? runs : [{ run, title: run, decision: "" } as RunIndex]).map((r) => (
           <a
             key={r.run}

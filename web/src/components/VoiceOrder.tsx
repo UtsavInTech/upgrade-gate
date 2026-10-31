@@ -1,111 +1,72 @@
-import { Check, Circle, Square, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowRight, Check, Circle, Minus, Square, Upload, X } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toWav16k } from "../audio";
-import { LANG_LABEL, shortModel } from "../data";
+import type { Site } from "../data";
+import { LANG_LABEL, pts } from "../data";
+import type { Config, Result } from "../voiceorder";
+import { DEFAULT_SAMPLE, FIELDS, fieldMatches, loadVoiceOrder, modelsOf, outcomeOf, roleOf } from "../voiceorder";
+import { AudioButton } from "./AudioButton";
+import { routeLabel } from "./SafeRouteSection";
+import { gateBadges, speakersText, stagesOf } from "./UpgradePath";
+import { Verdict } from "./ui";
 
-type Sample = { id: string; lang: string; transcript: string; audio: string };
-type Config = {
-  shipping: string;
-  candidate: string;
-  route?: string; // the route the gate approved (E9)
-  route_url?: string;
-  pr: string;
-  samples: Sample[];
-  // Hosted site: no service, so saved answers come with the config.
-  static?: boolean;
-  results?: Record<string, Record<string, Result>>;
-};
-type Result = {
-  model: string;
-  text: string;
-  error: string | null;
-  order: Record<string, unknown> | null;
-  checks: { status: "saved" | "rejected" | "ask_customer"; message: string; fields: Record<string, boolean> };
-  cost_usd: number;
-  reused: boolean;
-  latency_ms: number | null;
-  truth?: { correct: boolean; expected: Record<string, string> };
-  transcript?: string | null; // route only: what Voice Transcribe heard
-};
+type Slot = Result | "loading" | { error: string };
+const ROLE = { shipping: "Shipping today", candidate: "Proposed upgrade", route: "Alternative route" } as const;
 
-const FIELDS: [string, string][] = [
-  ["order_number", "Order number"],
-  ["pincode", "Pincode"],
-  ["city", "City"],
-];
-const DEFAULT_SAMPLE = "audio-synth-extract-03-hi";
-
-async function call(url: string, body?: Blob): Promise<Result> {
+async function post(url: string, body?: Blob): Promise<Result> {
   const r = await fetch(url, { method: "POST", body, headers: body ? { "Content-Type": "audio/wav" } : {} });
-  const data = await r.json().catch(() => ({ error: `HTTP ${r.status}` }));
-  if (!r.ok) throw new Error(data.error ?? `HTTP ${r.status}`);
+  const data = await r.json().catch(() => ({ error: `The server answered ${r.status}.` }));
+  if (!r.ok) throw new Error(data.error ?? `The server answered ${r.status}.`);
   return data;
 }
 
-export function VoiceOrder() {
+const canRecord = () =>
+  typeof window !== "undefined" && "MediaRecorder" in window && !!navigator.mediaDevices?.getUserMedia && window.isSecureContext;
+
+export function VoiceOrder({ site }: { site: Site | null }) {
   const [cfg, setCfg] = useState<Config | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState(false);
   const [mode, setMode] = useState<"sample" | "record">("sample");
   const [sampleId, setSampleId] = useState(DEFAULT_SAMPLE);
   const [lang, setLang] = useState("hi");
-  const [results, setResults] = useState<Record<string, Result | "loading" | { error: string }>>({});
+  const [live, setLive] = useState<Record<string, Slot>>({});
   const [recState, setRecState] = useState<"idle" | "recording" | "ready">("idle");
   const [take, setTake] = useState<{ url: string; wav: Blob } | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const rec = useRef<MediaRecorder | null>(null);
 
-  useEffect(() => {
-    const json = (r: Response) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)));
-    fetch("/api/voiceorder/config")
-      .then(json)
-      // No service (hosted site, or the dev server isn't running it): fall back to the saved answers.
-      .catch(() => fetch("data/voiceorder.json").then(json))
-      .then(setCfg)
-      .catch(() =>
-        setError(
-          "The VoiceOrder service isn’t running. Start the site with `npm --prefix web run dev`; it starts the service too.",
-        ),
-      );
+  const load = useCallback(() => {
+    setLoadError(false);
+    loadVoiceOrder().then(setCfg, () => setLoadError(true));
   }, []);
+  useEffect(load, [load]);
 
-  // Once the route ships, shipping and route are the same model: show it once.
-  const models = cfg ? [...new Set([cfg.shipping, cfg.candidate, ...(cfg.route ? [cfg.route] : [])])] : [];
-  const label = (m: string) =>
-    m === cfg?.shipping ? "Shipping today" : m === cfg?.route ? "Approved route" : "Proposed upgrade";
+  const models = useMemo(() => (cfg ? modelsOf(cfg) : []), [cfg]);
+  const sample = cfg?.samples.find((s) => s.id === sampleId);
+  const shown = cfg?.samples.filter((s) => s.lang === lang) ?? [];
+  const results: Record<string, Slot> = useMemo(() => {
+    if (!cfg) return {};
+    if (mode === "record") return live;
+    const saved = cfg.results?.[sampleId] ?? {};
+    return Object.fromEntries(models.map((m) => [m, saved[m] ?? { error: "No saved answer for this note." }]));
+  }, [cfg, models, mode, sampleId, live]);
 
-  const run = useCallback(
-    async (source: { sample: string } | { wav: Blob }) => {
-      if (!cfg) return;
-      if (cfg.static) {
-        const saved = "sample" in source ? cfg.results?.[source.sample] : undefined;
-        setResults(Object.fromEntries(models.map((m) => [m, saved?.[m] ?? { error: "No saved answer for this note." }])));
-        return;
-      }
-      setResults(Object.fromEntries(models.map((m) => [m, "loading"])));
-      await Promise.all(
-        models.map(async (m) => {
-          const q = `/api/voiceorder/parse?model=${encodeURIComponent(m)}`;
-          try {
-            const res =
-              "sample" in source
-                ? await call(`${q}&sample=${encodeURIComponent(source.sample)}`)
-                : await call(q, source.wav);
-            setResults((r) => ({ ...r, [m]: res }));
-          } catch (e) {
-            setResults((r) => ({ ...r, [m]: { error: (e as Error).message } }));
-          }
-        }),
-      );
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [cfg],
-  );
-
-  useEffect(() => {
-    if (cfg && mode === "sample") run({ sample: sampleId });
-  }, [cfg, sampleId, mode, run]);
+  const runLive = async (wav: Blob) => {
+    setLive(Object.fromEntries(models.map((m) => [m, "loading"])));
+    await Promise.all(
+      models.map(async (m) => {
+        try {
+          const res = await post(`/api/voiceorder/parse?model=${encodeURIComponent(m)}`, wav);
+          setLive((r) => ({ ...r, [m]: res }));
+        } catch (e) {
+          setLive((r) => ({ ...r, [m]: { error: (e as Error).message } }));
+        }
+      }),
+    );
+  };
 
   const startRec = async () => {
-    setError(null);
+    setNotice(null);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const parts: Blob[] = [];
@@ -113,213 +74,221 @@ export function VoiceOrder() {
       r.ondataavailable = (e) => e.data.size && parts.push(e.data);
       r.onstop = async () => {
         stream.getTracks().forEach((t) => t.stop());
-        const wav = await toWav16k(new Blob(parts, { type: r.mimeType }));
-        setTake({ url: URL.createObjectURL(wav), wav });
-        setRecState("ready");
+        try {
+          const wav = await toWav16k(new Blob(parts, { type: r.mimeType }));
+          setTake({ url: URL.createObjectURL(wav), wav });
+          setRecState("ready");
+        } catch {
+          setNotice("This browser couldn’t decode the recording. Try uploading a file instead.");
+          setRecState("idle");
+        }
       };
       rec.current = r;
       r.start();
       setRecState("recording");
-      setResults({});
-    } catch {
-      setError("Microphone access was blocked. Allow it in the address bar and try again.");
+      setLive({});
+    } catch (e) {
+      const name = (e as DOMException)?.name;
+      setNotice(
+        name === "NotFoundError"
+          ? "No microphone was found. Upload a recording instead."
+          : "Microphone access was blocked. Allow it in the address bar, or upload a recording instead.",
+      );
     }
   };
 
-  const sample = cfg?.samples.find((s) => s.id === sampleId);
-  const shown = cfg?.samples.filter((s) => s.lang === lang) ?? [];
+  const onFile = async (f: File | undefined) => {
+    if (!f) return;
+    setNotice(null);
+    try {
+      const wav = await toWav16k(f);
+      setTake({ url: URL.createObjectURL(wav), wav });
+      setRecState("ready");
+      setLive({});
+    } catch {
+      setNotice("That file couldn’t be read as audio. Try a WAV, MP3 or M4A file.");
+    }
+  };
+
+  if (loadError) {
+    return (
+      <div className="mx-auto max-w-xl px-4 py-24 text-center">
+        <h1 className="text-2xl font-semibold">VoiceOrder couldn’t load</h1>
+        <p className="mt-3 text-muted">The saved examples didn’t download. Check your connection and try again.</p>
+        <button onClick={load} className="mt-6 rounded-md bg-fg px-4 py-2.5 text-sm font-semibold text-bg">
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 pt-10 pb-24 sm:px-8">
-      <header className="grid gap-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end">
-        <div>
-          <p className="text-sm font-medium text-muted">Example app protected by Upgrade Gate</p>
-          <h1 className="mt-2 text-4xl font-semibold tracking-tight">VoiceOrder</h1>
-          <p className="mt-3 max-w-xl text-lg leading-relaxed text-muted text-pretty">
-            Customers of an Indian online shop leave a voice note in Hindi, Hinglish or English with their
-            order number, pincode and city. VoiceOrder turns it into an order with Meta Muse Spark and runs
-            the shop’s usual checks before saving it.
-          </p>
-        </div>
-        {cfg && (
-          <dl className="divide-y divide-line rounded-lg border border-line text-sm">
-            <div className="flex items-center justify-between gap-4 px-4 py-3">
-              <dt className="text-muted">Shipping today</dt>
-              <dd className="font-mono">
-                {cfg.shipping} <span className="text-faint">(release/model.json)</span>
-              </dd>
-            </div>
-            <div className="flex items-center justify-between gap-4 px-4 py-3">
-              <dt className="text-muted">Proposed upgrade</dt>
-              <dd className="font-mono">{cfg.candidate}</dd>
-            </div>
-            <div className="flex items-center justify-between gap-4 bg-risk-soft px-4 py-3 text-risk">
-              <dt className="font-semibold">Upgrade blocked by Upgrade Gate</dt>
-              <dd>
-                <a href={cfg.pr} target="_blank" rel="noreferrer" className="underline underline-offset-2">
-                  See the pull request
-                </a>
-              </dd>
-            </div>
-            {cfg.route && (
-              <div className="flex items-center justify-between gap-4 bg-go-soft px-4 py-3 text-go">
-                <dt>
-                  <span className="font-semibold">Approved route</span>{" "}
-                  <span className="font-mono text-xs">{shortModel(cfg.route)}</span>
-                </dt>
-                <dd>
-                  <a href={cfg.route_url} target="_blank" rel="noreferrer" className="underline underline-offset-2">
-                    Gate: GO
-                  </a>
-                </dd>
-              </div>
-            )}
-          </dl>
-        )}
+    <div className="mx-auto max-w-6xl px-4 pt-8 pb-16 sm:px-8">
+      <header className="max-w-2xl">
+        <p className="text-sm font-medium text-muted">Example app protected by Upgrade Gate</p>
+        <h1 className="mt-1 text-3xl font-semibold tracking-tight">VoiceOrder</h1>
+        <p className="mt-2 text-muted text-pretty">
+          An Indian shop turns customers’ voice notes into orders. Each route hears the same note; the shop’s form only
+          checks the format before saving.
+        </p>
       </header>
 
-      {error && <p className="mt-8 rounded-md bg-hold-soft px-4 py-3 text-hold">{error}</p>}
-
-      {cfg && (
-        <div className="mt-12 grid gap-8 lg:grid-cols-[340px_minmax(0,1fr)]">
-          <section aria-labelledby="note-h">
-            <h2 id="note-h" className="text-lg font-semibold">
+      {!cfg ? (
+        <div className="mt-8 grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)]" aria-busy="true">
+          <div className="h-80 animate-pulse rounded-xl bg-surface" />
+          <div className="h-80 animate-pulse rounded-xl bg-surface" />
+        </div>
+      ) : (
+        <div className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
+          {/* Input panel: quiet */}
+          <section aria-labelledby="note-h" className="rounded-xl border border-line bg-card p-4 lg:self-start">
+            <h2 id="note-h" className="sr-only">
               Voice note
             </h2>
-            <div role="tablist" className="mt-3 flex gap-1 rounded-md bg-surface p-1 text-sm">
+            <div role="tablist" aria-label="Note source" className="flex gap-1 rounded-lg bg-surface p-1 text-sm">
               {(["sample", "record"] as const).map((m) => (
                 <button
                   key={m}
                   role="tab"
                   aria-selected={mode === m}
-                  onClick={() => (setMode(m), setResults({}))}
-                  className={`flex-1 rounded px-3 py-1.5 font-medium ${mode === m ? "bg-bg text-fg shadow-sm" : "text-muted"}`}
+                  onClick={() => setMode(m)}
+                  className={`flex-1 rounded-md px-3 py-2 font-medium transition-colors duration-150 ${
+                    mode === m ? "bg-card text-fg shadow-sm" : "text-muted hover:text-fg"
+                  }`}
                 >
-                  {m === "sample" ? "Sample notes" : "Record your own"}
+                  {m === "sample" ? "Saved examples" : "Record a note"}
                 </button>
               ))}
             </div>
 
             {mode === "sample" ? (
               <>
-                <div className="mt-4 flex gap-1 text-sm" role="tablist" aria-label="Language">
+                <div className="mt-4 flex gap-1" role="radiogroup" aria-label="Language">
                   {["hi", "hinglish", "en"].map((l) => (
                     <button
                       key={l}
-                      role="tab"
-                      aria-selected={lang === l}
-                      onClick={() => setLang(l)}
-                      className={`rounded-md px-3 py-1.5 ${lang === l ? "bg-fg text-bg" : "text-muted hover:text-fg"}`}
+                      role="radio"
+                      aria-checked={lang === l}
+                      onClick={() => {
+                        setLang(l);
+                        const first = cfg.samples.find((s) => s.lang === l);
+                        if (first) setSampleId(first.id);
+                      }}
+                      className={`rounded-md px-3 py-1.5 text-sm transition-colors duration-150 ${
+                        lang === l ? "bg-fg text-bg" : "text-muted hover:bg-surface hover:text-fg"
+                      }`}
                     >
                       {LANG_LABEL[l]}
                     </button>
                   ))}
                 </div>
-                <ol className="mt-3 max-h-80 overflow-y-auto rounded-lg border border-line">
-                  {shown.map((s) => (
-                    <li key={s.id}>
-                      <button
-                        onClick={() => setSampleId(s.id)}
-                        aria-current={s.id === sampleId ? "true" : undefined}
-                        className={`block w-full border-b border-line px-4 py-2.5 text-left text-sm last:border-0 ${
-                          s.id === sampleId ? "bg-accent-soft" : "hover:bg-surface"
-                        }`}
-                      >
-                        <span className="line-clamp-2">{s.transcript}</span>
-                      </button>
-                    </li>
+                <label htmlFor="sample-select" className="mt-4 block text-xs text-faint">
+                  Note ({shown.length} saved in {LANG_LABEL[lang]})
+                </label>
+                <select
+                  id="sample-select"
+                  value={sampleId}
+                  onChange={(e) => setSampleId(e.target.value)}
+                  className="mt-1 w-full rounded-md border border-line bg-card px-3 py-2 text-sm"
+                >
+                  {shown.map((s, i) => (
+                    <option key={s.id} value={s.id}>
+                      Note {i + 1}: {s.transcript.slice(0, 44)}…
+                    </option>
                   ))}
-                </ol>
+                </select>
                 {sample && (
-                  <div className="mt-4">
-                    <audio controls src={sample.audio} className="w-full" />
-                    <p className="mt-2 text-xs text-faint">
-                      Synthetic voice from the test set. Answers come from the saved run, so nothing is spent.
+                  <div className="mt-4 border-t border-line pt-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <AudioButton src={sample.audio} />
+                      <span className="text-xs text-faint">Saved example · Synthetic voice</span>
+                    </div>
+                    <p className="mt-3 text-sm leading-relaxed" lang={sample.lang === "hi" ? "hi" : "en"}>
+                      {sample.transcript}
                     </p>
+                    <p className="mt-3 text-xs text-muted">Answers come from the saved test run. Nothing is sent or spent.</p>
                   </div>
                 )}
               </>
-            ) : cfg?.static ? (
-              <div className="mt-4 rounded-lg border border-line p-4 text-sm text-muted">
-                <p>
-                  Recording your own note sends it to Meta’s API, so it only works when you run VoiceOrder on
-                  your machine:
+            ) : cfg.live ? (
+              <div className="mt-4 space-y-4 text-sm">
+                <p className="text-muted">
+                  Say an order number digit by digit, a 6-digit pincode and your city. Your note goes to each route once
+                  (about $0.02) and isn’t stored.
                 </p>
-                <pre className="mt-3 rounded bg-surface p-3 font-mono text-xs break-all whitespace-pre-wrap text-fg">
-                  {"git clone https://github.com/UtsavInTech/upgrade-gate\ncd upgrade-gate && npm --prefix web run dev"}
-                </pre>
-                <p className="mt-3">The sample notes on the other tab use the answers each model gave in our test.</p>
+                <div className="flex flex-wrap items-center gap-2">
+                  {canRecord() ? (
+                    recState === "recording" ? (
+                      <button
+                        onClick={() => rec.current?.stop()}
+                        className="inline-flex items-center gap-2 rounded-md bg-risk px-4 py-2.5 font-semibold text-white"
+                      >
+                        <Square aria-hidden className="size-4 fill-current" /> Stop
+                      </button>
+                    ) : (
+                      <button onClick={startRec} className="inline-flex items-center gap-2 rounded-md bg-fg px-4 py-2.5 font-semibold text-bg">
+                        <Circle aria-hidden className="size-4 fill-[var(--risk)] text-[var(--risk)]" />
+                        {take ? "Record again" : "Record"}
+                      </button>
+                    )
+                  ) : (
+                    <p className="text-hold">Recording isn’t available in this browser. Upload a file instead.</p>
+                  )}
+                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-line px-4 py-2.5 font-medium hover:bg-surface">
+                    <Upload aria-hidden className="size-4" /> Upload
+                    <input type="file" accept="audio/*" className="sr-only" onChange={(e) => onFile(e.target.files?.[0])} />
+                  </label>
+                </div>
+                {take && <audio controls src={take.url} className="w-full" />}
+                {take && recState === "ready" && (
+                  <button onClick={() => runLive(take.wav)} className="w-full rounded-md bg-accent px-4 py-2.5 font-semibold text-accent-ink">
+                    Turn into an order
+                  </button>
+                )}
+                {notice && (
+                  <p role="alert" className="text-hold">
+                    {notice}
+                  </p>
+                )}
+                <p className="text-xs text-faint">A new recording has no known answer, so routes are checked for format only.</p>
               </div>
             ) : (
-              <div className="mt-4 rounded-lg border border-line p-4">
-                <p className="text-sm text-muted">
-                  Say an order number digit by digit, a 6-digit pincode and your city. The note is sent to
-                  Meta for each route (about $0.02 in all) and not stored.
+              <div className="mt-4 space-y-3 text-sm text-muted">
+                <p>Live requests are off on this demo, so the saved examples cost nothing and always work.</p>
+                <p>
+                  To try your own voice, run VoiceOrder locally:{" "}
+                  <code className="rounded bg-surface px-1 font-mono text-xs text-fg">npm --prefix web run dev</code>
                 </p>
-                <div className="mt-4 flex flex-wrap items-center gap-3">
-                  {recState === "recording" ? (
-                    <button
-                      onClick={() => rec.current?.stop()}
-                      className="inline-flex items-center gap-2 rounded-md bg-risk px-4 py-2.5 font-semibold text-white"
-                    >
-                      <Square aria-hidden className="size-4 fill-current" /> Stop
-                    </button>
-                  ) : (
-                    <button
-                      onClick={startRec}
-                      className="inline-flex items-center gap-2 rounded-md bg-fg px-4 py-2.5 font-semibold text-bg"
-                    >
-                      <Circle aria-hidden className="size-4 fill-[var(--risk)] text-[var(--risk)]" />
-                      {take ? "Record again" : "Record"}
-                    </button>
-                  )}
-                  {take && recState === "ready" && (
-                    <button
-                      onClick={() => run({ wav: take.wav })}
-                      className="rounded-md bg-accent px-4 py-2.5 font-semibold text-accent-ink"
-                    >
-                      Turn into an order
-                    </button>
-                  )}
-                </div>
-                {take && <audio controls src={take.url} className="mt-3 w-full" />}
+                <p>
+                  Want to help the research instead?{" "}
+                  <a href="#/record" className="text-accent underline-offset-2 hover:underline">
+                    Record the 45 test lines
+                  </a>
+                </p>
               </div>
             )}
           </section>
 
-          <section aria-labelledby="orders-h">
-            <h2 id="orders-h" className="text-lg font-semibold">
-              What each model would save
-            </h2>
-            {mode === "sample" && sample && (
-              <p className="mt-1 text-sm text-muted">
-                The customer said: <span className="text-fg">{sample.transcript}</span>
-              </p>
-            )}
-            <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {models.map((m) => (
-                <OrderCard key={m} label={label(m)} model={m} r={results[m]} />
-              ))}
+          {/* Comparison */}
+          <section aria-labelledby="routes-h">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 id="routes-h" className="text-lg font-semibold">
+                What each route saves
+              </h2>
+              <p className="text-xs text-faint">Previewing routes here doesn’t change the shipped model.</p>
             </div>
-            <p className="mt-6 max-w-2xl text-sm text-muted">
-              The shop’s checks only see the shape of an order: a 6-digit pincode looks fine whether or not
-              it’s the one the customer said. Upgrade Gate replayed 135 notes like these on both models and
-              blocked the upgrade because wrong-or-blank answers with no warning rose from 18 to 42.{" "}
-              <a href="#/report/e6-audio" className="text-accent underline underline-offset-2">
-                Open the report
-              </a>
-              {cfg.route && (
-                <>
-                  {" "}
-                  The same gate, same policy, approved a different way to use Spark 1.3: let Meta’s Voice
-                  Transcribe write the note down first, then read the text. On the 135 notes it got 12.8 points
-                  more right than today’s app, with no rise in silent failures.{" "}
-                  <a href="#safe-route" className="text-accent underline underline-offset-2">
-                    How we tested it
-                  </a>
-                </>
-              )}
-            </p>
+            {mode === "record" && !Object.keys(live).length ? (
+              <p className="mt-4 rounded-xl border border-dashed border-line px-5 py-12 text-center text-sm text-muted">
+                {cfg.live ? "Record or upload a note to compare the routes." : "Choose a saved example to compare the routes."}
+              </p>
+            ) : (
+              <div className="mt-4 grid gap-4 md:grid-cols-3" aria-live="polite">
+                {models.map((m) => (
+                  <RouteColumn key={m} cfg={cfg} model={m} r={results[m]} />
+                ))}
+              </div>
+            )}
+            <DecisionPanel cfg={cfg} site={site} />
           </section>
         </div>
       )}
@@ -327,83 +296,89 @@ export function VoiceOrder() {
   );
 }
 
-function OrderCard({
-  label,
-  model,
-  r,
-}: {
-  label: string;
-  model: string;
-  r?: Result | "loading" | { error: string };
-}) {
+function RouteColumn({ cfg, model, r }: { cfg: Config; model: string; r?: Slot }) {
+  const role = roleOf(cfg, model);
+  const stages = stagesOf(model);
   const head = (
-    <div className="flex items-baseline justify-between gap-2 border-b border-line pb-3">
-      <span className="text-sm text-muted">{label}</span>
-      <span className="font-semibold">{shortModel(model)}</span>
+    <div className="border-b border-line pb-3 md:min-h-[84px]">
+      <p className="text-xs text-faint">{ROLE[role]}</p>
+      <p className="mt-1 flex flex-wrap items-center gap-1 text-sm font-semibold">
+        <span className="rounded bg-surface px-1.5 py-0.5 text-xs font-medium text-muted">Audio</span>
+        {stages.map((s, i) => (
+          <span key={s} className="inline-flex items-center gap-1">
+            <ArrowRight aria-label="then" className="size-3.5 text-faint" />
+            <span className={i === 0 && stages.length > 1 ? "rounded bg-accent-soft px-1.5 py-0.5 text-xs text-accent" : ""}>{s}</span>
+          </span>
+        ))}
+      </p>
     </div>
   );
-  if (!r)
+  if (!r || r === "loading")
     return (
-      <div className="rounded-lg border border-line p-5">
+      <article className="rounded-xl border border-line bg-card p-4" aria-busy="true">
         {head}
-        <p className="mt-4 text-sm text-faint">Choose a note.</p>
-      </div>
-    );
-  if (r === "loading")
-    return (
-      <div className="rounded-lg border border-line p-5" aria-busy="true">
-        {head}
-        <div className="mt-4 h-24 animate-pulse rounded bg-surface" />
-      </div>
+        <div className="mt-4 h-28 animate-pulse rounded bg-surface" />
+      </article>
     );
   if ("error" in r && !("checks" in r))
     return (
-      <div className="rounded-lg border border-line p-5">
+      <article className="rounded-xl border border-line bg-card p-4">
         {head}
         <p className="mt-4 text-sm text-risk">{r.error}</p>
-      </div>
+      </article>
     );
   const res = r as Result;
-  const wrongSaved = res.checks.status === "saved" && res.truth && !res.truth.correct;
-  const verdict = wrongSaved
-    ? { text: "WRONG ORDER SAVED", cls: "text-risk" }
-    : res.checks.status === "saved"
-      ? { text: res.truth ? "CORRECT ORDER SAVED" : "ORDER SAVED", cls: "text-go" }
-      : res.checks.status === "ask_customer"
-        ? { text: "ASKS THE CUSTOMER", cls: "text-hold" }
-        : { text: "ORDER LOST", cls: "text-risk" };
-  const order = res.order ?? {};
+  const o = outcomeOf(res);
+  const tone = { go: "text-go", risk: "text-risk", hold: "text-hold", muted: "text-muted" }[o.tone];
+  const border = o.tone === "risk" ? "border-risk/50" : o.tone === "go" ? "border-go/40" : "border-line";
   return (
-    <article className={`rounded-lg border p-5 ${wrongSaved ? "border-risk/60" : "border-line"}`}>
+    <article className={`flex flex-col rounded-xl border bg-card p-4 ${border}`}>
       {head}
-      <p className={`mt-4 text-xs font-bold tracking-[0.08em] ${verdict.cls}`}>{verdict.text}</p>
-      <p className="mt-1 text-sm text-muted">{res.checks.message}</p>
-      <dl className="mt-4 divide-y divide-line text-sm">
+      <dl className="mt-1 divide-y divide-line text-sm">
         {FIELDS.map(([k, name]) => {
-          const val = String(order[k] ?? "");
-          const shapeOk = res.checks.fields[k];
-          const exp = res.truth?.expected[k];
-          const right = exp !== undefined && val.trim().toLowerCase() === String(exp).toLowerCase();
+          const val = String(res.order?.[k] ?? "");
+          const match = fieldMatches(res, k);
+          const fmt = res.checks.fields[k];
           return (
-            <div key={k} className="grid grid-cols-[110px_minmax(0,1fr)_auto] items-center gap-2 py-2">
-              <dt className="text-muted">{name}</dt>
-              <dd className={`font-mono ${exp !== undefined && !right && val ? "text-risk" : ""}`}>
-                {val || <span className="text-faint">(blank)</span>}
-              </dd>
-              <dd className="text-right text-xs text-faint" title="Passes the shop's format check">
-                {shapeOk === undefined ? null : shapeOk ? (
-                  <Check aria-label="format ok" className="inline size-4 text-go" />
-                ) : (
-                  <X aria-label="format fails" className="inline size-4 text-risk" />
-                )}
+            <div key={k} className="py-2">
+              <div className="flex items-center justify-between gap-2">
+                <dt className="text-xs text-muted">{name}</dt>
+                <dd className="flex items-center gap-2 text-[11px] text-faint">
+                  {fmt !== undefined && (
+                    <span className="inline-flex items-center gap-0.5" title={fmt ? "Passes the format check" : "Fails the format check"}>
+                      {fmt ? <Check aria-hidden className="size-3 text-go" /> : <X aria-hidden className="size-3 text-risk" />}
+                      <span className="sr-only">{fmt ? "passes" : "fails"} the</span> format
+                    </span>
+                  )}
+                  <span
+                    className="inline-flex items-center gap-0.5"
+                    title={match === undefined ? "No known answer" : match ? "Matches what was said" : "Doesn’t match what was said"}
+                  >
+                    {match === undefined ? (
+                      <Minus aria-hidden className="size-3" />
+                    ) : match ? (
+                      <Check aria-hidden className="size-3 text-go" />
+                    ) : (
+                      <X aria-hidden className="size-3 text-risk" />
+                    )}
+                    <span className="sr-only">{match === undefined ? "no known answer to" : match ? "" : "does not"}</span> matches
+                  </span>
+                </dd>
+              </div>
+              <dd className={`mt-0.5 font-mono text-[15px] whitespace-nowrap ${match === false ? "font-semibold text-risk" : ""}`}>
+                {val || <span className="font-sans text-sm text-faint">(blank)</span>}
               </dd>
             </div>
           );
         })}
       </dl>
+      <div className="mt-2 border-t border-line pt-3">
+        <p className={`text-sm font-bold ${tone}`}>{o.label}</p>
+        <p className="mt-1 text-xs text-muted">{o.detail}</p>
+      </div>
       {res.truth && !res.truth.correct && (
-        <p className="mt-3 text-xs text-muted">
-          The customer said:{" "}
+        <p className="mt-2 text-xs text-muted">
+          Customer said{" "}
           <span className="font-mono text-fg">
             {FIELDS.map(([k]) => res.truth!.expected[k])
               .filter(Boolean)
@@ -411,21 +386,103 @@ function OrderCard({
           </span>
         </p>
       )}
-      {res.transcript && (
-        <details className="mt-3 text-xs text-muted">
-          <summary className="cursor-pointer">What Voice Transcribe heard</summary>
-          <p className="mt-2 break-words">{res.transcript}</p>
+      <div className="mt-auto space-y-1 pt-3 text-xs text-muted">
+        {res.transcript && (
+          <details>
+            <summary className="cursor-pointer">What Voice Transcribe heard</summary>
+            <p className="mt-1 break-words text-fg">{res.transcript}</p>
+          </details>
+        )}
+        <details>
+          <summary className="cursor-pointer">Model reply</summary>
+          <p className="mt-1 font-mono break-words whitespace-pre-wrap text-fg">{res.text || res.error || "(empty)"}</p>
         </details>
-      )}
-      <details className="mt-3 text-xs text-muted">
-        <summary className="cursor-pointer">Model reply</summary>
-        <p className="mt-2 font-mono break-words whitespace-pre-wrap">{res.text || res.error || "(empty)"}</p>
-      </details>
-      <p className="mt-3 text-xs text-faint">
-        {res.reused
-          ? "Saved answer, $0"
-          : `$${res.cost_usd.toFixed(4)} · ${((res.latency_ms ?? 0) / 1000).toFixed(1)} s`}
-      </p>
+        <p className="pt-1 text-faint">
+          {res.reused || res.latency_ms == null
+            ? "Saved answer · no cost"
+            : `Live request · $${res.cost_usd.toFixed(4)} · ${(res.latency_ms / 1000).toFixed(1)} s`}
+        </p>
+      </div>
     </article>
+  );
+}
+
+function DecisionPanel({ cfg, site }: { cfg: Config; site: Site | null }) {
+  const badges = gateBadges(site, cfg);
+  const e9 = site?.e9;
+  const synth = e9?.sets?.synth;
+  const audio = site?.e6.behaviour?.by_input?.audio;
+  const real = e9?.sets?.real;
+  if (!site) return null;
+  return (
+    <section aria-labelledby="decision-h" className="mt-6 rounded-xl border border-line bg-card p-5 shadow-[0_1px_2px_rgba(16,24,40,0.05)] sm:p-6">
+      <h2 id="decision-h" className="font-semibold">
+        What the gate decided
+      </h2>
+      <p className="mt-1 text-sm text-muted">From the full saved runs, not this single note.</p>
+      <ul className="mt-2 divide-y divide-line">
+        <li className="grid gap-2 py-4 sm:grid-cols-[170px_minmax(0,1fr)]">
+          <span>
+            {(badges[cfg.candidate] ?? []).map((b) => (
+              <Verdict key={b.note} decision={b.decision} large />
+            ))}
+          </span>
+          <div className="text-sm">
+            <p className="font-semibold">{routeLabel(cfg.candidate)}</p>
+            {audio && (
+              <p className="mt-1 text-muted">
+                Wrong or blank with no warning rose {audio.silent.baseline} → {audio.silent.candidate} of {audio.tasks} notes while
+                accuracy barely moved. “I can’t hear” answers went {audio.abstain.baseline} → {audio.abstain.candidate}.
+                {real?.gates[cfg.candidate] && (
+                  <>
+                    {" "}
+                    Real voices ({real.describe[e9!.baseline].clips} notes, {speakersText(real.speakers)}):{" "}
+                    {real.gates[cfg.candidate].decision.toUpperCase()} on accuracy; the second speaker did not show the
+                    silent-failure rise.
+                  </>
+                )}
+              </p>
+            )}
+            <a href="#/report/e6-audio" className="mt-2 inline-flex items-center gap-1 font-medium text-accent hover:underline">
+              View failing examples <ArrowRight aria-hidden className="size-3.5" />
+            </a>
+          </div>
+        </li>
+        {cfg.route && e9 && synth?.overall && (
+          <li className="grid gap-2 py-4 sm:grid-cols-[170px_minmax(0,1fr)]">
+            <span className="flex flex-col gap-2">
+              {(badges[cfg.route] ?? []).map((b) => (
+                <span key={b.note} className="flex flex-col">
+                  <Verdict decision={b.decision} large />
+                  <span className="text-[11px] text-muted">{b.note}</span>
+                </span>
+              ))}
+            </span>
+            <div className="text-sm">
+              <p className="font-semibold">{routeLabel(cfg.route)}</p>
+              <p className="mt-1 text-muted">
+                {pts(synth.overall.delta)} points more notes right than today (95% range {pts(synth.overall.ci_low)} to{" "}
+                {pts(synth.overall.ci_high)}); silent failures {synth.overall.silent.baseline} → {synth.overall.silent.candidate}.
+                {real && (
+                  <>
+                    {" "}
+                    On {real.describe[e9.baseline].clips} real-voice notes from {speakersText(real.speakers)} the gate can’t decide yet
+                    (it isn’t worse). The policy allows the switch because that isn’t NO-GO, which is not the same as GO
+                    for every voice.
+                  </>
+                )}
+              </p>
+              <p className="mt-1 text-muted">
+                ${synth.describe[e9.route].usd_per_1000_clips.toFixed(2)} vs ${synth.describe[e9.baseline].usd_per_1000_clips.toFixed(2)} per
+                1,000 notes.
+              </p>
+              <a href="#/report/e9-route-synth" className="mt-2 inline-flex items-center gap-1 font-medium text-accent hover:underline">
+                Compare routes <ArrowRight aria-hidden className="size-3.5" />
+              </a>
+            </div>
+          </li>
+        )}
+      </ul>
+    </section>
   );
 }

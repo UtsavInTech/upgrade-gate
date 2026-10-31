@@ -40,8 +40,10 @@ def _json(run: str, name: str):
         return json.load(f)
 
 
-def _run_cost(run: str) -> dict:
-    rows = _load(run, "responses.jsonl")
+def _run_cost(run: str, cands=None) -> dict:
+    """Calls and fresh spend behind the answers shown. `cands` limits it to the compared pair
+    (E9 run dirs also hold candidates the report doesn't show)."""
+    rows = [r for r in _load(run, "responses.jsonl") if cands is None or r["candidate"] in cands]
     fresh = sum(r.get("cost_usd") or 0.0 for r in rows if not r.get("cached"))
     return {"calls": len(rows), "fresh_cost_usd": round(fresh, 4),
             "reused_answers": sum(1 for r in rows if r.get("cached"))}
@@ -345,17 +347,88 @@ def e7() -> dict:
             "decision": gate.get("decision"), "accuracy_decision": gate.get("accuracy_decision", gate.get("decision"))}
 
 
+# ------------------------------------------------------------------ E9: the safe route
+
+def e9() -> dict:
+    """E9 numbers for the site, straight from experiments/out (the pre-registered run and the loss
+    scenario), so pages never carry their own copies of these constants."""
+    src = os.path.join(ROOT, "experiments", "out")
+    path = os.path.join(src, "e9_route.json")
+    if not os.path.exists(path):
+        return {"status": "missing"}
+    with open(path, encoding="utf-8") as f:
+        raw = json.load(f)
+    out = {"status": "done", "route": ROUTE, "baseline": A, "direct": B, "sets": {}}
+    for name, res in raw.items():
+        gates = {c: {"decision": g["decision"], "reasons": g["reasons"]} for c, g in res["gates"].items()}
+        loss = None
+        lp = os.path.join(src, "loss_scenario_%s.json" % os.path.basename(res["run_dir"]))
+        if os.path.exists(lp):
+            with open(lp, encoding="utf-8") as f:
+                ls = json.load(f)
+            loss = {"assumption": ls["assumption"], "order_notes": ls["order_notes"],
+                    "by_route": {c: {"per_1000": v["per_1000_orders"], "inr_per_1000": v["inr_per_1000_orders"]}
+                                 for c, v in ls["by_route"].items()}}
+        gate_path = os.path.join(RESULTS, os.path.basename(res["run_dir"]), "gate-%s.json" % ROUTE)
+        overall = None
+        if os.path.exists(gate_path):
+            with open(gate_path, encoding="utf-8") as f:
+                g = json.load(f)
+            ov = g.get("overall") or {}
+            sil = (((g.get("behaviour") or {}).get("by_input") or {}).get("audio") or {}).get("silent") or {}
+            overall = {"delta": ov.get("delta"), "ci_low": ov.get("ci_low"), "ci_high": ov.get("ci_high"),
+                       "n": ov.get("n"), "silent": {k: sil.get(k) for k in ("baseline", "candidate")},
+                       "silent_items_p": (sil.get("items") or {}).get("p")}
+        out["sets"][name] = {"run": os.path.basename(res["run_dir"]), "describe": res["describe"], "gates": gates,
+                             "overall": overall, "loss": loss, "speakers": 1 if name == "real" else None}
+    # E10 replaces the one-speaker real-voice set with every real speaker pooled (pre-registered).
+    e10p = os.path.join(src, "e10_new_speakers.json")
+    if os.path.exists(e10p):
+        with open(e10p, encoding="utf-8") as f:
+            e10 = json.load(f)
+        pooled = e10["sets"]["pooled"]
+        gp = os.path.join(RESULTS, "e10-real-voices", "gate-%s.json" % ROUTE)
+        overall = None
+        if os.path.exists(gp):
+            with open(gp, encoding="utf-8") as f:
+                g = json.load(f)
+            ov = g.get("overall") or {}
+            sil = (((g.get("behaviour") or {}).get("by_input") or {}).get("audio") or {}).get("silent") or {}
+            overall = {"delta": ov.get("delta"), "ci_low": ov.get("ci_low"), "ci_high": ov.get("ci_high"), "n": ov.get("n"),
+                       "silent": {k: sil.get(k) for k in ("baseline", "candidate")}, "silent_items_p": (sil.get("items") or {}).get("p")}
+        loss = None
+        lp = os.path.join(src, "loss_scenario_e10-real-voices.json")
+        if os.path.exists(lp):
+            with open(lp, encoding="utf-8") as f:
+                ls = json.load(f)
+            loss = {"assumption": ls["assumption"], "order_notes": ls["order_notes"],
+                    "by_route": {c: {"per_1000": v["per_1000_orders"], "inr_per_1000": v["inr_per_1000_orders"]}
+                                 for c, v in ls["by_route"].items()}}
+        out["sets"]["real"] = {"run": "e10-real-voices", "describe": pooled["describe"],
+                               "gates": {ROUTE: {"decision": pooled["testB"]["decision"], "reasons": pooled["testB"]["reasons"]},
+                                         B: {"decision": pooled["testA"]["decision"], "reasons": pooled["testA"]["reasons"]}},
+                               "overall": overall, "loss": loss, "speakers": len(e10["speakers"])}
+    return out
+
+
 # ------------------------------------------------------------------ report view: one file per run
+
+ROUTE = "transcribe+spark-1.3@low"
+# E9 run dirs hold several candidates; the report shows Spark 1.2 listening vs the transcribe route,
+# using the gate written for that pair (gate-<candidate>.json).
+GATE_FILE = {"e9-route-synth": "gate-%s.json" % ROUTE, "e10-real-voices": "gate-%s.json" % ROUTE}
 
 RUNS = [
     ("e6-audio", "Voice notes", "Spoken English, Hindi and Hinglish clips, each with a text twin"),
+    ("e9-route-synth", "Safe route", "Voice Transcribe, then Spark 1.3 on the text, vs Spark 1.2 listening (135 synthetic notes)"),
+    ("e10-real-voices", "Safe route, real voices", "The same route on 90 notes read by two people (E10, pooled)"),
     ("e1-upgrade", "Text, documents, Hindi", "Maths, extraction, intent, instructions, invoice images and PDFs"),
     ("e3-contributor", "Contributor mode", "Same model, cheaper serving mode"),
-    ("e7-real-voices", "Real voices", "The voice-note lines read aloud by a person (45 clips, English, Hindi, Hinglish)"),
+    ("e7-real-voices", "Real voice, first speaker", "The voice-note lines read aloud by one person (45 clips, English, Hindi, Hinglish)"),
 ]
 # Runs whose audio is a real person's voice: results are published, the recordings are not
 # (the repo becomes public). Pass --publish-real-voice to include them.
-PRIVATE_AUDIO = {"e7-real-voices"}
+PRIVATE_AUDIO = {"e7-real-voices", "e9-route-real", "e10-real-voices"}
 
 
 def _attachment(path: str, keep: bool):
@@ -394,7 +467,7 @@ def _display(v) -> str:
 
 def run_detail(run: str, title: str, blurb: str):
     d = os.path.join(RESULTS, run)
-    gate = _json(run, "gate.json")
+    gate = _json(run, GATE_FILE.get(run, "gate.json"))
     if not gate or not os.path.exists(os.path.join(d, "scores.jsonl")):
         return None
     import e6_audio as ex
@@ -457,7 +530,8 @@ def run_detail(run: str, title: str, blurb: str):
     info = _json(run, "run.json") or {}
     meta = {"run": run, "title": title, "blurb": blurb, "baseline": base, "candidate": cand,
             "decision": gate["decision"], "reasons": gate.get("reasons") or [], "created_utc": info.get("created_utc"),
-            "overall": gate.get("overall"), "slices": gate.get("slices") or [], **_run_cost(run),
+            "overall": gate.get("overall"), "slices": gate.get("slices") or [],
+            **_run_cost(run, (base, cand) if run in GATE_FILE else None),
             "accuracy_decision": gate.get("accuracy_decision", gate["decision"]), "behaviour": gate.get("behaviour"),
             "headline": headline,
             "counts": dict(collections.Counter(r["status"] for r in rows))}
@@ -479,7 +553,7 @@ def main() -> None:
     site = {
         "generated_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "spend": {"total_usd": round(s["local_spent_usd"] + s["canary_spent_usd"], 2), "limit_usd": s["limit_usd"]},
-        "e1": e1(), "e6": e6(), "e3": e3(), "e7": e7(), "e4": e4(),
+        "e1": e1(), "e6": e6(), "e3": e3(), "e7": e7(), "e4": e4(), "e9": e9(),
     }
     path = os.path.join(OUT_DIR, "data", "site.json")
     with open(path, "w", encoding="utf-8") as f:

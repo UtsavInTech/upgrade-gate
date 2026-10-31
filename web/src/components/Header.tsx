@@ -1,28 +1,28 @@
-import { motion, useScroll, useSpring } from "motion/react";
-import { Moon, Sun } from "lucide-react";
+import { Github, Moon, Sun } from "lucide-react";
 import type { Route } from "../App";
 
-// `wide` links show only from 1280px; below that the bar would push the buttons off screen.
-const NAV: { href: string; label: string; wide?: boolean }[] = [
-  { href: "#audio", label: "Voice notes" },
-  { href: "#safe-route", label: "Safe route" },
-  { href: "#effort", label: "Effort", wide: true },
-  { href: "#scoring", label: "Scoring" },
-  { href: "#cost", label: "Cost", wide: true },
-  { href: "#compare", label: "Compare" },
-  { href: "#how", label: "How it works" },
-];
+const REPO = "https://github.com/UtsavInTech/upgrade-gate";
 
-export function Logo() {
-  // Two posts and a bar: a gate.
+/** The Upgrade Gate mark (assets/brand, redrawn as a vector). Uses the accent colour, so it adapts to dark mode. */
+export function Logo({ className = "size-7" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 28 28" className="size-7" aria-hidden>
-      <rect x="4" y="5" width="4" height="18" rx="2" fill="var(--accent)" />
-      <rect x="20" y="5" width="4" height="18" rx="2" fill="var(--accent)" />
-      <rect x="8" y="11" width="12" height="3.5" rx="1.75" fill="var(--fg)" />
+    <svg viewBox="0 0 64 64" className={`${className} text-accent`} aria-hidden>
+      <path
+        fill="currentColor"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+        d="M32 60.4 L21.2 57 L45.6 42.8 L46.8 41.2 L46.8 28.2 L50.8 28.2 L43.6 18.4 L36.2 28.2 L40.1 28.2 L40.1 38.8 L39.4 39.8 L11.6 54.3 L2.6 50.5 L2.6 16.2 L19.4 9.1 L19.4 41.8 L20.8 42.9 L31.1 37.4 L32 36 L32 5.4 L34.4 3.7 L61.4 14.7 L61.4 50.9 Z"
+      />
     </svg>
   );
 }
+
+const NAV: { href: string; label: string; match: (r: Route) => boolean }[] = [
+  { href: "#/", label: "Overview", match: (r) => r.page === "home" },
+  { href: "#/voiceorder", label: "Try VoiceOrder", match: (r) => r.page === "voiceorder" },
+  { href: "#/report/e6-audio", label: "Evidence", match: (r) => r.page === "report" || r.page === "findings" },
+];
 
 export function Header({
   theme,
@@ -33,69 +33,52 @@ export function Header({
   onToggleTheme: () => void;
   route: Route;
 }) {
-  const { scrollYProgress } = useScroll();
-  const progress = useSpring(scrollYProgress, { stiffness: 140, damping: 30, mass: 0.3 });
-  const home = route.page === "home";
+  const links = NAV.map((n) => {
+    const active = n.match(route);
+    return (
+      <a
+        key={n.href}
+        href={n.href}
+        aria-current={active ? "page" : undefined}
+        className={`rounded-md px-3 py-2 text-sm whitespace-nowrap transition-colors duration-150 ${
+          active ? "bg-surface font-semibold text-fg" : "text-muted hover:text-fg"
+        }`}
+      >
+        {n.label}
+      </a>
+    );
+  });
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-bg/90 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-4 sm:px-8">
-        <a href="#/" className="flex items-center gap-2.5 font-semibold tracking-tight">
+      <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 sm:px-8">
+        <a href="#/" className="flex shrink-0 items-center gap-2.5" aria-label="Upgrade Gate, overview">
           <Logo />
-          <span className="text-[17px] whitespace-nowrap">Upgrade Gate</span>
+          <span className="text-[17px] font-semibold tracking-tight whitespace-nowrap">Upgrade Gate</span>
         </a>
-        <nav aria-label="Sections" className="ml-4 hidden items-center gap-1 lg:flex">
-          {home ? (
-            NAV.map((n) => (
-              <a
-                key={n.href}
-                href={n.href}
-                className={`${n.wide ? "hidden xl:inline-block" : ""} rounded-md px-3 py-2 text-sm whitespace-nowrap text-muted transition-colors hover:text-fg`}
-              >
-                {n.label}
-              </a>
-            ))
-          ) : (
-            <a href="#/" className="rounded-md px-3 py-2 text-sm text-muted transition-colors hover:text-fg">
-              Findings
-            </a>
-          )}
+        <nav aria-label="Main" className="ml-4 hidden items-center gap-1 md:flex">
+          {links}
         </nav>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-1">
           <a
-            href="#/voiceorder"
-            className="hidden rounded-md px-3 py-2 text-sm font-medium whitespace-nowrap text-fg transition-colors hover:bg-surface sm:inline-block"
+            href={REPO}
+            className="inline-flex size-10 items-center justify-center rounded-md text-muted transition-colors hover:text-fg"
+            aria-label="Source code on GitHub"
           >
-            VoiceOrder app
+            <Github aria-hidden className="size-[18px]" />
           </a>
-          {route.page !== "report" && (
-            <a
-              href="#/report/e6-audio"
-              className="rounded-md bg-fg px-3.5 py-2 text-sm font-semibold whitespace-nowrap text-bg transition-opacity hover:opacity-90"
-            >
-              Open report
-            </a>
-          )}
           <button
             type="button"
             onClick={onToggleTheme}
             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            className="inline-flex size-9 items-center justify-center rounded-md border border-line text-muted transition-colors hover:text-fg"
+            className="inline-flex size-10 items-center justify-center rounded-md text-muted transition-colors hover:text-fg"
           >
-            {theme === "dark" ? (
-              <Sun aria-hidden className="size-4" />
-            ) : (
-              <Moon aria-hidden className="size-4" />
-            )}
+            {theme === "dark" ? <Sun aria-hidden className="size-[18px]" /> : <Moon aria-hidden className="size-[18px]" />}
           </button>
         </div>
       </div>
-      {home && (
-        <motion.div
-          aria-hidden
-          className="absolute bottom-[-1px] left-0 h-[2px] w-full origin-left bg-accent"
-          style={{ scaleX: progress }}
-        />
-      )}
+      <nav aria-label="Main" className="flex justify-between gap-1 border-t border-line px-2 py-1.5 md:hidden">
+        {links}
+      </nav>
     </header>
   );
 }

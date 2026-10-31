@@ -38,7 +38,8 @@ sys.path.insert(0, ROOT)
 
 DIST = os.environ.get("WEB_DIST", os.path.join(ROOT, "web", "dist"))
 DATA_DIR = os.environ.get("DATA_DIR", os.path.join(ROOT, "data-runtime"))
-LIVE = os.environ.get("LIVE_INFERENCE", "0") == "1"
+# Live requests need both the switch and a key; without a key the site stays in saved-examples mode.
+LIVE = os.environ.get("LIVE_INFERENCE", "0") == "1" and bool(os.environ.get("MODEL_API_KEY"))
 LIVE_PER_HOUR = int(os.environ.get("LIVE_REQUESTS_PER_HOUR", "6"))  # per client
 RECORDINGS_MAX_MB = float(os.environ.get("RECORDINGS_MAX_MB", "500"))
 MAX_WAV = 10_000_000
@@ -130,7 +131,10 @@ class App(BaseHTTPRequestHandler):
         p = url.path
         try:
             if p == "/healthz":
-                return self._json(200, {"ok": True, "live": LIVE})
+                from upgrade_gate import spend
+                st = spend.status()
+                return self._json(200, {"ok": True, "live": LIVE, "spent_usd": round(st["local_spent_usd"], 2),
+                                        "limit_usd": st["limit_usd"]})
             if p == "/api/voiceorder/config":
                 return self._json(200, self._config())
             if p == "/api/recorded":

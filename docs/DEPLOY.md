@@ -15,7 +15,7 @@ Saved examples and all evidence work without any API key and cost nothing.
 | Healthcheck | `GET /healthz` → `{"ok": true, "live": false}` |
 | Replicas | 1 (keeps one coherent spend ledger) |
 | Volume | `upgrade-gate-data` mounted at `/data` |
-| Variables | `PORT=8080`, `DATA_DIR=/data`, `LIVE_INFERENCE=0`, `RECORDINGS_MAX_MB=500` |
+| Variables | `PORT=8080`, `DATA_DIR=/data`, `LIVE_INFERENCE=1`, `MAX_TOTAL_SPEND_USD=50`, `LIVE_REQUESTS_PER_HOUR=6`, `RECORDINGS_MAX_MB=500`; `MODEL_API_KEY` added by the owner |
 | Domain | `web-production-00176.up.railway.app` → port 8080 |
 
 What goes on the volume (`/data`): research recordings from `#/record` (`audio-real/`), blind-audit labels
@@ -34,8 +34,8 @@ redeploys. Audio sent for a live VoiceOrder request is never stored.
 
 Visitors can then record their own note on `#/voiceorder`. Each note costs about $0.02.
 
-- Add `MODEL_API_KEY` (a Railway secret; it never reaches the browser), `LIVE_INFERENCE=1`, and a low
-  `MAX_TOTAL_SPEND_USD` (for example `5`). Every call reserves its worst-case cost against that cap first.
+- Add `MODEL_API_KEY` (a Railway secret; it never reaches the browser), `LIVE_INFERENCE=1`, and a
+  `MAX_TOTAL_SPEND_USD` (this deployment: `50`). Live mode stays off until the key is present. Every call reserves its worst-case cost against that cap first.
 - `LIVE_REQUESTS_PER_HOUR` (default 6) limits each visitor.
 - Saved examples stay free and deterministic either way: a missing saved answer returns an error, never a paid call.
 

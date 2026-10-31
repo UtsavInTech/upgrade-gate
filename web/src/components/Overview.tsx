@@ -5,7 +5,7 @@ import { pts } from "../data";
 import type { Config } from "../voiceorder";
 import { DEFAULT_SAMPLE, loadVoiceOrder } from "../voiceorder";
 import { routeLabel } from "./SafeRouteSection";
-import { UpgradePath } from "./UpgradePath";
+import { speakersText, UpgradePath } from "./UpgradePath";
 import { Verdict } from "./ui";
 
 type Decision = {
@@ -27,7 +27,11 @@ function decisions(site: Site): Decision[] {
       decision: e6.gate_decision ?? e6.decision,
       what: "Spark 1.3 listening to voice notes",
       why: `Accuracy barely moved, but wrong or blank answers with no warning rose from ${audio.silent.baseline} to ${audio.silent.candidate}.`,
-      population: `${audio.tasks} synthetic-voice notes in English, Hindi and Hinglish, 3 tries each`,
+      population: `${audio.tasks} synthetic-voice notes in English, Hindi and Hinglish, 3 tries each.${
+        site.e9?.sets?.real?.gates[site.e9.direct]
+          ? ` Real voices (${site.e9.sets.real.describe[site.e9.baseline].clips} notes, ${speakersText(site.e9.sets.real.speakers)}): ${site.e9.sets.real.gates[site.e9.direct].decision.replace("-", " ")} on accuracy; the silent-failure rise didn’t repeat for the second speaker.`
+          : ""
+      }`,
       numbers: `Said “I can’t hear”: ${audio.abstain.baseline} → ${audio.abstain.candidate}`,
       href: "#/report/e6-audio",
       link: "View failing examples",
@@ -43,7 +47,7 @@ function decisions(site: Site): Decision[] {
       decision: synth.gates[e9.route]?.decision ?? "inconclusive",
       what: routeLabel(e9.route),
       why: `${pts(synth.overall.delta)} points more notes right than today’s app (95% range ${pts(synth.overall.ci_low)} to ${pts(synth.overall.ci_high)}), with no rise in silent failures.`,
-      population: `${b.clips} synthetic-voice notes.${real ? ` Real voice (${real.describe[e9.baseline].clips} notes, one speaker): ${(real.gates[e9.route]?.decision ?? "").replace("-", " ")}.` : ""}`,
+      population: `${b.clips} synthetic-voice notes.${real ? ` Real voice (${real.describe[e9.baseline].clips} notes, ${speakersText(real.speakers)}): ${(real.gates[e9.route]?.decision ?? "").replace("-", " ")}.` : ""}`,
       numbers: `$${r.usd_per_1000_clips.toFixed(2)} vs $${b.usd_per_1000_clips.toFixed(2)} per 1,000 notes · slowest 10% ${((r.latency_ms_p90 ?? 0) / 1000).toFixed(0)} s vs ${((b.latency_ms_p90 ?? 0) / 1000).toFixed(0)} s`,
       href: "#/report/e9-route-synth",
       link: "Compare routes",

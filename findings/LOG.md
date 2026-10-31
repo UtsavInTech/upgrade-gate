@@ -8,6 +8,29 @@ Status values: `planned` · `scouting` · `promising` · `confirmed` · `dropped
 
 ---
 
+## E10 result: a second speaker — the silent-failure finding did not repeat; the transcribe route held up
+
+- **Run:** 31 Oct. One new speaker (Simran, all 45 lines, recorded on the deployed site), plus Utsav's 45 clips from
+  the cache. 270 new audio calls + 135 transcriptions + 135 Spark text calls, about $0.70. Rules as pre-registered
+  below; run dirs `results/e10-*`, numbers in [../experiments/out/e10_new_speakers.json](../experiments/out/e10_new_speakers.json).
+- **Primary, Test A (Spark 1.2 → 1.3, both listening), new speaker: INCONCLUSIVE. The predicted NO-GO did not
+  happen.** Accuracy −6.7 pts (95% CI −17.8 to +2.2); wrong-or-blank with no warning did **not** rise (8 → 7 clips;
+  by item 1 worse, 2 better). Field level was worse on 1.3: order numbers right 28 → 21 of 45, pincodes 34 → 25,
+  blank answers 0 → 4 and 5 answers cut off by the token limit (all on 1.3).
+- **Primary, Test B (Spark 1.2 listening → Voice Transcribe → Spark 1.3), new speaker: GO.** +4.4 pts (95% CI +0.0
+  to +11.1); wrong-or-blank 8 → 6; order numbers right 28 → 37 of 45, pincodes 34 → 38.
+- **Pooled, both speakers (90 clips), as reported alongside:** Test A **NO-GO** (accuracy −8.9 pts, CI −15.6 to
+  −2.2; silent failures 14 → 20, by item 4 worse, 0 better, p = 0.12). Test B **INCONCLUSIVE** (+4.4 pts, CI −2.2 to
+  +11.1; the gate wants ~119 more tasks). PR #2's real-voices check uses this pooled set, so it stays blocked.
+- **What this changes:** the claim "1.3 turns 'I can't hear' into silent wrong answers" rests on text-to-speech
+  clips and one speaker; a second real speaker did not show it (she got almost no "can't hear" answers from either
+  version). What did repeat across both real speakers is lower accuracy on order numbers and pincodes when 1.3
+  listens directly, and that the transcribe route gets more of them right than 1.2 listening (order numbers
+  52 → 79 of 90 pooled).
+- **Limits:** two speakers, 90 clips; the same 15 scripted items; speaker gender not analysed.
+
+---
+
 ## E10 (pre-registered 31 Oct 2026, before the new recordings were downloaded or run): new real speakers
 
 - **Why:** E7 and E9's real-voice results rest on one speaker (Utsav). A friend has recorded the same 45 lines

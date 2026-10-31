@@ -1,0 +1,62 @@
+{
+  "run_dir": "results/e10-real-voices",
+  "order_notes": 30,
+  "assumption": "each wrong-but-saved order = one failed delivery at Rs 180-240 (logistics only; https://shipping.amazon.in/blog/what-is-rto-how-to-reduce-return-to-origin)",
+  "by_route": {
+    "spark-1.2@low": {
+      "answers": 90,
+      "counts": {
+        "correct": 43,
+        "wrong but saved": 31,
+        "rejected": 12,
+        "asked to type": 4
+      },
+      "per_1000_orders": {
+        "correct": 478,
+        "wrong but saved": 344,
+        "rejected": 133,
+        "asked to type": 44
+      },
+      "inr_per_1000_orders": [
+        62000,
+        82667
+      ]
+    },
+    "spark-1.3@low": {
+      "answers": 90,
+      "counts": {
+        "rejected": 38,
+        "correct": 25,
+        "wrong but saved": 24,
+        "asked to type": 3
+      },
+      "per_1000_orders": {
+        "rejected": 422,
+        "correct": 278,
+        "wrong but saved": 267,
+        "asked to type": 33
+      },
+      "inr_per_1000_orders": [
+        48000,
+        64000
+      ]
+    },
+    "transcribe+spark-1.3@low": {
+      "answers": 90,
+      "counts": {
+        "correct": 63,
+        "wrong but saved": 11,
+        "rejected": 16
+      },
+      "per_1000_orders": {
+        "correct": 700,
+        "wrong but saved": 122,
+        "rejected": 178
+      },
+      "inr_per_1000_orders": [
+        22000,
+        29333
+      ]
+    }
+  }
+}

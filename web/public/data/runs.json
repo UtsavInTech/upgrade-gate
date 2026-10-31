@@ -34,20 +34,20 @@
   }
  },
  {
-  "run": "e9-route-real",
-  "title": "Safe route, real voice",
-  "blurb": "The same route on 45 notes read by one person",
+  "run": "e10-real-voices",
+  "title": "Safe route, real voices",
+  "blurb": "The same route on 90 notes read by two people (E10, pooled)",
   "baseline": "spark-1.2@low",
   "candidate": "transcribe+spark-1.3@low",
   "decision": "inconclusive",
-  "calls": 270,
-  "fresh_cost_usd": 0.6582,
-  "created_utc": null,
+  "calls": 540,
+  "fresh_cost_usd": 0.5957,
+  "created_utc": "2026-10-31T13:08:55Z",
   "counts": {
    "regression": 3,
-   "improvement": 5,
-   "both fail": 4,
-   "both pass": 33
+   "improvement": 7,
+   "both fail": 10,
+   "both pass": 70
   }
  },
  {
@@ -82,8 +82,8 @@
  },
  {
   "run": "e7-real-voices",
-  "title": "Real voices",
-  "blurb": "The voice-note lines read aloud by a person (45 clips, English, Hindi, Hinglish)",
+  "title": "Real voice, first speaker",
+  "blurb": "The voice-note lines read aloud by one person (45 clips, English, Hindi, Hinglish)",
   "baseline": "spark-1.2@low",
   "candidate": "spark-1.3@low",
   "decision": "no-go",

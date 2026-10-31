@@ -7,7 +7,7 @@ import type { Config, Result } from "../voiceorder";
 import { DEFAULT_SAMPLE, FIELDS, fieldMatches, loadVoiceOrder, modelsOf, outcomeOf, roleOf } from "../voiceorder";
 import { AudioButton } from "./AudioButton";
 import { routeLabel } from "./SafeRouteSection";
-import { gateBadges, stagesOf } from "./UpgradePath";
+import { gateBadges, speakersText, stagesOf } from "./UpgradePath";
 import { Verdict } from "./ui";
 
 type Slot = Result | "loading" | { error: string };
@@ -412,6 +412,7 @@ function DecisionPanel({ cfg, site }: { cfg: Config; site: Site | null }) {
   const e9 = site?.e9;
   const synth = e9?.sets?.synth;
   const audio = site?.e6.behaviour?.by_input?.audio;
+  const real = e9?.sets?.real;
   if (!site) return null;
   return (
     <section aria-labelledby="decision-h" className="mt-6 rounded-xl border border-line bg-card p-5 shadow-[0_1px_2px_rgba(16,24,40,0.05)] sm:p-6">
@@ -432,6 +433,14 @@ function DecisionPanel({ cfg, site }: { cfg: Config; site: Site | null }) {
               <p className="mt-1 text-muted">
                 Wrong or blank with no warning rose {audio.silent.baseline} → {audio.silent.candidate} of {audio.tasks} notes while
                 accuracy barely moved. “I can’t hear” answers went {audio.abstain.baseline} → {audio.abstain.candidate}.
+                {real?.gates[cfg.candidate] && (
+                  <>
+                    {" "}
+                    Real voices ({real.describe[e9!.baseline].clips} notes, {speakersText(real.speakers)}):{" "}
+                    {real.gates[cfg.candidate].decision.toUpperCase()} on accuracy; the second speaker did not show the
+                    silent-failure rise.
+                  </>
+                )}
               </p>
             )}
             <a href="#/report/e6-audio" className="mt-2 inline-flex items-center gap-1 font-medium text-accent hover:underline">
@@ -453,9 +462,15 @@ function DecisionPanel({ cfg, site }: { cfg: Config; site: Site | null }) {
               <p className="font-semibold">{routeLabel(cfg.route)}</p>
               <p className="mt-1 text-muted">
                 {pts(synth.overall.delta)} points more notes right than today (95% range {pts(synth.overall.ci_low)} to{" "}
-                {pts(synth.overall.ci_high)}); silent failures {synth.overall.silent.baseline} → {synth.overall.silent.candidate}. With
-                one real speaker the gate can’t decide yet: the policy allows the switch because that isn’t NO-GO, which is
-                not the same as GO for every voice.
+                {pts(synth.overall.ci_high)}); silent failures {synth.overall.silent.baseline} → {synth.overall.silent.candidate}.
+                {real && (
+                  <>
+                    {" "}
+                    On {real.describe[e9.baseline].clips} real-voice notes from {speakersText(real.speakers)} the gate can’t decide yet
+                    (it isn’t worse). The policy allows the switch because that isn’t NO-GO, which is not the same as GO
+                    for every voice.
+                  </>
+                )}
               </p>
               <p className="mt-1 text-muted">
                 ${synth.describe[e9.route].usd_per_1000_clips.toFixed(2)} vs ${synth.describe[e9.baseline].usd_per_1000_clips.toFixed(2)} per

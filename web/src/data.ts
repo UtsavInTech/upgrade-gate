@@ -151,6 +151,7 @@ export type E9Describe = {
 
 export type E9Set = {
   run: string;
+  speakers?: number | null; // real-voice sets: how many people recorded
   describe: Record<string, E9Describe>;
   gates: Record<string, { decision: string; reasons: string[] }>;
   overall: {
@@ -168,7 +169,7 @@ export type E9Set = {
   } | null;
 };
 
-// E9: the transcribe route. synth = 135 text-to-speech notes (primary), real = 45 notes, one speaker.
+// E9: the transcribe route. synth = 135 text-to-speech notes (primary); real = every real speaker pooled (E10).
 export type E9 = { status: "done" | "missing"; route: string; baseline: string; direct: string; sets: Record<string, E9Set> };
 
 export type Site = {

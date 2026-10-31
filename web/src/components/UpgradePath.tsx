@@ -14,6 +14,8 @@ export function stagesOf(model: string): string[] {
   return model.startsWith("transcribe+") ? ["Voice Transcribe", routeLabel(model).split("→ ")[1]] : [routeLabel(model).replace(" listens", "")];
 }
 
+export const speakersText = (n?: number | null) => (n === 1 ? "one speaker" : `${n ?? "several"} speakers`);
+
 export type GateBadge = { decision: string; note: string; short: string };
 
 /** The gate's verdicts for each role, from the saved runs (site.json). The baseline has none. */
@@ -42,7 +44,7 @@ export function gateBadges(site: Site | null, cfg: Config): Record<string, GateB
         ? [
             {
               decision: real.gates[cfg.route]?.decision ?? "inconclusive",
-              note: `${real.describe[e9.baseline]?.clips} real-voice notes, one speaker`,
+              note: `${real.describe[e9.baseline]?.clips} real-voice notes, ${speakersText(real.speakers)}`,
               short: "real voice",
             },
           ]

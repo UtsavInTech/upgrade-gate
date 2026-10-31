@@ -380,7 +380,34 @@ def e9() -> dict:
                        "n": ov.get("n"), "silent": {k: sil.get(k) for k in ("baseline", "candidate")},
                        "silent_items_p": (sil.get("items") or {}).get("p")}
         out["sets"][name] = {"run": os.path.basename(res["run_dir"]), "describe": res["describe"], "gates": gates,
-                             "overall": overall, "loss": loss}
+                             "overall": overall, "loss": loss, "speakers": 1 if name == "real" else None}
+    # E10 replaces the one-speaker real-voice set with every real speaker pooled (pre-registered).
+    e10p = os.path.join(src, "e10_new_speakers.json")
+    if os.path.exists(e10p):
+        with open(e10p, encoding="utf-8") as f:
+            e10 = json.load(f)
+        pooled = e10["sets"]["pooled"]
+        gp = os.path.join(RESULTS, "e10-real-voices", "gate-%s.json" % ROUTE)
+        overall = None
+        if os.path.exists(gp):
+            with open(gp, encoding="utf-8") as f:
+                g = json.load(f)
+            ov = g.get("overall") or {}
+            sil = (((g.get("behaviour") or {}).get("by_input") or {}).get("audio") or {}).get("silent") or {}
+            overall = {"delta": ov.get("delta"), "ci_low": ov.get("ci_low"), "ci_high": ov.get("ci_high"), "n": ov.get("n"),
+                       "silent": {k: sil.get(k) for k in ("baseline", "candidate")}, "silent_items_p": (sil.get("items") or {}).get("p")}
+        loss = None
+        lp = os.path.join(src, "loss_scenario_e10-real-voices.json")
+        if os.path.exists(lp):
+            with open(lp, encoding="utf-8") as f:
+                ls = json.load(f)
+            loss = {"assumption": ls["assumption"], "order_notes": ls["order_notes"],
+                    "by_route": {c: {"per_1000": v["per_1000_orders"], "inr_per_1000": v["inr_per_1000_orders"]}
+                                 for c, v in ls["by_route"].items()}}
+        out["sets"]["real"] = {"run": "e10-real-voices", "describe": pooled["describe"],
+                               "gates": {ROUTE: {"decision": pooled["testB"]["decision"], "reasons": pooled["testB"]["reasons"]},
+                                         B: {"decision": pooled["testA"]["decision"], "reasons": pooled["testA"]["reasons"]}},
+                               "overall": overall, "loss": loss, "speakers": len(e10["speakers"])}
     return out
 
 
@@ -389,19 +416,19 @@ def e9() -> dict:
 ROUTE = "transcribe+spark-1.3@low"
 # E9 run dirs hold several candidates; the report shows Spark 1.2 listening vs the transcribe route,
 # using the gate written for that pair (gate-<candidate>.json).
-GATE_FILE = {"e9-route-synth": "gate-%s.json" % ROUTE, "e9-route-real": "gate-%s.json" % ROUTE}
+GATE_FILE = {"e9-route-synth": "gate-%s.json" % ROUTE, "e10-real-voices": "gate-%s.json" % ROUTE}
 
 RUNS = [
     ("e6-audio", "Voice notes", "Spoken English, Hindi and Hinglish clips, each with a text twin"),
     ("e9-route-synth", "Safe route", "Voice Transcribe, then Spark 1.3 on the text, vs Spark 1.2 listening (135 synthetic notes)"),
-    ("e9-route-real", "Safe route, real voice", "The same route on 45 notes read by one person"),
+    ("e10-real-voices", "Safe route, real voices", "The same route on 90 notes read by two people (E10, pooled)"),
     ("e1-upgrade", "Text, documents, Hindi", "Maths, extraction, intent, instructions, invoice images and PDFs"),
     ("e3-contributor", "Contributor mode", "Same model, cheaper serving mode"),
-    ("e7-real-voices", "Real voices", "The voice-note lines read aloud by a person (45 clips, English, Hindi, Hinglish)"),
+    ("e7-real-voices", "Real voice, first speaker", "The voice-note lines read aloud by one person (45 clips, English, Hindi, Hinglish)"),
 ]
 # Runs whose audio is a real person's voice: results are published, the recordings are not
 # (the repo becomes public). Pass --publish-real-voice to include them.
-PRIVATE_AUDIO = {"e7-real-voices", "e9-route-real"}
+PRIVATE_AUDIO = {"e7-real-voices", "e9-route-real", "e10-real-voices"}
 
 
 def _attachment(path: str, keep: bool):

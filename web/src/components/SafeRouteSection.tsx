@@ -1,6 +1,7 @@
 import type { E6, E9 } from "../data";
 import { pts, shortModel } from "../data";
 import { Reveal, Section, Verdict } from "./ui";
+import { speakersText } from "./UpgradePath";
 
 // Every number here comes from site.json (scripts/export_web.py: e6 and e9, which read the saved
 // gate files and experiments/out/e9_route.json + loss_scenario_*.json).
@@ -91,7 +92,7 @@ export function SafeRouteSection({ e9, e6 }: { e9?: E9; e6: E6 }) {
       <div className="mt-12 grid gap-6 lg:grid-cols-3">
         {real && realD && (
           <div className="rounded-lg border border-line bg-card p-6">
-            <p className="text-sm text-muted">Real voice: {realD[e9.baseline].clips} notes, one speaker</p>
+            <p className="text-sm text-muted">Real voices: {realD[e9.baseline].clips} notes, {speakersText(real.speakers)}</p>
             <p className="mt-2 text-3xl font-semibold tabular-nums">
               {realD[e9.baseline].order_number_right.split("/")[0]} → {realD[e9.route].order_number_right.split("/")[0]}
               <span className="text-base font-normal text-muted"> of {realD[e9.baseline].clips}</span>
@@ -141,7 +142,7 @@ export function SafeRouteSection({ e9, e6 }: { e9?: E9; e6: E6 }) {
       </div>
 
       <p className="mt-6 text-sm text-muted">
-        Limits: synthetic voices are cleaner than real notes; one real speaker; one line of the transcript prompt was
+        Limits: synthetic voices are cleaner than real notes; real voices from {speakersText(real?.speakers)}; one line of the transcript prompt was
         written after seeing a single transcript.{" "}
         <a
           className="text-accent underline underline-offset-2"

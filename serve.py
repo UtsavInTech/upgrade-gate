@@ -141,6 +141,8 @@ class App(BaseHTTPRequestHandler):
                 return self._recorded(parse_qs(url.query))
             if p == "/api/audit":
                 return self._audit_get(parse_qs(url.query))
+            if p.startswith("/api/admin/"):
+                return self._admin(p, parse_qs(url.query))
             if p.startswith("/api/"):
                 return self._json(404, {"error": "No such API endpoint: %s" % p})
             return self._static(p)
@@ -240,6 +242,39 @@ class App(BaseHTTPRequestHandler):
         done = sorted(f[:-4] for f in os.listdir(folder) if f.endswith(".wav")) \
             if NAME.match(speaker) and os.path.isdir(folder) else []
         return self._json(200, done)
+
+    # ---------------------------------------------------------------- owner export (ADMIN_TOKEN)
+    def _admin(self, path, q):
+        """Owner-only: list who recorded, and download one speaker's recordings as a zip (the same
+        layout scripts/import_recordings.py reads). Off unless ADMIN_TOKEN is set; token in a header."""
+        import hmac
+        token = os.environ.get("ADMIN_TOKEN", "")
+        given = self.headers.get("X-Admin-Token", "")
+        if len(token) < 24 or not hmac.compare_digest(token, given):
+            return self._json(404, {"error": "No such API endpoint: %s" % path})
+        base = os.path.join(DATA_DIR, "audio-real")
+        if path == "/api/admin/speakers":
+            out = {}
+            if os.path.isdir(base):
+                for sp in sorted(os.listdir(base)):
+                    d = os.path.join(base, sp)
+                    if os.path.isdir(d):
+                        out[sp] = sum(1 for f in os.listdir(d) if f.endswith(".wav"))
+            return self._json(200, out)
+        if path == "/api/admin/export":
+            import io
+            import zipfile
+            speaker = (q.get("speaker") or [""])[0]
+            d = os.path.join(base, speaker)
+            if not NAME.match(speaker) or not os.path.isdir(d):
+                return self._json(404, {"error": "No recordings for that speaker."})
+            buf = io.BytesIO()
+            with zipfile.ZipFile(buf, "w", zipfile.ZIP_STORED) as z:
+                for f in sorted(os.listdir(d)):
+                    if f.endswith(".wav") and f[:-4] in CLIPS:
+                        z.write(os.path.join(d, f), "%s/%s" % (speaker, f))
+            return self._send(200, buf.getvalue(), "application/zip")
+        return self._json(404, {"error": "No such API endpoint: %s" % path})
 
     # ---------------------------------------------------------------- label audit
     def _audit_file(self, q):

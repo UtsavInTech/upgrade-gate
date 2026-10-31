@@ -8,6 +8,29 @@ Status values: `planned` · `scouting` · `promising` · `confirmed` · `dropped
 
 ---
 
+## E10 (pre-registered 31 Oct 2026, before the new recordings were downloaded or run): new real speakers
+
+- **Why:** E7 and E9's real-voice results rest on one speaker (Utsav). A friend has recorded the same 45 lines
+  (15 items × English, Hindi, Hinglish) on `#/record`. More recordings may follow; each new speaker is included
+  only if they recorded all 45 lines.
+- **Primary population:** the new speakers only. Utsav's 45 clips were already used to write E7's rules, so they
+  are reported alongside, never counted in the primary test.
+- **Frozen rules:** answer types from `upgrade_gate/behaviour.py` and `release/policy.json` as of commit `b053453`
+  (no edits), the E6/E7 prompt and scorer, reasoning effort low, 3 tries, the unchanged production gate.
+- **Test A — plain upgrade:** Spark 1.2 vs Spark 1.3, both listening. **Prediction: NO-GO** (silent failures rise,
+  or accuracy falls past the 2-pt limit), as in E6/E7.
+- **Test B — the transcribe route:** Spark 1.2 listening vs Voice Transcribe → Spark 1.3 (E9 prompt, 3
+  full-pipeline tries). **No prediction direction:** whatever the gate says is the result.
+- **PR #2's real-voices check** will replay all real speakers pooled (Utsav + new), decided now, before any new
+  answer is seen. If it stays INCONCLUSIVE, PR #2 stays blocked.
+- **Reported either way:** per-speaker numbers, per-language numbers, order number / pincode accuracy, and any
+  speaker whose result differs from the pooled one. Speaker gender is not analysed (two speakers can't support it).
+- **Privacy:** recordings stay in `data/audio-real/` (git-ignored) and on the Railway volume; answers and
+  transcript-free run files are published, audio is not.
+- Script: `experiments/e7_real_voices.py` (Test A) and `experiments/e9_route.py --set real` (Test B). Budget cap $3.
+
+---
+
 ## E9 result: transcribe first, then Spark 1.3 — the gate says GO
 
 - **Run:** 31 Oct, 180 clips × 3 full-pipeline tries; 540 transcriptions (0 errors) + 1,080 Spark text calls,
@@ -17,12 +40,15 @@ Status values: `planned` · `scouting` · `promising` · `confirmed` · `dropped
   Spark 1.2 listening directly: correct +12.8 pts (95% CI +5.3 to +20.3); wrong-or-blank with no warning 18 → 20
   tasks (grouped by item 9 worse, 7 better, p = 0.8). Clips right in most tries: 93 → 110 of 135.
 - **Secondary (45 real-voice clips, one speaker) — INCONCLUSIVE, not NO-GO.** Clips right: 36 → 38 of 45;
-  wrong-or-blank 6 → 7. The gate wants ~295 more tasks to decide. Per the fixed rule (primary GO and real voice
-  not NO-GO), **VoiceOrder moves to the transcribe route**.
+  wrong-or-blank 6 → 7. The gate wants ~295 more tasks to decide. The fixed rule (primary GO and real voice
+  not NO-GO) **permits** moving VoiceOrder to the transcribe route. It has not shipped: `release/model.json` still
+  says Spark 1.2, and the move is [PR #2](https://github.com/UtsavInTech/upgrade-gate/pull/2), whose real-voices
+  check is INCONCLUSIVE and so blocks the merge. "Not NO-GO" is our policy choice, not evidence that real voices are safe.
 - **Same check on the plain upgrade, same run:** Spark 1.3 listening directly stays NO-GO on both sets (18 → 42;
-  real voice accuracy CI below the limit). So the advice is: upgrade to 1.3 only behind the transcribe step.
-- **The model version barely matters once the audio is text:** transcribe → 1.2 is also GO (+13.3 pts), and both
-  routes get the same order numbers (111/135) and pincodes (104/135) right. The gain comes from the speech model.
+  real voice accuracy CI below the limit). Do not let 1.3 listen to voice notes.
+- **The architecture change is what helps, not the version:** transcribe → 1.2 is also GO (+13.3 pts), and both
+  routes get the same order numbers (111/135) and pincodes (104/135) right. The gain comes from the speech model;
+  this run shows no advantage of 1.3 over 1.2 once the audio is text.
 - **Order numbers and pincodes (every try counted, majority not used):** order number right 85 → 111 of 135 (TTS),
   24 → 41 of 45 (real voice); pincode 83 → 104 (TTS), 32 → 35 (real voice).
 - **What the route gives up:** it never says "I can't hear" (21 → 0 on TTS), because the transcript always has

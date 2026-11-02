@@ -1,6 +1,6 @@
 # Upgrade Gate — Current Status
 
-_Last updated: Oct 27, 2026, late evening (IST). Phase: **built; three experiments done; polishing the demo**._
+_Last updated: Nov 2, 2026 (IST). Phase: **built, deployed, ten experiments done; video and submission left**._
 
 ## The event
 
@@ -15,7 +15,7 @@ _Last updated: Oct 27, 2026, late evening (IST). Phase: **built; three experimen
 
 ### Rules that shape the project
 - **New work only.** Demo may show only what's built during the event. Old code (AdaptiveML Studio, FocusSpace) can't be copied in. Ideas and logic from your paper can be cited and re-implemented fresh.
-- **Repo must be public at submission.** This repo is **private for now** so other hackers can't read the plan. Make it public before you submit.
+- **Repo must be public at submission.** Public since 28 Oct.
 - **Banned as generic:** basic RAG apps, simple image analyzers, "AI for education" chatbots, medical advice tools.
 - **Stage 1:** pass/fail on theme fit + real use of Meta's models.
 - **Stage 2 rubric (0–10):** Impact 30% · Demo 25% · Use of Meta AI tooling 25% · Technical depth 20%. The tooling criterion rewards going "beyond a basic integration" and surfacing **unexpected capabilities**.
@@ -54,60 +54,43 @@ Task packs (public data, known answers) ──► Adaptive runner ──► Meta
 - Any "first tool" / "nobody has done this" wording.
 - What survives: **the first study of Muse Spark versions, serving modes and effort levels, with a gate whose own error rates are measured.**
 
-## Results so far (all from real API runs, $19.78 spent of a $90 cap)
+## Results so far (all from real API runs, $26.93 spent of a $90 cap)
 | Run | Question | Result | Cost |
 |---|---|---|---|
-| **E6 voice notes** | Does 1.3 listen worse than 1.2 (Meta's docs warn about 1.3 audio)? | Same accuracy (278 vs 274 of 405), but answers that are **wrong or blank with no warning rose 18 → 42 of 135 clips, p = 3e-6**. 1.2 often says "I can't hear the audio" (23 clips, sometimes while quoting the speech); 1.3 never does. Accuracy-only gate: INCONCLUSIVE (~9,000 more clips needed). | $3.34 |
+| **E6 voice notes** | Does 1.3 listen worse than 1.2 (Meta's docs warn about 1.3 audio)? | Same accuracy (278 vs 274 of 405), but answers that are **wrong or blank with no warning rose 18 → 42 of 135 clips, p = 3e-6**. 1.2 often says "I can't hear the audio" (21 tasks by the gate's labels, 23 by E6's own pattern); 1.3 never does. Accuracy-only gate: INCONCLUSIVE (~9,000 more clips needed). | $3.34 |
 | **E1 text, docs, Hindi** | 1.2 → 1.3 on 1,325 tasks × 3 tries | First scorer said **+1.1 pts, p = 6e-5**. Reading answers: 1.2 was right in other spellings (Somwar/Somvar). Content scoring: **0.0 change**. GO. | $14.55 |
-| **E7 real voice** | Does E6 hold with a person's voice? (pre-registered) | **Partly.** Accuracy −11 pts (gate NO-GO); blank clips 0 → 6. Wrong-or-blank 6 → 13 per clip (p = 0.016) but borderline by item (5 vs 0, p = 0.06); filled-in wrong 6 → 6. | $0.78 |
-| **E4 effort ladder** | Is more reasoning effort ever worse? | **Yes, on voice clips:** 72.8% (minimal) → 58.5% (xhigh), p = 0.0009; "can't hear" 0 → 44; 6× the cost. Text: 100% at every level. | $0.64 |
+| **E7 real voice** | Does E6 hold with a person's voice? (pre-registered) | **Partly.** Accuracy −11 pts (gate NO-GO); blank clips 0 → 6. Wrong-or-blank 6 → 13 per clip (p = 0.016) but borderline by item (5 vs 0, p = 0.06). | $0.78 |
+| **E4 effort ladder** | Is more reasoning effort ever worse? | **Yes, on voice clips:** 72.8% (minimal) → 58.5% (xhigh), p = 0.0009; "can't hear" 0 → 44; 6× the cost. Post-hoc. Text: 100% at every level. | $0.64 |
 | **E2 judge bias** | Does a judge go easy on its own version? | **No** (with a reference answer): 0 false passes of ~250 wrong answers for either judge. | $0.06 |
-| **E3 Contributor mode** | Same model at ~1/18 the price: same quality? | **Same pass/fail on every task** (3,971 / 3,975 each; answer text not compared). $0.10 vs $1.80 per 1,000 tasks. GO. | $0.40 |
+| **E3 Contributor mode** | Same model at ~1/18 the price: same quality? | **Same pass/fail on every task.** $0.10 vs $1.80 per 1,000 tasks. GO. | $0.40 |
+| **E8 self-corrections** | Does 1.3 keep a number the speaker took back? (pre-registered) | **Not confirmed.** 1.3 is worse on these notes overall, not because of the correction. | $2.59 |
+| **E9 transcribe route** | Is Voice Transcribe → Spark 1.3 a safe upgrade? (pre-registered) | **GO** on 135 synthetic notes (+12.8 pts); real voice INCONCLUSIVE. The gain is from transcription, not 1.3. [PR #2](https://github.com/UtsavInTech/upgrade-gate/pull/2) stays blocked. | ~$2.95 |
+| **E10 second speaker** | Does E7 hold for another person? (pre-registered) | New speaker: plain upgrade INCONCLUSIVE, **silent-failure rise did not repeat** (8 → 7); route GO (+4.4). Pooled 90 clips: plain upgrade NO-GO on accuracy (−8.9), route INCONCLUSIVE. | ~$0.70 |
 
 Details and caveats: [findings/LOG.md](findings/LOG.md). Tables: `experiments/out/`.
 
 ## What's built
-- `upgrade_gate/`: runner (resume, budget stop, cache), Meta API client with a **lifetime spending cap**, 20 deterministic scorers with separate **content vs strict-format** scores, paired stats (McNemar, bootstrap, Holm), gate (exit 0/2/3), reports and exports. 168 tests.
-- Task packs: maths, extraction, intent, instructions, invoice images/PDFs, 135 spoken voice notes (+ text twins), real-voice pack.
-- `web/`: findings site, **report view** (`#/report/<run>`) and a voice **recorder** (`#/record`). Light and dark.
-- Canary suite (50 prompts) and GitHub workflow, ready to switch on.
-
-## Current honest score
-| Criterion | Weight | Now | What would raise it |
-|---|---|---|---|
-| Impact | 30% | 7.5 | a short note from 1–2 other developers who ran it; a crisp "who uses this" line |
-| Demo | 25% | 8 | record the video around the report: PR check → voice-note report → one clip |
-| Meta tooling | 25% | 8.5 | E6 (Meta's own 1.3 audio warning, measured) + Contributor mode + effort levels |
-| Technical depth | 20% | 8.5 | E7 real-voice confirmation; measured gate error rates |
-| **Weighted** | | **≈ 8.0–8.4** (independent council: 77/100 before the real PR and fixes) | **8.5+** with the PR in the video, more speakers, 1 outside user |
-
-## Remaining hypotheses
-1. **Judge-version bias (E2)** — a 1.3 judge passes 1.3's mistakes more often. Cheap with Contributor judges (~$0.30).
-2. **Reasoning effort isn't monotonic (E4)** — fixed: same 16k token limit at every level, cut-offs counted apart. ~$0.10–1 on Contributor.
-3. **Pinned-model drift (canary)** — needs ~8 days of data.
+- `upgrade_gate/`: runner (resume, budget stop, cache), Meta API client with a **lifetime spending cap**, deterministic scorers with separate **content vs strict-format** scores, paired stats (McNemar, bootstrap, Holm, item-level test), gate that also checks **how answers fail** (exit 0/2/3), release policy file, reports and exports, `init` for new repos. **196 tests.**
+- Reusable GitHub Action (`action.yml`), replay or live mode with a strict spend cap. PR #1 (plain 1.3 upgrade) and PR #2 (transcribe route) are both blocked by it.
+- `voiceorder/`: the small voice-order app the gate protects; uses `release/model.json`.
+- `web/`: findings site, report view, VoiceOrder page, voice recorder, blind label-audit page. Hosted at https://web-production-00176.up.railway.app (mirror on GitHub Pages).
+- Canary suite (50 prompts) and a scheduled workflow (one full real run on 28 Oct).
 
 ## Open items
-- [x] E7 real-voice rerun (accuracy drop + blanks; silent-failure rise borderline by item), E4 effort ladder (post-hoc strong trend), E2 judge bias (null)
-- [x] Gate checks silent failures itself, per input type (voice notes: NO-GO); bring-your-own-tasks
-- [x] Real blocked upgrade: [PR #1](https://github.com/UtsavInTech/upgrade-gate/pull/1) → voice-notes ❌, real-voices ❌, text-and-documents ✅, live sample ✅ INCONCLUSIVE (real calls: 10 clips × 2 models × 3 tries, 60/60 ok, $0.13; too small to decide), deploy skipped (verified on GitHub 28 Oct, run #5)
-- [x] Second council fixes: claims match evidence (E7 partly, E3 same scores, E4 post-hoc), strict per-run budget, CI validates policy, label-audit page, live mode, reusable Action (`action.yml`)
-- [x] Council review fixes: audio-only headlines, "wrong, no warning" label, honest E4 wording, synced README/demo/screenshots
-- [ ] Post the Discord ask and X thread (`docs/OUTREACH.md`)
-- [ ] Switch on the canary: GitHub secret `MODEL_API_KEY`, variables `CANARY_MODELS`, `CANARY_BUDGET_USD=8`
-- [ ] Decide whether to delete Codex's older `ui/` (the new site is `web/`)
-- [ ] Record the 3-minute video ([docs/DEMO.md](docs/DEMO.md))
-- [ ] Make the repo public, add branch protection requiring the three `upgrade-gate / …` checks (PR then shows "Merging is blocked")
-- [ ] Label the 60-answer audit at `#/audit`, then `python3 scripts/audit_report.py` (κ + disagreements)
-- [x] Repo secret `MODEL_API_KEY` added; live sample runs on every PR push (~$0.13 per run, capped at $1; spent from CI, not in the local ledger)
-- [ ] 2–3 more speakers at `#/record`, then rerun E7 with the frozen rules
-- [ ] One real outside user trial, or state plainly that there wasn't one (council priority 4)
+- [x] Repo public; branch protection on `main` requires the three `upgrade-gate / …` checks
+- [x] Hosted site with live VoiceOrder (Railway) + GitHub Pages mirror
+- [x] Second speaker recorded and run (E10), reported as it came out
+- [ ] **Label the 60-answer audit** at `#/audit`, then `python3 scripts/audit_report.py` (κ + disagreements)
+- [ ] **Record the 3-minute video** ([docs/DEMO.md](docs/DEMO.md))
+- [ ] **Edit and paste the submission text** ([docs/SUBMISSION.md](docs/SUBMISSION.md))
+- [ ] Fix the GitHub repo description typos ("go/n-go", "Meta Global I Developer")
+- [ ] Optional: post the X thread (`docs/OUTREACH.md`); one outside-user trial, or say plainly there wasn't one
+- [ ] Decide whether to delete the older `ui/` (the site is `web/`)
 - [ ] Submit by the evening of Nov 4 IST
 
 ## Schedule (IST)
 | Date | Work |
 |---|---|
-| Oct 28 | E7, E4 pilot, E2. Switch on the canary |
-| Oct 29–31 | Fix anything the runs turn up; site polish; ask 1–2 developers to try it |
-| Nov 1–2 | Canary summary, final numbers into the site |
-| Nov 3 | Record the video |
-| Nov 4 | Make public, submit by evening |
+| Nov 2 | Label audit; docs synced to E10 |
+| Nov 3 | Record the video; finalise submission text |
+| Nov 4 | Submit by evening |

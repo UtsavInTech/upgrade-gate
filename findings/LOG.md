@@ -255,6 +255,9 @@ Full tables: `experiments/out/e8_corrections.md`.
   - "Confident wrong or blank" answers: **18 → 42 tasks, p = 3e-6.** 1.3 returns wrong digits, or JSON with every field empty (`{"order_number": "", "pincode": "", "city": ""}`), with no warning.
   - "I can't listen to audio": **23 → 0 tasks, p = 2e-7.** 1.2 often says it can't hear the clip. In 11 answers it says that **and then quotes the spoken words and answers correctly** ("based on the text you provided…"). It hears the audio but believes the user typed it.
   - 1.2 never says this on Hindi clips; it happens on English (14 tasks) and Hinglish (9).
+  - _Note (2 Nov): 23 is this experiment's own pattern match. The gate's failure-type labels, added 28 Oct and
+    used from E8 on, count **21 → 0** on the same saved answers. Both are majority-of-3 per task; they differ only in
+    which answers count as "can't hear". The 18 → 42 silent-failure count is the same under both._
 - **What this means:**
   1. On accuracy the upgrade looks neutral. In a product it isn't: 1.2's failures can be detected (it says it can't hear) while 1.3's look like valid answers. A voice-note bot on 1.3 would store wrong or empty order numbers without flagging anything.
   2. **Accuracy-only gates miss this.** The failure-type shift is significant with 135 tasks, where the accuracy test needs about 9,000. Upgrade gates should track *abstain vs confident-wrong*, not just pass rate.

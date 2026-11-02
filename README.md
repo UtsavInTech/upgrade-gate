@@ -6,11 +6,12 @@ We replay your tasks on two LLM versions and turn the differences into a GO, NO-
 
 ![Upgrade Gate report for the voice-note run: pass rate barely moves, but Spark 1.3's wrong-without-warning answers rise from 18 to 42 of 135 clips](web/screenshots/report.png)
 
-## What we found (Meta Muse Spark 1.2 → 1.3, 27 Oct 2026, $19.78 of real API calls)
+## What we found (Meta Muse Spark 1.2 → 1.3, 27–31 Oct 2026, $26.93 of real API calls in all)
 
 - **Voice notes:** same accuracy (278 vs 274 of 405 answers), but answers that are **wrong or blank with no warning rose from 18 to 42 of 135 clips** (paired exact test, p = 3 × 10⁻⁶). Spark 1.2 often says "I can't hear the audio"; 1.3 never does, and instead returns wrong digits or empty fields. An accuracy-only gate calls this INCONCLUSIVE. Meta's docs warn that 1.3 audio is "not fully supported".
 - **Text, invoices and Hindi (1,325 tasks):** our first scorer reported a significant +1.1 point gain for 1.3. It came from Hindi spelling (`Somwar` vs `Somvar`). With content scoring the change is 0.0.
-- **Rerun with a real voice:** 45 lines (15 items × 3 languages) read by one person. Accuracy fell 11 points (95% range −20 to −2), which is why the gate says NO-GO, and blank answers appeared only on 1.3 (0 → 6 clips). The combined wrong-or-blank rise (6 → 13) is borderline when the three language versions of each item are grouped (5 vs 0, p = 0.06), and filled-in wrong answers did not rise.
+- **Real voices (two speakers, 90 clips):** we wrote each prediction down before running it. With both speakers pooled, 1.3 listening directly loses 8.9 points of accuracy (95% range −15.6 to −2.2), so the gate says NO-GO. The silent-failure rise did **not** repeat cleanly: it was borderline for the first speaker (6 → 13 clips; by item 5 vs 0, p = 0.06) and absent for the second (8 → 7). So the "fails silently" finding rests on synthetic voices and one real speaker; lower accuracy on order numbers and pincodes held for both.
+- **A safe route exists:** transcribing first with Muse Voice Transcribe, then asking Spark 1.3, gets the gate's GO on the 135 synthetic notes (+12.8 points) and on the new real speaker (+4.4). Pooled real voices: INCONCLUSIVE (the gate asks for ~119 more tasks), so that upgrade ([PR #2](https://github.com/UtsavInTech/upgrade-gate/pull/2)) stays blocked too.
 - **More thinking, worse listening:** on voice clips, Spark 1.3 gets fewer right at every step up in reasoning effort (72.8% at minimal → 58.5% at xhigh, p = 0.0009) while costing 6× more; it increasingly decides it can't hear the clip.
 - **Contributor mode:** the same pass/fail as Standard on every one of 1,325 tasks (we compared scores, not answer text), at $0.10 vs $1.80 per 1,000 tasks.
 - **Judges:** Spark 1.2 and 1.3 judges, given the reference answer, passed none of ~250 wrong answers from either version. No sign of judge-version bias.
@@ -60,7 +61,7 @@ replays the saved answers in [`evidence/`](evidence) for both models (no API key
 | Check | Result | Why |
 |---|---|---|
 | `upgrade-gate / voice-notes` | ❌ NO-GO | Audio input: wrong or blank with no warning 18 → 42 of 135 clips, p = 3 × 10⁻⁶. Accuracy alone: inconclusive |
-| `upgrade-gate / real-voices` | ❌ NO-GO | 6 → 13 of 45 clips read by a person, and accuracy down past the limit |
+| `upgrade-gate / real-voices` | ❌ NO-GO | Accuracy down past the limit on clips read by real people (now 90 clips, two speakers; the PR's first run used the first speaker's 45) |
 | `upgrade-gate / text-and-documents` | ✅ GO | No change on 1,325 tasks |
 | `deploy model` | skipped | Runs only when every check passes |
 

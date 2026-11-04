@@ -15,7 +15,7 @@ export function AudioSection({ e6, e7 }: { e6: E6; e7?: E7 }) {
   const acc = (m: string) => e6.accuracy[`${m}|audio`];
   const text = (m: string) => e6.accuracy[`${m}|text`];
   const silent = e6.tests.find((t) => t.flag === "confident wrong or blank" && t.lang === "all");
-  // The gate's own failure-type labels (same count as the PR check and the home page); E6's pattern count is a fallback.
+  // Gate labels first, so this matches the PR check; E6's own count is the fallback.
   const gateAbstain = e6.behaviour?.by_input?.audio?.abstain;
   const e6Deny = e6.tests.find((t) => t.flag === "says it can't hear" && t.lang === "all");
   const deny = gateAbstain

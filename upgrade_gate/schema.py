@@ -1,7 +1,4 @@
-"""Shared data shapes. This file is the contract between every part of Upgrade Gate.
-
-Owner: Claude side. Codex side reads it but must not change it. If you need a change,
-write it in docs/CONTRACT_REQUESTS.md.
+"""Shared data shapes used by every part of Upgrade Gate.
 
 All records are plain dicts on disk (JSON / JSONL). These dataclasses document the
 fields and give helpers to convert. Python 3.9 compatible.
@@ -92,7 +89,7 @@ class ScoreRecord:
     strict_passed: Optional[bool] = None  # deterministic only: passed AND exact format (no lenient extraction)
 
 
-# ---------------------------------------------------------------- gate output (written by Codex-side stats)
+# ---------------------------------------------------------------- gate output (written by stats)
 
 @dataclass
 class Comparison:

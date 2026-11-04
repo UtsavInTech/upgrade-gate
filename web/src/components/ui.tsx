@@ -45,7 +45,6 @@ export function Reveal({
   return <div className={className}>{children}</div>;
 }
 
-// The decision is a word, not a badge: colour reinforces it, the text carries it.
 const VERDICT: Record<string, { label: string; cls: string }> = {
   go: { label: "GO", cls: "text-go" },
   "no-go": { label: "NO-GO", cls: "text-risk" },

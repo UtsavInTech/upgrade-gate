@@ -140,7 +140,6 @@ export function VoiceOrder({ site }: { site: Site | null }) {
         </div>
       ) : (
         <div className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
-          {/* Input panel: quiet */}
           <section aria-labelledby="note-h" className="rounded-xl border border-line bg-card p-4 lg:self-start">
             <h2 id="note-h" className="sr-only">
               Voice note
@@ -269,7 +268,6 @@ export function VoiceOrder({ site }: { site: Site | null }) {
             )}
           </section>
 
-          {/* Comparison */}
           <section aria-labelledby="routes-h">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <h2 id="routes-h" className="text-lg font-semibold">

@@ -1,78 +1,83 @@
 # Upgrade Gate
 
-We replay your tasks on two LLM versions and turn the differences into a GO, NO-GO, or INCONCLUSIVE release decision, with the answers and costs attached.
+**Before you switch to a new model version, check how it fails, not just how often it's right.**
 
-**Live site:** https://web-production-00176.up.railway.app (mirror: https://utsavintech.github.io/upgrade-gate/) · **Try the app it protects:** [VoiceOrder](https://web-production-00176.up.railway.app/#/voiceorder) · **The blocked upgrade:** [PR #1](https://github.com/UtsavInTech/upgrade-gate/pull/1)
+Upgrade Gate replays your own tasks on the old and new Meta Muse Spark model, repeats every call, and turns the
+differences into **GO**, **NO-GO** or **INCONCLUSIVE**, with the failing answers attached. It runs as a GitHub check,
+so the pull request that bumps the model is blocked before it ships.
 
-![Upgrade Gate report for the voice-note run: pass rate barely moves, but Spark 1.3's wrong-without-warning answers rise from 18 to 42 of 135 clips](web/screenshots/report.png)
+| | |
+|---|---|
+| **Live site** | https://web-production-00176.up.railway.app (mirror: https://utsavintech.github.io/upgrade-gate/) |
+| **Try the app it protects** | [VoiceOrder](https://web-production-00176.up.railway.app/#/voiceorder): a voice-order helper for an Indian shop |
+| **A blocked upgrade** | [PR #1](https://github.com/UtsavInTech/upgrade-gate/pull/1): Spark 1.2 → 1.3, stopped by the gate |
+| **A safer route, still held** | [PR #2](https://github.com/UtsavInTech/upgrade-gate/pull/2): Voice Transcribe → Spark 1.3, waiting on more real-voice data |
+| **Every result, with caveats** | [findings/LOG.md](findings/LOG.md) |
 
-## What we found (Meta Muse Spark 1.2 → 1.3, 27–31 Oct 2026, $26.93 of real API calls in all)
+![Upgrade Gate home page: Spark 1.3 scored the same, it just stopped saying "I can't hear the audio"](web/screenshots/home.png)
 
-- **Voice notes:** same accuracy (278 vs 274 of 405 answers), but answers that are **wrong or blank with no warning rose from 18 to 42 of 135 clips** (paired exact test, p = 3 × 10⁻⁶). Spark 1.2 often says "I can't hear the audio"; 1.3 never does, and instead returns wrong digits or empty fields. An accuracy-only gate calls this INCONCLUSIVE. Meta's docs warn that 1.3 audio is "not fully supported".
-- **Text, invoices and Hindi (1,325 tasks):** our first scorer reported a significant +1.1 point gain for 1.3. It came from Hindi spelling (`Somwar` vs `Somvar`). With content scoring the change is 0.0.
-- **Real voices (two speakers, 90 clips):** we wrote each prediction down before running it. With both speakers pooled, 1.3 listening directly loses 8.9 points of accuracy (95% range −15.6 to −2.2), so the gate says NO-GO. The silent-failure rise did **not** repeat cleanly: it was borderline for the first speaker (6 → 13 clips; by item 5 vs 0, p = 0.06) and absent for the second (8 → 7). So the "fails silently" finding rests on synthetic voices and one real speaker; lower accuracy on order numbers and pincodes held for both.
-- **A safe route exists:** transcribing first with Muse Voice Transcribe, then asking Spark 1.3, gets the gate's GO on the 135 synthetic notes (+12.8 points) and on the new real speaker (+4.4). Pooled real voices: INCONCLUSIVE (the gate asks for ~119 more tasks), so that upgrade ([PR #2](https://github.com/UtsavInTech/upgrade-gate/pull/2)) stays blocked too.
-- **More thinking, worse listening:** on voice clips, Spark 1.3 gets fewer right at every step up in reasoning effort (72.8% at minimal → 58.5% at xhigh, p = 0.0009) while costing 6× more; it increasingly decides it can't hear the clip.
-- **Contributor mode:** the same pass/fail as Standard on every one of 1,325 tasks (we compared scores, not answer text), at $0.10 vs $1.80 per 1,000 tasks.
-- **Judges:** Spark 1.2 and 1.3 judges, given the reference answer, passed none of ~250 wrong answers from either version. No sign of judge-version bias.
+## For judges: a three-minute tour
 
-Full account and caveats: [findings/LOG.md](findings/LOG.md).
+1. **[VoiceOrder](https://web-production-00176.up.railway.app/#/voiceorder).** Play the Hindi note. Spark 1.2 saves
+   pincode `452089` (correct). Spark 1.3 saves `380015`: a real Ahmedabad pincode, just the wrong one, and the shop's
+   format check passes it.
+2. **[PR #1](https://github.com/UtsavInTech/upgrade-gate/pull/1).** A one-line model change. Two checks fail, one
+   passes, and the deploy step never runs.
+3. **[Evidence](https://web-production-00176.up.railway.app/#/report/e6-audio).** Every voice note as one square, both
+   versions side by side. Click any square to hear the clip and read all three tries.
+4. **[Findings and methods](https://web-production-00176.up.railway.app/#/findings).** The statistics, the effort
+   ladder, Contributor mode, and the scorer mistake we caught in ourselves.
 
-## The problem
+Everything on the site is read from saved runs, so browsing costs nothing and needs no key.
 
-Imagine a support team upgrading its model. English tickets still look good, so the team ships. Hindi requests or invoice extraction get worse without moving the average enough to notice. That is the deployment risk we test for. It is an illustrative scenario, not a regression we found in E1.
+## What we found
 
-We ask both versions the same questions, repeat the calls, and inspect disagreements by workflow, language, and input type. A blocked release comes with the exact cases to reproduce. We also learned to inspect the scorer before trusting its p-value.
+Real Meta Model API runs, 27–31 October 2026, **$26.93** in all.
 
-## What E1 actually found
+| | Result |
+|---|---|
+| **Voice notes, 1.2 → 1.3** (135 synthetic clips in English, Hindi, Hinglish) | Accuracy barely moved (278 vs 274 of 405 answers). Answers that are **wrong or blank with no warning rose from 18 to 42 clips** (p = 3 × 10⁻⁶). 1.2 says "I can't hear the audio" on 21 clips; 1.3 never does. An accuracy-only gate says INCONCLUSIVE and wants ~9,000 more clips. Upgrade Gate says **NO-GO**. |
+| **Real voices** (two speakers, 90 clips, predictions written down before each run) | Accuracy fell 8.9 points (95% range −15.6 to −2.2): **NO-GO**. The silent-failure rise was borderline for the first speaker and **did not repeat** for the second. |
+| **Transcribe first** (Muse Voice Transcribe → Spark 1.3) | **GO** on synthetic notes (+12.8 points) and on the new speaker (+4.4). Pooled real voices: INCONCLUSIVE, so PR #2 stays blocked. The gain comes from transcription, not from 1.3. |
+| **More reasoning effort** | On voice clips 1.3 went from 72.8% right at minimal effort to 58.5% at xhigh (p = 0.0009), at 6× the cost. Chosen after seeing the data, so treat it as a strong trend. |
+| **Contributor mode** | Same pass/fail as Standard on all 1,325 text tasks, at $0.10 vs $1.80 per 1,000. |
+| **Judges** | Spark 1.2 and 1.3 judges, given the reference answer, passed none of ~250 wrong answers. No sign of judge-version bias. |
+| **Our own scorer** | It first reported a significant Hindi gain for 1.3. It was spelling (`Somwar` vs `Somvar`). With content scoring, the change is 0.0. |
 
-We ran **1,325 tasks × two Muse Spark versions × three repeats: 7,950 saved calls, $14.55**. Both versions used low reasoning effort. The first result looked like a Hindi improvement. Reading the answers changed that conclusion.
+## How Meta's models are used
 
-| Scoring of the same saved answers | 1.3 minus 1.2, paired task pass rate | Exact McNemar p |
-|---|---:|---:|
-| Before: old scorer | +1.13 points | 0.000061 |
-| After: corrected content scoring | 0.00 points | 1.0 |
-| Current strict requested format | +0.15 points | 0.5 |
+- **Muse Spark 1.2 and 1.3** via the Meta Model API, on text, invoice images, PDFs and audio.
+- **Reasoning effort** (minimal → xhigh), measured as a release variable.
+- **Contributor mode** (`-contributor` model IDs), measured for quality, not only price.
+- **Muse Voice Transcribe** as the first stage of the route that passes the gate.
+- **Spark as judge**, tested for bias toward its own version.
 
-The old scorer rejected correct Hindi spellings such as `Somwar` versus `Somvar`, and some correct answers wrapped in extra text. We separated **correctness** from **requested format** and rescored the saved outputs. We made no new API calls to do that. The headline improvement disappeared. Every corrected content slice has a zero paired delta; E1's content gate is **GO** on this test suite.
+Meta's docs warn that Spark 1.3 audio is "not fully supported". We measured what that means in practice: not lower
+accuracy, but fewer admissions that it hasn't understood.
 
-The models are near the ceiling here. This does not establish that 1.3 is safe on every company's workload. E1 shows why a statistically significant score difference still needs an audited scoring rule. See the [recorded E1 tables](experiments/out/e1_upgrade.md) and [experiment account](findings/LOG.md#e1-result-spark-12--13-and-a-scorer-that-invented-an-improvement). Raw run folders stay local under `results/` and are not committed.
+## How it works
 
-## The app it protects: VoiceOrder
+```mermaid
+flowchart LR
+    A[Your tasks with known answers] --> B[Old and new model, 3 tries each]
+    B --> C[Content and strict-format scores]
+    C --> D[How each answer failed]
+    D --> E[Paired tests, intervals, slice corrections]
+    E --> F[GO / NO-GO / INCONCLUSIVE]
+    F --> G[PR check, report, failing answers, cost]
+```
 
-[`voiceorder/`](voiceorder/server.py) is a small voice-order helper for an Indian online shop. A customer leaves a
-voice note in Hindi, Hinglish or English with their order number, pincode and city; Meta Muse Spark turns it into an
-order, and the shop's usual format checks run before it's saved. It uses **the model in
-[`release/model.json`](release/model.json) and exactly the prompt the gate tests**, so the gate's verdict is about
-this app.
+- **Paired statistics:** exact McNemar tests on tasks where the versions disagree, paired bootstrap intervals, Holm
+  correction across language, input type and task type, and an item-level test so translations of one note count once.
+- **Failure types:** every answer is labelled correct, says it can't answer, wrong, blank, or no answer. A rise in
+  silent failures blocks a release even when accuracy doesn't move.
+- **Release policy** in [`release/policy.json`](release/policy.json): the allowed drop, which failures count, and why.
+- **Spending cap:** every paid call reserves its worst-case cost first; runs stop at the budget.
+- Exit codes: **0** GO · **2** NO-GO · **3** INCONCLUSIVE.
 
-On the same Hindi voice note, Spark 1.2 saves pincode `452089` (correct). Spark 1.3 saves `380015`, a real Ahmedabad
-pincode, just the wrong one, and the shop's checks pass it. On other notes 1.3 returns every field blank, and the order
-is lost. Run it at `#/voiceorder` (`npm --prefix web run dev` starts the app and its API). Sample notes reuse saved
-answers ($0); a fresh recording costs about $0.01 and isn't stored.
+Design choices and their trade-offs: [docs/DECISIONS.md](docs/DECISIONS.md).
 
-## Watch it block an upgrade
-
-[`release/model.json`](release/model.json) holds the model this app ships. The branch
-[`upgrade/spark-1.3`](https://github.com/UtsavInTech/upgrade-gate/compare/main...upgrade/spark-1.3) changes it from
-`spark-1.2@low` to `spark-1.3@low`. On that pull request, [the upgrade-gate workflow](.github/workflows/upgrade-gate.yml)
-replays the saved answers in [`evidence/`](evidence) for both models (no API key needed) and runs three checks:
-
-| Check | Result | Why |
-|---|---|---|
-| `upgrade-gate / voice-notes` | ❌ NO-GO | Audio input: wrong or blank with no warning 18 → 42 of 135 clips, p = 3 × 10⁻⁶. Accuracy alone: inconclusive |
-| `upgrade-gate / real-voices` | ❌ NO-GO | Accuracy down past the limit on clips read by real people (now 90 clips, two speakers; the PR's first run used the first speaker's 45) |
-| `upgrade-gate / text-and-documents` | ✅ GO | No change on 1,325 tasks |
-| `deploy model` | skipped | Runs only when every check passes |
-
-Each failed check's summary shows one filled-in wrong answer, e.g. a Hindi voice note where 1.3 returns pincode
-`380015` (a real Ahmedabad pincode) instead of `452089`: correctly shaped, so a required-fields check passes it. With
-branch protection requiring these checks, GitHub also blocks the merge. In a live setup the same step runs
-`upgrade-gate all` with `MODEL_API_KEY` instead of replaying saved answers.
-
-## Use it in your repo
-
-Five minutes, from an empty repo to a first result:
+## Use it on your own tasks
 
 ```sh
 python3 -m venv .venv && .venv/bin/python -m pip install --upgrade pip
@@ -82,13 +87,10 @@ export MODEL_API_KEY=...        # your Meta Model API key
 .venv/bin/upgrade-gate all --packs tasks/my_tasks.jsonl -b spark-1.2@low -c spark-1.3@low --budget 1 --yes
 ```
 
-`init` writes `release/model.json`, `release/policy.json` (fill in the "why"), `tasks/my_tasks.jsonl` (five examples
-to replace with 20–50 of your own) and a PR workflow, and never overwrites existing files. On the five examples the
-run takes about 7 seconds and $0.03 and reports INCONCLUSIVE ("only 5 paired tasks"): add your own tasks for a decision.
+`init` writes the model file, a release policy, five example tasks and a PR workflow, and never overwrites existing
+files. Replace the examples with 20–50 real inputs from your app: [docs/BRING_YOUR_OWN_TASKS.md](docs/BRING_YOUR_OWN_TASKS.md).
 
-Or add the Action to any workflow that runs on a model change. Replay mode gates saved, scored answers; live mode runs a
-small fresh sample on both models with a strict spending cap (an inconclusive small sample doesn't fail the check;
-a NO-GO does).
+Or add the Action to any workflow that changes the model:
 
 ```yaml
 - uses: UtsavInTech/upgrade-gate@main
@@ -96,95 +98,55 @@ a NO-GO does).
     baseline: spark-1.2@low
     candidate: spark-1.3@low
     mode: live                      # or: replay, with evidence: path/to/saved-run
-    tasks: my_tasks.jsonl           # your own tasks (docs/BRING_YOUR_OWN_TASKS.md) or a built-in pack
+    tasks: my_tasks.jsonl
     n: "20"
-    budget: "1"                     # USD, reserved per call before it is sent
-    policy: release/policy.json     # what counts as a harmful failure, and why
+    budget: "1"                     # USD, hard cap
+    policy: release/policy.json
     api-key: ${{ secrets.MODEL_API_KEY }}
 ```
 
-This repo's own [workflow](.github/workflows/upgrade-gate.yml) uses it (`uses: ./`) for its live-sample check.
-
-## Try it without spending money
+### Run the site locally
 
 ```sh
 npm --prefix web install
 npm --prefix web run dev     # http://127.0.0.1:5191
 ```
 
-- `#/` — the findings.
-- `#/report/e6-audio` (also `e1-upgrade`, `e3-contributor`) — the report: gate verdict, slices with 95% ranges, every task with both versions' answers, audio and documents, filters and search.
-- `#/record` — record the voice-note lines in a real voice for the confirmation run (E7).
-
-The site reads exported data committed under `web/public`, so it makes no model calls. To refresh it from your own runs: `npm --prefix web run data`. To run the pipeline itself: `python3 -m venv .venv && .venv/bin/python -m pip install --upgrade pip && .venv/bin/pip install -e '.[dev]'`, add `MODEL_API_KEY` to `.env`, then `.venv/bin/upgrade-gate check`. (The pip upgrade matters on macOS: its bundled pip 21 cannot do editable installs.)
-
-## How it works
-
-```mermaid
-flowchart LR
-    A[Same tasks and references] --> B[Old and new model, repeated calls]
-    B --> C[Content and strict-format scores]
-    C --> D[One majority vote per task]
-    D --> E[Paired tests, intervals, adjusted slice tests]
-    E --> F[GO / NO-GO / INCONCLUSIVE]
-    F --> G[Report, answers, cost, regression tests]
-```
-
-The gate uses exact McNemar tests on task disagreements, paired bootstrap confidence intervals, and Holm correction across category, language, and modality slices. Ties fail; unscored repeats are excluded. The dashboard's intersection heatmap is a separate exploratory view. Repeat disagreement is shown as context, not used as a delta threshold. [Methods and tradeoffs](docs/DECISIONS.md).
-
-A saved, scored run takes three lines to gate and review:
+### Run the tests
 
 ```sh
-.venv/bin/upgrade-gate gate "$RUN_DIR"
-.venv/bin/upgrade-gate report "$RUN_DIR"
-.venv/bin/upgrade-gate export "$RUN_DIR"
+.venv/bin/pip install -e '.[dev]'
+.venv/bin/python -m pytest -q     # 196 tests, no API key needed
 ```
 
-The gate exits **0 for GO, 2 for NO-GO, 3 for INCONCLUSIVE**. Other failures also exit nonzero. A company can supply its scored run as an artifact in GitHub Actions and stop deployment on any nonzero result:
+## What's in the repo
 
-```yaml
-# RUN_DIR must contain run.json, tasks.jsonl, responses.jsonl, and scores.jsonl.
-- uses: actions/setup-python@v5
-  with:
-    python-version: '3.11'
-- run: pip install -e '.[dev]'
-- name: Gate the saved candidate run
-  id: gate
-  env:
-    RUN_DIR: results/release-candidate
-  run: upgrade-gate gate "$RUN_DIR"  # 0=GO; 2=NO-GO; 3=INCONCLUSIVE
-- name: Write the review report, even when blocked
-  if: always() && steps.gate.outcome != 'skipped'
-  run: upgrade-gate report results/release-candidate
-- name: Deploy only after GO
-  if: success() && steps.gate.outcome == 'success'
-  run: ./deploy.sh  # replace with your deployment command
-```
+| Path | What it is |
+|---|---|
+| [`upgrade_gate/`](upgrade_gate) | The package: API client with spending cap, runner, scorers, judges, statistics, gate, reports, exports, CLI |
+| [`action.yml`](action.yml), [`.github/workflows/`](.github/workflows) | The GitHub Action and the checks that block PR #1 and PR #2 |
+| [`voiceorder/`](voiceorder) | The app being protected; it uses the model in [`release/model.json`](release/model.json) |
+| [`web/`](web) | The site: findings, evidence browser, VoiceOrder, voice recorder, label audit |
+| [`experiments/`](experiments) | One script per experiment (E1–E10), outputs in `experiments/out/` |
+| [`findings/LOG.md`](findings/LOG.md) | Pre-registrations and results, in the order they happened |
+| [`evidence/`](evidence) | Saved, scored answers the PR checks replay |
+| [`data/`](data) | Synthetic task data and voice clips (no external datasets) |
+| [`canary/`](canary) | A scheduled check that the same model ID keeps answering the same way |
+| [`tests/`](tests) | 196 tests |
 
-Supply the run artifact before this snippet. It does not collect paid model responses. Exported pytest checks need a `call_model(prompt)` fixture; image-aware fixtures must send the preserved attachments. Promptfoo users supply a provider. Exports use deterministic reference checks, which can be stricter than a task's lenient content scorer; review them before using them as release policy.
+## Limits
 
-## What is Meta-specific
+- Single-turn tasks only. No agent or tool-use replay.
+- Real-voice evidence is two speakers reading 15 scripted items.
+- The headline silent-failure result is on synthetic voices; it did not repeat for the second real speaker.
+- Translations of one note are correlated. The gate's item-level test accounts for this; the bootstrap intervals
+  treat tasks as independent.
+- A GO covers the tested slices and margin, not every untested population.
+- No outside team has run it on their own workload yet.
 
-We use the Meta Model API directly and pin Muse Spark IDs in each run's metadata. E1 compares `muse-spark-1.2` with `muse-spark-1.3`, both at `reasoning_effort=low`.
+## Built during the event
 
-The experiment code also compares **Standard versus Contributor mode**, tests the reasoning-effort ladder, and can use **Muse Wonder** as a blind judge. A hosted **Muse Spark Open** adapter is available for an open-weights judge. Those are supported experiment paths, not results we claim from E1. New E2–E4 results appear when their saved records land. The dashboard labels serving-mode repricing as an estimate at recorded token usage; price estimates alone do not demonstrate equal quality. API and pricing notes are the repo's [Oct 27 snapshot](docs/META_API.md).
-
-Every paid call reserves worst-case cost before sending. Our local default lifetime limit is **$90**, with a **$100 hard ceiling**, and **$15 set aside for the canary** inside that limit. `upgrade-gate spend` reads the ledger without making calls. Keep `.spend/ledger.jsonl` when resuming work. Contributor mode belongs only in a workflow whose data policy permits it.
-
-## Limits we would want a release owner to read
-
-- E1 uses single-turn tasks and easy packs. English is at the ceiling; passing them does not establish agent, tool-use, or production reliability.
-- A correct answer and an answer in the required format are different contracts. Saved scorer rules and their details remain inspectable. Accepting spelling variants can also over-accept; audit examples.
-- Bootstrap intervals describe observed task pairs. A zero-width interval with no discordant pairs does not prove zero risk. Matched translations can be correlated; the current intervals treat tasks as independent.
-- The main gate is a fixed-horizon test. Its intervals should not be repeatedly peeked at as though they were anytime-valid. The separate sequential test is not wired into the runner by this dashboard.
-- Heatmap cells with too little evidence stay grey. A GO covers the tested gate slices and margin, not every untested population.
-- Judges can be biased. Open-weights and judge-version paths need their own measured results; they are not substitutes for known-answer checks.
-- Static builds contain prompts, raw answers, and attachments. Share only runs you intend to distribute. `results/` remains gitignored.
-
-## How we built it
-
-Utsav designed the study and ran the experiments. Claude Code and Codex helped write code. All reported experimental results come from real API runs; the offline demo fixture is synthetic and labeled. We keep the false start: the old scorer's “improvement” is part of the evidence, not a result we quietly replaced.
-
-We tried an OpenRouter route, then removed it and used Meta directly. Our first 200-token check left 1.1 and 1.3 with empty visible answers because reasoning consumed the budget. We raised the check limit and kept that failure in the record. Ten concrete choices, including these dead ends, are in [docs/DECISIONS.md](docs/DECISIONS.md).
-
-[Study notes](findings/LOG.md) · [Code ownership and record shapes](docs/CONTRACT.md) · [Research plan](RESEARCH_GUIDE.md)
+All code, data and results were made from 27 October 2026 onward for the Meta Global AI Developer Hackathon (indie
+track). Utsav designed the study and ran the experiments; Claude Code and Codex helped write the code. We kept the
+dead ends in the record: the scorer that invented an improvement, and the prediction that a second speaker would
+confirm the silent-failure finding.

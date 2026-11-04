@@ -4,92 +4,91 @@
    Chart series colours were checked with the dataviz palette validator in both modes. */
 :root {
   color-scheme: light;
-  /* Paper and ink: a field report, not a dashboard. */
-  --bg: #f5f2ea; /* page: warm paper */
-  --card: #fbf9f4; /* panels that hold a task, a result or a decision */
-  --surface: #ece7dc;
-  --surface-2: #e2dccf;
-  --fg: #1d1a16; /* ink */
-  --muted: #554e43; /* 7.4:1 on --bg */
-  --faint: #6b6356; /* 5.4:1 on --bg, AA for small text */
-  --border: #d9d1c1;
-  --accent: #2c45b8; /* ballpoint blue: links and the mark */
+  --bg: #fbfcfe;
+  --card: #ffffff; /* panels that hold a task, a result or a decision */
+  --surface: #f1f4f8;
+  --surface-2: #e6eaf0;
+  --fg: #14171c;
+  --muted: #4c5463;
+  --faint: #5f6776;
+  --border: #e1e5eb;
+  --accent: #2c4fd1;
   --accent-ink: #ffffff;
-  --accent-soft: #e4e7f6;
-  --mark: #f6d548; /* highlighter */
+  --accent-soft: #e7ecfb;
+  --mark: #c9dafd;
   --go: #16794d; /* 5.3:1 on white */
-  --go-soft: #e3f0e4;
+  --go-soft: #e5f3eb;
   --risk: #b93826; /* 5.6:1 on white */
-  --risk-soft: #f8e5df;
-  --hold: #8f6000; /* 5.3:1 on --bg */
-  --hold-soft: #f6ecd2;
+  --risk-soft: #fbe9e6;
+  --hold: #8f6000;
+  --hold-soft: #fbf1dc;
 
   --s-correct: #2a78d6;
   --s-deny: #eda100;
   --s-none: #6250d6;
   --s-wrong: #e34948;
   --s-blank: #9b2c2b;
-  --s-muted: #c9c1b3;
+  --s-muted: #c6ccd5;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme="light"])) {
     color-scheme: dark;
-    --bg: #12110f;
-    --card: #1a1815;
-    --surface: #211f1b;
-    --surface-2: #2b2823;
-    --fg: #ede7db;
-    --muted: #b3aa9a;
-    --faint: #8a8173;
-    --border: #35312b;
-    --accent: #93a6ff;
+    --bg: #0c0e12;
+    --card: #13161b;
+    --surface: #181c22;
+    --surface-2: #20252c;
+    --fg: #e8ecf1;
+    --muted: #a6afbc;
+    --faint: #7f8896;
+    --border: #272d35;
+    --accent: #86a3ff;
     --accent-ink: #0d1020;
-    --accent-soft: #1c2140;
-    --mark: #8a7414;
+    --accent-soft: #17203a;
+    --mark: #25407e;
     --go: #4fc489;
-    --go-soft: #13261a;
+    --go-soft: #0f2419;
     --risk: #ff8069;
-    --risk-soft: #351812;
+    --risk-soft: #2f1611;
     --hold: #e6ad45;
-    --hold-soft: #2d230e;
+    --hold-soft: #2a210d;
 
     --s-correct: #3987e5;
     --s-deny: #c98500;
     --s-none: #9085e9;
     --s-wrong: #e66767;
     --s-blank: #a8302f;
-    --s-muted: #3d3934;
+    --s-muted: #363d47;
   }
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #12110f;
-  --card: #1a1815;
-  --surface: #211f1b;
-  --surface-2: #2b2823;
-  --fg: #ede7db;
-  --muted: #b3aa9a;
-  --faint: #8a8173;
-  --border: #35312b;
-  --accent: #93a6ff;
+  --bg: #0c0e12;
+  --card: #13161b;
+  --surface: #181c22;
+  --surface-2: #20252c;
+  --fg: #e8ecf1;
+  --muted: #a6afbc;
+  --faint: #7f8896;
+  --border: #272d35;
+  --accent: #86a3ff;
   --accent-ink: #0d1020;
-  --accent-soft: #1c2140;
-  --mark: #8a7414;
+  --accent-soft: #17203a;
+  --mark: #25407e;
   --go: #4fc489;
-  --go-soft: #13261a;
+  --go-soft: #0f2419;
   --risk: #ff8069;
-  --risk-soft: #351812;
+  --risk-soft: #2f1611;
   --hold: #e6ad45;
-  --hold-soft: #2d230e;
+  --hold-soft: #2a210d;
 
   --s-correct: #3987e5;
   --s-deny: #c98500;
   --s-none: #9085e9;
   --s-wrong: #e66767;
   --s-blank: #a8302f;
-  --s-muted: #3d3934;
+  --s-muted: #363d47;
 }
 
 @theme inline {
@@ -118,6 +117,7 @@
 
 html {
   background: var(--bg);
+  transition: background-color 0.25s ease;
   color: var(--fg);
   scroll-behavior: smooth;
   scroll-padding-top: 72px;
@@ -126,7 +126,7 @@ html {
 
 body {
   margin: 0;
-  background: var(--bg);
+  /* No background here, so the fixed glow behind the page shows. */
   font-family: var(--font-sans);
   font-feature-settings: "tnum" 1;
   transition:
@@ -145,9 +145,7 @@ body {
   border-radius: 6px;
 }
 
-/* ---------- Type ----------
-   Headlines are set in Fraunces (a soft, slightly wonky old-style serif); body in Figtree; data and labels in
-   JetBrains Mono. These rules are unlayered, so they win over Tailwind's weight and tracking utilities on h1/h2. */
+/* Unlayered, so these win over Tailwind weight and tracking utilities. */
 h1,
 h2,
 .display {
@@ -170,7 +168,6 @@ h2 em,
     "WONK" 1;
 }
 
-/* Small mono label, like a stamp on a lab sheet. */
 .stamp {
   font-family: var(--font-mono);
   font-size: 11px;
@@ -180,7 +177,6 @@ h2 em,
   color: var(--faint);
 }
 
-/* Old-style figures inside running serif text; tabular lining figures everywhere else (set on body). */
 .prose-serif {
   font-family: var(--font-display);
   font-variation-settings:
@@ -189,7 +185,6 @@ h2 em,
   font-feature-settings: "onum", "kern", "liga";
 }
 
-/* Highlighter: sweeps in once when the element gets .on (or immediately without JS-driven classes). */
 .mark {
   background-image: linear-gradient(
     100deg,
@@ -210,7 +205,6 @@ h2 em,
   background-size: 100% 52%;
 }
 
-/* A strike line drawn across a phrase, left to right. */
 .strike {
   position: relative;
   white-space: nowrap;
@@ -237,7 +231,6 @@ h2 em,
   transition: color 0.5s ease 0.4s;
 }
 
-/* Rolling digits for counters. */
 .odometer {
   display: inline-flex;
   overflow: hidden;
@@ -252,7 +245,6 @@ h2 em,
   transition: transform 1.4s cubic-bezier(0.2, 0.7, 0.1, 1);
 }
 
-/* Marquee of real answers. Pauses on hover/focus; static under reduced motion. */
 @keyframes marquee {
   to {
     transform: translateX(-50%);
@@ -271,7 +263,6 @@ h2 em,
   mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
 }
 
-/* Footnote markers and sidenotes. */
 .fn {
   font-family: var(--font-mono);
   font-size: 0.6em;
@@ -283,6 +274,63 @@ h2 em,
   padding: 0 0.1em;
 }
 
+/* Sky: deep blue in the top-right corner, lighter sky blue, then the page. */
+.blue-glow {
+  --sky-deep: #1336a6;
+  --sky-mid: #2763cf;
+  --sky-light: #6fb0ec;
+  --sky-pale: #cfe6fb;
+  --cloud: rgb(255 255 255 / 0.55);
+  background: radial-gradient(
+    100% 92% at 100% 0%,
+    var(--sky-deep) 0%,
+    color-mix(in srgb, var(--sky-mid) 94%, transparent) 20%,
+    color-mix(in srgb, var(--sky-light) 80%, transparent) 40%,
+    color-mix(in srgb, var(--sky-pale) 60%, transparent) 60%,
+    color-mix(in srgb, var(--sky-pale) 25%, transparent) 76%,
+    transparent 94%
+  );
+  overflow: hidden;
+}
+.blue-glow::before,
+.blue-glow::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(18px);
+  transform: rotate(-14deg);
+}
+.blue-glow::before {
+  right: -6%;
+  top: 16%;
+  width: 70%;
+  height: 9%;
+  background: radial-gradient(closest-side, var(--cloud), transparent);
+}
+.blue-glow::after {
+  right: 12%;
+  top: 30%;
+  width: 55%;
+  height: 7%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--cloud) 80%, transparent), transparent);
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) .blue-glow {
+    --sky-deep: #133a9e;
+    --sky-mid: #1c4fb3;
+    --sky-light: #2a64b8;
+    --sky-pale: #1b3560;
+    --cloud: rgb(190 215 255 / 0.18);
+  }
+}
+:root[data-theme="dark"] .blue-glow {
+  --sky-deep: #133a9e;
+  --sky-mid: #1c4fb3;
+  --sky-light: #2a64b8;
+  --sky-pale: #1b3560;
+  --cloud: rgb(190 215 255 / 0.18);
+}
+
 /* Silent-blank segments carry a hatch so they never rely on colour alone. */
 .hatch {
   background-image: repeating-linear-gradient(
@@ -292,7 +340,7 @@ h2 em,
   );
 }
 
-/* Presenter mode: one section per screen, arrow keys move between them. */
+/* Presenter mode: one section per screen. */
 html.presenting {
   scroll-snap-type: y mandatory;
 }

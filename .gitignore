@@ -8,10 +8,11 @@ results/*/
 .cache/
 .spend/
 *.egg-info/
-ui/node_modules/
-ui/dist/
 .claude/
 
 # real voice recordings stay private (the repo becomes public)
 data/audio-real/
 data-runtime/
+
+# personal drafts (submission text, demo script, outreach)
+private/

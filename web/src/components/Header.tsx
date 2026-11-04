@@ -1,9 +1,9 @@
 import { Github, Moon, Sun } from "lucide-react";
+import { useEffect, useState } from "react";
 import type { Route } from "../App";
 
 const REPO = "https://github.com/UtsavInTech/upgrade-gate";
 
-/** The Upgrade Gate mark (assets/brand, redrawn as a vector). Uses the accent colour, so it adapts to dark mode. */
 export function Logo({ className = "size-7" }: { className?: string }) {
   return (
     <svg viewBox="0 0 64 64" className={`${className} text-accent`} aria-hidden>
@@ -33,6 +33,13 @@ export function Header({
   onToggleTheme: () => void;
   route: Route;
 }) {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const on = () => setScrolled(window.scrollY > 8);
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, []);
   const links = NAV.map((n) => {
     const active = n.match(route);
     return (
@@ -49,7 +56,11 @@ export function Header({
     );
   });
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-bg/90 backdrop-blur-md">
+    <header
+      className={`sticky top-0 z-40 border-b transition-colors duration-300 ${
+        scrolled ? "border-line bg-bg/85 backdrop-blur-lg" : "border-transparent bg-transparent"
+      }`}
+    >
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 sm:px-8">
         <a href="#/" className="flex shrink-0 items-center gap-2.5" aria-label="Upgrade Gate, overview">
           <Logo />

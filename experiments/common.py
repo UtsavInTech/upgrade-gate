@@ -1,7 +1,7 @@
 """Shared helpers for the pre-registered experiments (see findings/LOG.md).
 
 Stats here are small stdlib versions so experiments don't depend on the gate module.
-The gate itself uses Codex's upgrade_gate/stats.py.
+The gate itself uses upgrade_gate/stats.py.
 """
 from __future__ import annotations
 

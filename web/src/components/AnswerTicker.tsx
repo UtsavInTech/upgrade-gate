@@ -18,7 +18,7 @@ function field(s: string, name: string) {
   return m ? m[1].trim() : "";
 }
 
-/** Real answers from the saved E6 run: what Spark 1.2 said when it struggled, and what 1.3 saved instead. */
+/** Real answers from the saved E6 run. */
 function pick(run: RunData) {
   const said: Said[] = [];
   const got: Got[] = [];
@@ -59,7 +59,7 @@ function pick(run: RunData) {
 }
 
 function Row({ children, seconds, reverse }: { children: React.ReactNode; seconds: number; reverse?: boolean }) {
-  // Two identical lists side by side; the strip moves by exactly one list width, so the loop is seamless.
+  // Two copies, so the -50% loop is seamless.
   return (
     <div className="marquee-wrap overflow-hidden" tabIndex={0} aria-label="Scrolling examples; hover or focus to pause">
       <div

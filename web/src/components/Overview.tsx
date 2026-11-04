@@ -91,7 +91,6 @@ export function Overview({ site }: { site: Site }) {
 
   return (
     <>
-      {/* ---------- Hero ---------- */}
       <section className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)] items-center gap-10 px-4 pt-10 pb-16 sm:px-8 lg:grid-cols-[minmax(0,6fr)_minmax(0,6fr)] lg:gap-14 lg:pt-16">
         <div>
           <p className="stamp">Field report · Meta Muse Spark 1.2 → 1.3 · 27–31 Oct 2026</p>
@@ -141,7 +140,6 @@ export function Overview({ site }: { site: Site }) {
         </div>
       </section>
 
-      {/* ---------- The two numbers ---------- */}
       {audio && acc12 && acc13 && (
         <section aria-labelledby="numbers-h" className="border-t border-line">
           <div className="mx-auto max-w-6xl px-4 py-16 sm:px-8 lg:py-24">
@@ -213,7 +211,6 @@ export function Overview({ site }: { site: Site }) {
         </section>
       )}
 
-      {/* ---------- Real answers ---------- */}
       <section aria-labelledby="words-h" className="border-t border-line bg-surface/60 py-16 lg:py-20">
         <div className="mx-auto mb-8 max-w-6xl px-4 sm:px-8">
           <p className="stamp">Exhibit B · straight from the saved run, unedited</p>
@@ -228,7 +225,6 @@ export function Overview({ site }: { site: Site }) {
         <AnswerTicker />
       </section>
 
-      {/* ---------- Decisions ---------- */}
       <section aria-labelledby="decisions-h" className="border-t border-line">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-8 lg:py-24">
           <p className="stamp">One release policy, three ways to use Spark 1.3</p>
@@ -269,7 +265,6 @@ export function Overview({ site }: { site: Site }) {
         </div>
       </section>
 
-      {/* ---------- Use it ---------- */}
       <section aria-labelledby="use-h" className="border-t border-line">
         <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:py-24">
           <div>
@@ -298,18 +293,18 @@ export function Overview({ site }: { site: Site }) {
               </a>
             </p>
           </div>
-          <pre className="self-start overflow-x-auto rounded-lg bg-[#1d1a16] p-6 font-mono text-[13px] leading-relaxed text-[#e9e2d3] ring-1 ring-black/5">
+          <pre className="self-start overflow-x-auto rounded-lg bg-[#14171c] p-6 font-mono text-[13px] leading-relaxed text-[#dfe5ec] ring-1 ring-black/5">
             <code>
-              <span className="text-[#9a9081]"># five minutes, from an empty repo</span>
+              <span className="text-[#8590a0]"># five minutes, from an empty repo</span>
               {"\n"}pip install "git+https://github.com/UtsavInTech/upgrade-gate"
               {"\n"}upgrade-gate init --model spark-1.2@low
               {"\n"}upgrade-gate all --packs tasks/my_tasks.jsonl \{"\n"}  -b spark-1.2@low -c spark-1.3@low --budget 1 --yes
               {"\n\n"}
-              <span className="text-[#9a9081]"># exit code: </span>
+              <span className="text-[#8590a0]"># exit code: </span>
               <span className="text-[#7fd1a2]">0 GO</span>
-              <span className="text-[#9a9081]"> · </span>
+              <span className="text-[#8590a0]"> · </span>
               <span className="text-[#ff9a85]">2 NO-GO</span>
-              <span className="text-[#9a9081]"> · </span>
+              <span className="text-[#8590a0]"> · </span>
               <span className="text-[#f0c060]">3 INCONCLUSIVE</span>
             </code>
           </pre>

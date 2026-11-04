@@ -1,0 +1,75 @@
+e10-real-voices: 90 tasks × 2 candidates × 3 repeats
+estimate: {"n_tasks": 90, "n_candidates": 2, "repeats": 3, "n_calls": 540, "input_tokens_per_pass": 94320, "avg_output_tokens": 300, "per_candidate_usd": {"spark-1.2@low": 0.69795, "spark-1.3@low": 0.69795}, "total_usd": 1.3959, "unknown_price_models": []}
+[e10-real-voices] 540 jobs (0 already done) -> results/e10-real-voices
+[e10-real-voices] 27/540 (5%) spent=$0.0100 errors=0 cached=19 5s
+[e10-real-voices] 54/540 (10%) spent=$0.0320 errors=0 cached=36 11s
+[e10-real-voices] 81/540 (15%) spent=$0.0703 errors=0 cached=50 19s
+[e10-real-voices] 108/540 (20%) spent=$0.1248 errors=1 cached=63 25s
+[e10-real-voices] 135/540 (25%) spent=$0.1984 errors=2 cached=75 33s
+[e10-real-voices] 162/540 (30%) spent=$0.2487 errors=3 cached=87 37s
+[e10-real-voices] 189/540 (35%) spent=$0.2874 errors=3 cached=100 43s
+[e10-real-voices] 216/540 (40%) spent=$0.3260 errors=3 cached=108 49s
+[e10-real-voices] 243/540 (45%) spent=$0.3485 errors=3 cached=122 53s
+[e10-real-voices] 270/540 (50%) spent=$0.3745 errors=3 cached=134 60s
+[e10-real-voices] 297/540 (55%) spent=$0.4339 errors=4 cached=146 65s
+[e10-real-voices] 324/540 (60%) spent=$0.4456 errors=4 cached=165 68s
+[e10-real-voices] 351/540 (65%) spent=$0.5023 errors=5 cached=177 74s
+[e10-real-voices] 378/540 (70%) spent=$0.5290 errors=5 cached=195 78s
+[e10-real-voices] 405/540 (75%) spent=$0.5590 errors=5 cached=207 83s
+[e10-real-voices] 432/540 (80%) spent=$0.5768 errors=5 cached=224 87s
+[e10-real-voices] 459/540 (85%) spent=$0.6096 errors=5 cached=239 89s
+[e10-real-voices] 486/540 (90%) spent=$0.6310 errors=5 cached=254 96s
+[e10-real-voices] 513/540 (95%) spent=$0.6770 errors=5 cached=264 101s
+[e10-real-voices] 540/540 (100%) spent=$0.7506 errors=5 cached=269 120s
+speakers: ['simran', 'utsav'] | new: ['simran']
+  transcribed 50/270
+  transcribed 100/270
+  transcribed 150/270
+  transcribed 200/270
+  transcribed 250/270
+  transcription errors: 0
+  spark 100/270
+  spark 200/270
+
+[new] 45 clips | A (1.2 -> 1.3 listening): INCONCLUSIVE | B (1.2 -> transcribe route): GO
+  testA: Failure types, audio input (45 tasks): wrong or blank with no warning 8 -> 7, says it can't answer 0 -> 0
+        grouped into 15 items: 1 worse, 2 better, p = 1; tested per item
+    INCONCLUSIVE  (spark-1.2@low -> spark-1.3@low)
+      - CI overlaps the drop limit. Approximately 349 more independent tasks are needed (normal approximation, 80% power; not a guarantee).
+  testB: Failure types, audio input (45 tasks): wrong or blank with no warning 8 -> 6, says it can't answer 0 -> 0
+        grouped into 15 items: 0 worse, 2 better, p = 0.5; tested per item
+    GO  (spark-1.2@low -> transcribe+spark-1.3@low)
+      - Overall change +4.4 pts (95% CI +0.0 to +11.1) clears the 2.0 pt drop limit; no tested slice regresses significantly.
+
+[pooled] 90 clips | A (1.2 -> 1.3 listening): NO-GO | B (1.2 -> transcribe route): INCONCLUSIVE
+  testA: Failure types, audio input (90 tasks): wrong or blank with no warning 14 -> 20, says it can't answer 1 -> 0
+        grouped into 15 items: 4 worse, 0 better, p = 0.12; tested per item
+    NO-GO  (spark-1.2@low -> spark-1.3@low)
+      - Overall CI upper bound -2.2 pts is below the allowed drop of 2.0 pts.
+  testB: Failure types, audio input (90 tasks): wrong or blank with no warning 14 -> 13, says it can't answer 1 -> 0
+        grouped into 15 items: 3 worse, 2 better, p = 1; tested per item
+    INCONCLUSIVE  (spark-1.2@low -> transcribe+spark-1.3@low)
+      - CI overlaps the drop limit. Approximately 119 more independent tasks are needed (normal approximation, 80% power; not a guarantee).
+
+[speaker:simran] 45 clips | A (1.2 -> 1.3 listening): INCONCLUSIVE | B (1.2 -> transcribe route): GO
+  testA: Failure types, audio input (45 tasks): wrong or blank with no warning 8 -> 7, says it can't answer 0 -> 0
+        grouped into 15 items: 1 worse, 2 better, p = 1; tested per item
+    INCONCLUSIVE  (spark-1.2@low -> spark-1.3@low)
+      - CI overlaps the drop limit. Approximately 349 more independent tasks are needed (normal approximation, 80% power; not a guarantee).
+  testB: Failure types, audio input (45 tasks): wrong or blank with no warning 8 -> 6, says it can't answer 0 -> 0
+        grouped into 15 items: 0 worse, 2 better, p = 0.5; tested per item
+    GO  (spark-1.2@low -> transcribe+spark-1.3@low)
+      - Overall change +4.4 pts (95% CI +0.0 to +11.1) clears the 2.0 pt drop limit; no tested slice regresses significantly.
+
+[speaker:utsav] 45 clips | A (1.2 -> 1.3 listening): NO-GO | B (1.2 -> transcribe route): INCONCLUSIVE
+  testA: Failure types, audio input (45 tasks): wrong or blank with no warning 6 -> 13, says it can't answer 1 -> 0
+        grouped into 15 items: 5 worse, 0 better, p = 0.062; tested per item
+    NO-GO  (spark-1.2@low -> spark-1.3@low)
+      - Overall CI upper bound -2.2 pts is below the allowed drop of 2.0 pts.
+      - Not robust: Audio input: wrong or blank answers rose 6 → 13 per task (p = 0.02), but not when related tasks are grouped into 15 items (5 worse, 0 better, p = 0.062).
+  testB: Failure types, audio input (45 tasks): wrong or blank with no warning 6 -> 7, says it can't answer 1 -> 0
+        grouped into 15 items: 3 worse, 2 better, p = 1; tested per item
+    INCONCLUSIVE  (spark-1.2@low -> transcribe+spark-1.3@low)
+      - CI overlaps the drop limit. Approximately 295 more independent tasks are needed (normal approximation, 80% power; not a guarantee).
+
+wrote experiments/out/e10_new_speakers.json

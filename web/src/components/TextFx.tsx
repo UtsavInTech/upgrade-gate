@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 
-/** True once the element has scrolled into view (and stays true). Immediately true without IntersectionObserver. */
+/** True once the element has scrolled into view. */
 export function useInView<T extends HTMLElement>(margin = "0px 0px -15% 0px") {
   const ref = useRef<T>(null);
   const [on, setOn] = useState(false);
@@ -23,7 +23,6 @@ export function useInView<T extends HTMLElement>(margin = "0px 0px -15% 0px") {
   return [ref, on] as const;
 }
 
-/** Delays `on` a little so effects play in sequence after the element appears. */
 function useDelayed(on: boolean, ms: number) {
   const [late, setLate] = useState(false);
   useEffect(() => {
@@ -34,7 +33,6 @@ function useDelayed(on: boolean, ms: number) {
   return late;
 }
 
-/** Highlighter stroke that sweeps under the text when it scrolls into view. */
 export function Mark({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
   const [ref, inView] = useInView<HTMLSpanElement>();
   const on = useDelayed(inView, delay);
@@ -45,7 +43,6 @@ export function Mark({ children, delay = 0 }: { children: ReactNode; delay?: num
   );
 }
 
-/** A phrase that gets struck through once it's in view: the thing the new model stopped saying. */
 export function Strike({ children, delay = 0, label }: { children: ReactNode; delay?: number; label?: string }) {
   const [ref, inView] = useInView<HTMLSpanElement>();
   const on = useDelayed(inView, delay);
@@ -57,7 +54,7 @@ export function Strike({ children, delay = 0, label }: { children: ReactNode; de
   );
 }
 
-/** Rolling-digit counter. The final number is in the DOM for screen readers and copy-paste. */
+/** Rolling digits; the real number stays in the DOM for screen readers. */
 export function Odometer({ value, delay = 0 }: { value: number; delay?: number }) {
   const [ref, inView] = useInView<HTMLSpanElement>();
   const on = useDelayed(inView, delay);
@@ -87,7 +84,6 @@ export function Odometer({ value, delay = 0 }: { value: number; delay?: number }
   );
 }
 
-/** Words fade up one after another, once. Text is a plain string so it stays readable without JS effects. */
 export function Words({ text, className = "", step = 45 }: { text: string; className?: string; step?: number }) {
   const [ref, on] = useInView<HTMLSpanElement>();
   return (
@@ -111,7 +107,6 @@ export function Words({ text, className = "", step = 45 }: { text: string; class
   );
 }
 
-/** Shows `got` against `want` digit by digit; digits that differ are marked. */
 export function DigitDiff({ got, want }: { got: string; want: string }) {
   if (!got) return <span className="text-risk italic">""</span>;
   return (

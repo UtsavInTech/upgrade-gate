@@ -1,11 +1,13 @@
-# Upgrade Gate — site and report
+# Upgrade Gate: the site
 
-- `#/` — the findings: voice notes, the scoring lesson, Contributor-mode cost, how it works.
+- `#/` — overview: the headline result, real answers from both models, and the gate's three decisions.
+- `#/voiceorder` — the app being protected; plays saved notes, or a new recording when the server has a key.
+- `#/findings` — findings and methods: voice notes, effort ladder, scoring lesson, Contributor mode, how it works.
 - `#/report/<run>` — the product view: run tabs with gate verdicts, pass-rate summary, slice table with
   95% ranges, every task with both versions' answers, filters, search, and a detail panel with audio,
-  documents, all three tries and the scorer's reason. Runs: `e6-audio`, `e1-upgrade`, `e3-contributor`.
-- `#/record` — record the voice-note lines in a real voice (dev server only). Clips are saved to
-  `data/audio-real/<speaker>/` and used by `experiments/e7_real_voices.py`.
+  documents, all three tries and the scorer's reason. Runs include `e6-audio`, `e9-route-synth`, `e10-real-voices`, `e1-upgrade`, `e3-contributor`.
+- `#/record` — record the voice-note lines in a real voice; used for E7 and E10.
+- `#/audit` — blind relabelling of a sample of answers, to check the failure-type labels.
 
 ```bash
 npm --prefix web install

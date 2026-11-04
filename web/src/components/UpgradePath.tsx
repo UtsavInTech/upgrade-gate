@@ -107,7 +107,6 @@ export function UpgradePath({
         )}
       </div>
 
-      {/* The rail: one voice note branching into each route. */}
       <ol className="relative mt-4 ml-5 border-l-2 border-accent/25 pr-5 pb-2 pl-5" aria-label="What each route saves">
         {models.map((m) => {
           const r = results[m];

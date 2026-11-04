@@ -1,6 +1,7 @@
 import { MotionConfig } from "motion/react";
 import { useCallback, useEffect, useState } from "react";
 import { Audit } from "./components/Audit";
+import { BlueGlow } from "./components/BlueGlow";
 import { VoiceOrder } from "./components/VoiceOrder";
 import { Findings } from "./components/Findings";
 import { Header, Logo } from "./components/Header";
@@ -103,6 +104,7 @@ export default function App() {
       >
         Skip to content
       </a>
+      <BlueGlow />
       <Header theme={theme} onToggleTheme={toggleTheme} route={route} />
       <main id="main" tabIndex={-1} className="outline-none">
         {route.page === "report" && <Report run={route.run} task={route.task} />}

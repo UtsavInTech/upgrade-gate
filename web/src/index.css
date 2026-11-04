@@ -4,92 +4,97 @@
    Chart series colours were checked with the dataviz palette validator in both modes. */
 :root {
   color-scheme: light;
-  --bg: #f7f9fc; /* page */
-  --card: #ffffff; /* panels that hold a task, a result or a decision */
-  --surface: #eef2f7;
-  --surface-2: #e3e8ef;
-  --fg: #1c2b33;
-  --muted: #536170; /* 5.9:1 on --bg */
-  --faint: #67747f; /* 4.6:1 on --bg, AA for small text */
-  --border: #dde3ea;
-  --accent: #0064e0;
+  /* Paper and ink: a field report, not a dashboard. */
+  --bg: #f5f2ea; /* page: warm paper */
+  --card: #fbf9f4; /* panels that hold a task, a result or a decision */
+  --surface: #ece7dc;
+  --surface-2: #e2dccf;
+  --fg: #1d1a16; /* ink */
+  --muted: #554e43; /* 7.4:1 on --bg */
+  --faint: #6b6356; /* 5.4:1 on --bg, AA for small text */
+  --border: #d9d1c1;
+  --accent: #2c45b8; /* ballpoint blue: links and the mark */
   --accent-ink: #ffffff;
-  --accent-soft: #e8f1fd;
+  --accent-soft: #e4e7f6;
+  --mark: #f6d548; /* highlighter */
   --go: #16794d; /* 5.3:1 on white */
-  --go-soft: #e6f4ec;
+  --go-soft: #e3f0e4;
   --risk: #b93826; /* 5.6:1 on white */
-  --risk-soft: #fbeae7;
-  --hold: #9a6700; /* 4.8:1 on white */
-  --hold-soft: #fbf2dd;
+  --risk-soft: #f8e5df;
+  --hold: #8f6000; /* 5.3:1 on --bg */
+  --hold-soft: #f6ecd2;
 
   --s-correct: #2a78d6;
   --s-deny: #eda100;
   --s-none: #6250d6;
   --s-wrong: #e34948;
   --s-blank: #9b2c2b;
-  --s-muted: #c2cbd3;
+  --s-muted: #c9c1b3;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme="light"])) {
     color-scheme: dark;
-    --bg: #0d1013;
-    --card: #12171c;
-    --surface: #151a1f;
-    --surface-2: #1d2329;
-    --fg: #e7ecf0;
-    --muted: #a2afba;
-    --faint: #73808c;
-    --border: #2a3239;
-    --accent: #4d9cff;
-    --accent-ink: #06121f;
-    --accent-soft: #10233a;
+    --bg: #12110f;
+    --card: #1a1815;
+    --surface: #211f1b;
+    --surface-2: #2b2823;
+    --fg: #ede7db;
+    --muted: #b3aa9a;
+    --faint: #8a8173;
+    --border: #35312b;
+    --accent: #93a6ff;
+    --accent-ink: #0d1020;
+    --accent-soft: #1c2140;
+    --mark: #8a7414;
     --go: #4fc489;
-    --go-soft: #0f2a1d;
+    --go-soft: #13261a;
     --risk: #ff8069;
-    --risk-soft: #34160f;
+    --risk-soft: #351812;
     --hold: #e6ad45;
-    --hold-soft: #2e220c;
+    --hold-soft: #2d230e;
 
     --s-correct: #3987e5;
     --s-deny: #c98500;
     --s-none: #9085e9;
     --s-wrong: #e66767;
     --s-blank: #a8302f;
-    --s-muted: #3a444d;
+    --s-muted: #3d3934;
   }
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #0d1013;
-  --card: #12171c;
-  --surface: #151a1f;
-  --surface-2: #1d2329;
-  --fg: #e7ecf0;
-  --muted: #a2afba;
-  --faint: #73808c;
-  --border: #2a3239;
-  --accent: #4d9cff;
-  --accent-ink: #06121f;
-  --accent-soft: #10233a;
+  --bg: #12110f;
+  --card: #1a1815;
+  --surface: #211f1b;
+  --surface-2: #2b2823;
+  --fg: #ede7db;
+  --muted: #b3aa9a;
+  --faint: #8a8173;
+  --border: #35312b;
+  --accent: #93a6ff;
+  --accent-ink: #0d1020;
+  --accent-soft: #1c2140;
+  --mark: #8a7414;
   --go: #4fc489;
-  --go-soft: #0f2a1d;
+  --go-soft: #13261a;
   --risk: #ff8069;
-  --risk-soft: #34160f;
+  --risk-soft: #351812;
   --hold: #e6ad45;
-  --hold-soft: #2e220c;
+  --hold-soft: #2d230e;
 
   --s-correct: #3987e5;
   --s-deny: #c98500;
   --s-none: #9085e9;
   --s-wrong: #e66767;
   --s-blank: #a8302f;
-  --s-muted: #3a444d;
+  --s-muted: #3d3934;
 }
 
 @theme inline {
   --font-sans: "Figtree Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces Variable", "Iowan Old Style", Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
   --color-bg: var(--bg);
   --color-card: var(--card);
@@ -102,6 +107,7 @@
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-accent-soft: var(--accent-soft);
+  --color-mark: var(--mark);
   --color-go: var(--go);
   --color-go-soft: var(--go-soft);
   --color-risk: var(--risk);
@@ -139,6 +145,144 @@ body {
   border-radius: 6px;
 }
 
+/* ---------- Type ----------
+   Headlines are set in Fraunces (a soft, slightly wonky old-style serif); body in Figtree; data and labels in
+   JetBrains Mono. These rules are unlayered, so they win over Tailwind's weight and tracking utilities on h1/h2. */
+h1,
+h2,
+.display {
+  font-family: var(--font-display);
+  font-weight: 420;
+  letter-spacing: -0.018em;
+  font-variation-settings:
+    "opsz" 144,
+    "SOFT" 60,
+    "WONK" 1;
+  font-feature-settings: "kern", "liga", "lnum";
+}
+h1 em,
+h2 em,
+.display em {
+  font-style: italic;
+  font-variation-settings:
+    "opsz" 144,
+    "SOFT" 100,
+    "WONK" 1;
+}
+
+/* Small mono label, like a stamp on a lab sheet. */
+.stamp {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.4;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+/* Old-style figures inside running serif text; tabular lining figures everywhere else (set on body). */
+.prose-serif {
+  font-family: var(--font-display);
+  font-variation-settings:
+    "opsz" 24,
+    "SOFT" 40;
+  font-feature-settings: "onum", "kern", "liga";
+}
+
+/* Highlighter: sweeps in once when the element gets .on (or immediately without JS-driven classes). */
+.mark {
+  background-image: linear-gradient(
+    100deg,
+    transparent 0.2em,
+    color-mix(in srgb, var(--mark) 75%, transparent) 0.25em,
+    var(--mark) calc(100% - 0.3em),
+    transparent calc(100% - 0.2em)
+  );
+  background-repeat: no-repeat;
+  background-position: 0 62%;
+  background-size: 0% 52%;
+  transition: background-size 0.9s cubic-bezier(0.6, 0, 0.2, 1);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding: 0 0.08em;
+}
+.mark.on {
+  background-size: 100% 52%;
+}
+
+/* A strike line drawn across a phrase, left to right. */
+.strike {
+  position: relative;
+  white-space: nowrap;
+}
+.strike::after {
+  content: "";
+  position: absolute;
+  left: -0.04em;
+  right: -0.04em;
+  top: 54%;
+  height: 0.075em;
+  min-height: 2px;
+  background: var(--risk);
+  border-radius: 2px;
+  transform: scaleX(0) rotate(-1.2deg);
+  transform-origin: left center;
+  transition: transform 0.7s cubic-bezier(0.7, 0, 0.2, 1);
+}
+.strike.on::after {
+  transform: scaleX(1) rotate(-1.2deg);
+}
+.strike.on {
+  color: var(--faint);
+  transition: color 0.5s ease 0.4s;
+}
+
+/* Rolling digits for counters. */
+.odometer {
+  display: inline-flex;
+  overflow: hidden;
+  height: 1em;
+  line-height: 1;
+  vertical-align: -0.08em;
+}
+.odometer > span {
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
+  transition: transform 1.4s cubic-bezier(0.2, 0.7, 0.1, 1);
+}
+
+/* Marquee of real answers. Pauses on hover/focus; static under reduced motion. */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--marquee-s, 70s) linear infinite;
+}
+.marquee-wrap:hover .marquee,
+.marquee-wrap:focus-within .marquee {
+  animation-play-state: paused;
+}
+.marquee-wrap {
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+/* Footnote markers and sidenotes. */
+.fn {
+  font-family: var(--font-mono);
+  font-size: 0.6em;
+  font-weight: 600;
+  vertical-align: super;
+  line-height: 0;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 0 0.1em;
+}
+
 /* Silent-blank segments carry a hatch so they never rely on colour alone. */
 .hatch {
   background-image: repeating-linear-gradient(
@@ -163,6 +307,11 @@ html.presenting [data-slide] {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  .marquee {
+    animation: none;
+    flex-wrap: wrap;
+    width: auto;
   }
   *,
   *::before,

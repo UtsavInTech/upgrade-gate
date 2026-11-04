@@ -21,8 +21,8 @@ export function Section({
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-8">
         <header className="mb-12 grid gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end">
           <div>
-            <p className="mb-4 text-sm font-medium text-muted">{eyebrow}</p>
-            <h2 className="text-[clamp(2rem,4.6vw,3.4rem)] leading-[1.05] font-semibold tracking-[-0.025em] text-balance">
+            <p className="stamp mb-4">{eyebrow}</p>
+            <h2 className="text-[clamp(2rem,4.6vw,3.4rem)] leading-[1.05] text-balance">
               {title}
             </h2>
           </div>
@@ -106,7 +106,7 @@ export function ModeChip({ mode }: { mode: Mode }) {
 export function Stat({ value, label, sub }: { value: ReactNode; label: string; sub?: ReactNode }) {
   return (
     <div>
-      <div className="text-[clamp(2rem,4vw,2.8rem)] leading-none font-semibold tracking-[-0.03em]">
+      <div className="display text-[clamp(2.2rem,4.4vw,3.1rem)] leading-none">
         {value}
       </div>
       <div className="mt-2 text-sm font-medium text-fg">{label}</div>

@@ -134,9 +134,14 @@ export default function App() {
       </main>
       <footer className="mt-16 border-t border-line">
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-10 text-sm text-muted sm:flex-row sm:items-center sm:justify-between sm:px-8">
-          <div className="flex items-center gap-2.5">
-            <Logo className="size-5" />
-            <span>Every number on this site comes from saved API runs.</span>
+          <div className="flex max-w-md items-start gap-3">
+            <Logo className="mt-0.5 size-5 shrink-0" />
+            <p className="leading-relaxed">
+              <span className="display text-base text-fg">
+                Upgrade <em>Gate</em>
+              </span>{" "}
+              · Every number on this site is read from saved API runs. Set in Fraunces, Figtree and JetBrains Mono.
+            </p>
           </div>
           <nav aria-label="More" className="flex flex-wrap gap-x-5 gap-y-2">
             <a className="hover:text-fg" href="#/findings">

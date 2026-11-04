@@ -41,7 +41,7 @@ export function Header({
         href={n.href}
         aria-current={active ? "page" : undefined}
         className={`rounded-md px-3 py-2 text-sm whitespace-nowrap transition-colors duration-150 ${
-          active ? "bg-surface font-semibold text-fg" : "text-muted hover:text-fg"
+          active ? "font-semibold text-fg underline decoration-2 decoration-accent underline-offset-[10px]" : "text-muted hover:text-fg"
         }`}
       >
         {n.label}
@@ -53,7 +53,9 @@ export function Header({
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 sm:px-8">
         <a href="#/" className="flex shrink-0 items-center gap-2.5" aria-label="Upgrade Gate, overview">
           <Logo />
-          <span className="text-[17px] font-semibold tracking-tight whitespace-nowrap">Upgrade Gate</span>
+          <span className="display text-[21px] whitespace-nowrap">
+            Upgrade <em>Gate</em>
+          </span>
         </a>
         <nav aria-label="Main" className="ml-4 hidden items-center gap-1 md:flex">
           {links}
